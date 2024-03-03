@@ -1,10 +1,9 @@
-import Item from "../components/item";
+import ItemsGrid from "../components/item";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Item />
-      <p>test</p>
+      <ItemsGrid />
     </main>
   );
 }
