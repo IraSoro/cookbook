@@ -12,13 +12,18 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import styles from "./item.module.css";
 
-const Item = () => {
+export interface Item {
+  name: string;
+  description: string;
+}
+
+const Item = (props: Item) => {
   return (
     <Card className={styles.cardItem}>
-      <CardHeader title={"Title"} />
+      <CardHeader title={props.name} />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          {"description"}
+          {props.description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -33,7 +38,11 @@ const Item = () => {
   );
 };
 
-export default function ItemsGrid() {
+interface PropsItems {
+ items: Item[];
+}
+
+const ItemsGrid = (props: PropsItems) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid
@@ -41,12 +50,14 @@ export default function ItemsGrid() {
         spacing={{ xs: 2, md: 3 }}
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
-        {Array.from(Array(4)).map((_, index) => (
-          <Grid item xs={12} sm={4} md={4} key={index}>
-            <Item />
+        {Array.from(props.items).map((item, idx) => (
+          <Grid item xs={12} sm={4} md={4} key={idx}>
+            <Item name={item.name} description={item.description} />
           </Grid>
         ))}
       </Grid>
     </Box>
   );
 }
+
+export default ItemsGrid;
