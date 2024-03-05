@@ -14,10 +14,10 @@ export async function getStaticProps() {
   const response = await getFetch.json();
   const data = await response.data;
 
-  if (!data){
+  if (!data) {
     return {
       notFound: true,
-    }
+    };
   }
 
   return {

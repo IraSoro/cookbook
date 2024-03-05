@@ -18,7 +18,7 @@ export default async function Home() {
         sx={{ top: "auto", bottom: 0 }}
         style={{ backgroundColor: "#D3D3D3" }}
       >
-        <Toolbar style={{ display: 'flex', justifyContent: 'center' }}>
+        <Toolbar style={{ display: "flex", justifyContent: "center" }}>
           <IconButton>
             <AddIcon />
           </IconButton>

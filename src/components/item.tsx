@@ -39,7 +39,7 @@ const Item = (props: Item) => {
 };
 
 interface PropsItems {
- items: Item[];
+  items: Item[];
 }
 
 const ItemsGrid = (props: PropsItems) => {
@@ -58,6 +58,6 @@ const ItemsGrid = (props: PropsItems) => {
       </Grid>
     </Box>
   );
-}
+};
 
 export default ItemsGrid;
