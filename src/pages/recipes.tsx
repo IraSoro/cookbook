@@ -10,23 +10,21 @@ const Page = (props: PageProps) => {
 };
 
 export async function getStaticProps() {
-  try {
-    const getFetch = await fetch("http://localhost:3000/api/main");
-    const response = await getFetch.json();
-    const data = await response.data;
+  const getFetch = await fetch("http://localhost:3000/api/main");
+  const response = await getFetch.json();
+  const data = await response.data;
 
+  if (!data){
     return {
-      props: {
-        data: data,
-      },
-    };
-  } catch {
-    return {
-      props: {
-        data: "",
-      },
-    };
+      notFound: true,
+    }
   }
+
+  return {
+    props: {
+      data: data,
+    },
+  };
 }
 
 export default Page;

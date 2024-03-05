@@ -1,3 +1,9 @@
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+
+import AddIcon from "@mui/icons-material/Add";
+
 import ItemsGrid from "../components/item";
 
 export default async function Home() {
@@ -7,7 +13,18 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <ItemsGrid items={data}/>
+      <AppBar
+        position="fixed"
+        sx={{ top: "auto", bottom: 0 }}
+        style={{ backgroundColor: "#D3D3D3" }}
+      >
+        <Toolbar style={{ display: 'flex', justifyContent: 'center' }}>
+          <IconButton>
+            <AddIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <ItemsGrid items={data} />
     </main>
   );
 }
