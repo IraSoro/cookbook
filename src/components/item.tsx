@@ -17,20 +17,31 @@ export interface Item {
   description: string;
 }
 
-const Item = (props: Item) => {
+interface PropsItem {
+  item: Item;
+  idx: number;
+  deleteItem: (idx: number) => void;
+}
+
+const Item = (props: PropsItem) => {
   return (
     <Card className={styles.cardItem}>
-      <CardHeader title={props.name} />
+      <CardHeader title={props.item.name} />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          {props.description}
+          {props.item.description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="edit">
           <EditIcon />
         </IconButton>
-        <IconButton aria-label="delete">
+        <IconButton
+          aria-label="delete"
+          onClick={() => {
+            props.deleteItem(props.idx);
+          }}
+        >
           <DeleteIcon />
         </IconButton>
       </CardActions>
@@ -40,6 +51,7 @@ const Item = (props: Item) => {
 
 interface PropsItems {
   items: Item[];
+  deleteItem: (idx: number) => void;
 }
 
 const ItemsGrid = (props: PropsItems) => {
@@ -52,7 +64,7 @@ const ItemsGrid = (props: PropsItems) => {
       >
         {Array.from(props.items).map((item, idx) => (
           <Grid item xs={12} sm={4} md={4} key={idx}>
-            <Item name={item.name} description={item.description} />
+            <Item item={item} idx={idx} deleteItem={props.deleteItem} />
           </Grid>
         ))}
       </Grid>

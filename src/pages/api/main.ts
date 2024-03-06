@@ -8,7 +8,20 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   try {
-    if (req.method === "POST") {
+    if (req.method === "DELETE") {
+      const idx = req.body;
+      const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
+
+      if (idx < 0 && idx >= items.length) {
+        throw `Item with idx ${idx} not found.`;
+      }
+
+      const deleteItem = { ...items[idx] };
+      items.splice(idx, 1);
+      await fs.writeFile(itemsPath, JSON.stringify(items));
+
+      res.status(203).json(deleteItem);
+    } else if (req.method === "POST") {
       const newItem = req.body;
       if (Object.keys(newItem).length === 0) {
         throw `No body`;
