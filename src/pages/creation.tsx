@@ -13,11 +13,11 @@ const Page = () => {
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const clearRef = () => {
-    if (nameRef.current?.value){
-        nameRef.current.value = "";
+    if (nameRef.current?.value) {
+      nameRef.current.value = "";
     }
-    if (descriptionRef.current?.value){
-        descriptionRef.current.value = "";
+    if (descriptionRef.current?.value) {
+      descriptionRef.current.value = "";
     }
   };
 
