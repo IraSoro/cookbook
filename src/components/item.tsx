@@ -20,7 +20,7 @@ export interface Item {
 interface PropsItem {
   item: Item;
   idx: number;
-  deleteItem: (idx: number) => void;
+  deleteItem: (_idx: number) => void;
 }
 
 const Item = (props: PropsItem) => {
@@ -51,7 +51,7 @@ const Item = (props: PropsItem) => {
 
 interface PropsItems {
   items: Item[];
-  deleteItem: (idx: number) => void;
+  deleteItem: (_idx: number) => void;
 }
 
 const ItemsGrid = (props: PropsItems) => {
