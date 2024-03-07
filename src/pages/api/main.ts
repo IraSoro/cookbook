@@ -8,33 +8,61 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   try {
-    if (req.method === "DELETE") {
-      const idx = req.body;
-      const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
-
-      if (idx < 0 && idx >= items.length) {
-        throw `Item with idx ${idx} not found.`;
+    switch (req.method) {
+      case "GET": {
+        const items = await fs.readFile(itemsPath, "utf8");
+        res.status(201).json({ data: JSON.parse(items) });
+        break;
       }
+      case "POST": {
+        const newItem = req.body;
+        if (Object.keys(newItem).length === 0) {
+          throw `No body`;
+        }
 
-      const deleteItem = { ...items[idx] };
-      items.splice(idx, 1);
-      await fs.writeFile(itemsPath, JSON.stringify(items));
+        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
+        items.unshift(newItem);
 
-      res.status(203).json(deleteItem);
-    } else if (req.method === "POST") {
-      const newItem = req.body;
-      if (Object.keys(newItem).length === 0) {
-        throw `No body`;
+        await fs.writeFile(itemsPath, JSON.stringify(items));
+        res.status(202).json(newItem);
+        break;
       }
+      case "DELETE": {
+        const idx = req.body;
+        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
 
-      const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
-      items.unshift(newItem);
+        if (idx < 0 && idx >= items.length) {
+          throw `Item with idx ${idx} not found.`;
+        }
 
-      await fs.writeFile(itemsPath, JSON.stringify(items));
-      res.status(202).json(newItem);
-    } else {
-      const items = await fs.readFile(itemsPath, "utf8");
-      res.status(201).json({ data: JSON.parse(items) });
+        const deleteItem = { ...items[idx] };
+        items.splice(idx, 1);
+        await fs.writeFile(itemsPath, JSON.stringify(items));
+
+        res.status(203).json(deleteItem);
+        break;
+      }
+      case "PATCH": {
+        if (Object.keys(req.body).length === 0) {
+          throw `No body`;
+        }
+        const idx = req.body.id;
+        const newItem = req.body.item;
+        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
+
+        if (idx < 0 && idx >= items.length) {
+          throw `Item with idx ${idx} not found.`;
+        }
+
+        items[idx] = newItem;
+        await fs.writeFile(itemsPath, JSON.stringify(items));
+
+        res.status(204).json(newItem);
+        break;
+      }
+      default: {
+        throw "unknown method";
+      }
     }
   } catch (err) {
     res.status(400).json({ error: err });
