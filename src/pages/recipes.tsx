@@ -1,11 +1,14 @@
+import { useState } from "react";
+
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 
 import AddIcon from "@mui/icons-material/Add";
 
-import ItemsGrid from "../components/item";
 import { Item } from "../components/item";
+import ItemsGrid from "../components/item";
+import CreationDialog from "../components/create-form";
 
 import "../app/globals.css";
 
@@ -14,6 +17,21 @@ interface PageProps {
 }
 
 const Page = (props: PageProps) => {
+  const [isAddOpen, setIsAddOpen] = useState(false);
+
+  const addItem = (newItem: Item) => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newItem),
+    };
+    fetch("http://localhost:3000/api/main", requestOptions)
+      .then(() => {
+        console.log("newItem = ", newItem);
+      })
+      .catch((err) => console.log(err));
+  };
+
   const deleteItem = (idx: number) => {
     fetch("http://localhost:3000/api/main", {
       method: "DELETE",
@@ -34,9 +52,14 @@ const Page = (props: PageProps) => {
         style={{ backgroundColor: "#D3D3D3" }}
       >
         <Toolbar style={{ display: "flex", justifyContent: "center" }}>
-          <IconButton>
+          <IconButton onClick={() => setIsAddOpen(true)}>
             <AddIcon />
           </IconButton>
+          <CreationDialog
+            open={isAddOpen}
+            setOpen={setIsAddOpen}
+            addItem={addItem}
+          />
         </Toolbar>
       </AppBar>
       <ItemsGrid items={props.data} deleteItem={deleteItem} />

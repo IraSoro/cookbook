@@ -1,0 +1,10 @@
+.dialogContent {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  background: linear-gradient(to bottom, transparent, rgb(255, 255, 255))
+    rgb(214, 219, 220);
+}

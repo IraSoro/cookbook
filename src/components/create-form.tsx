@@ -4,13 +4,21 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+
 import { Item } from "../components/item";
 
-interface PropsForm {
+import styles from "./create-form.module.css";
+
+interface PropsDialog {
+  open: boolean;
+
+  setOpen: (newOpen: boolean) => void;
   addItem: (newItem: Item) => void;
 }
 
-const CreationForm = (props: PropsForm) => {
+const CreationDialog = (props: PropsDialog) => {
   const nameRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
@@ -24,45 +32,59 @@ const CreationForm = (props: PropsForm) => {
   };
 
   return (
-    <Box
-      height={600}
-      width={600}
-      my={4}
-      gap={4}
-      p={2}
-      sx={{ backgroundColor: "#fefefe" }}
+    <Dialog
+      fullScreen
+      open={props.open}
+      onClose={() => props.setOpen(false)}
+      PaperProps={{
+        component: "form",
+        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+          event.preventDefault();
+
+          const newItem: Item = {
+            name: nameRef.current?.value as string,
+            description: descriptionRef.current?.value as string,
+          };
+          props.addItem(newItem);
+          clearRef();
+          props.setOpen(false);
+        },
+      }}
     >
-      <Stack spacing={3}>
-        <TextField
-          style={{ marginTop: "10px" }}
-          id="standard-multiline-flexible"
-          label="Name"
-          multiline
-          inputRef={nameRef}
-        />
-        <TextField
-          id="outlined-multiline-static"
-          label="Description"
-          multiline
-          inputRef={descriptionRef}
-        />
-        <Button
-          type="submit"
-          color="inherit"
-          onClick={() => {
-            const newItem: Item = {
-              name: nameRef.current?.value as string,
-              description: descriptionRef.current?.value as string,
-            };
-            props.addItem(newItem);
-            clearRef();
-          }}
+      <DialogContent className={styles.dialogContent}>
+        <Box
+          height={600}
+          width={600}
+          my={4}
+          gap={4}
+          p={2}
+          sx={{ backgroundColor: "#fefefe" }}
         >
-          Save
-        </Button>
-      </Stack>
-    </Box>
+          <Stack spacing={3}>
+            <TextField
+              style={{ marginTop: "10px" }}
+              id="standard-multiline-flexible"
+              label="Name"
+              multiline
+              inputRef={nameRef}
+            />
+            <TextField
+              id="outlined-multiline-static"
+              label="Description"
+              multiline
+              inputRef={descriptionRef}
+            />
+            <Button type="submit" color="inherit">
+              Save
+            </Button>
+            <Button color="inherit" onClick={() => props.setOpen(false)}>
+              Cancel
+            </Button>
+          </Stack>
+        </Box>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default CreationForm;
+export default CreationDialog;
