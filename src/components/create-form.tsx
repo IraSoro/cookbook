@@ -13,9 +13,13 @@ import styles from "./create-form.module.css";
 
 interface PropsDialog {
   open: boolean;
-
   setOpen: (newOpen: boolean) => void;
-  addItem: (newItem: Item) => void;
+
+  addItem?: (newItem: Item) => void;
+
+  editItem?: (idx: number, newItem: Item) => void;
+  item?: Item;
+  idx?: number;
 }
 
 const CreationDialog = (props: PropsDialog) => {
@@ -45,7 +49,12 @@ const CreationDialog = (props: PropsDialog) => {
             name: nameRef.current?.value as string,
             description: descriptionRef.current?.value as string,
           };
-          props.addItem(newItem);
+          if (props.addItem) {
+            props.addItem(newItem);
+          }
+          if (props.editItem && props.idx != undefined) {
+            props.editItem(props.idx, newItem);
+          }
           clearRef();
           props.setOpen(false);
         },
@@ -67,12 +76,14 @@ const CreationDialog = (props: PropsDialog) => {
               label="Name"
               multiline
               inputRef={nameRef}
+              defaultValue={props.item?.name || ""}
             />
             <TextField
               id="outlined-multiline-static"
               label="Description"
               multiline
               inputRef={descriptionRef}
+              defaultValue={props.item?.description || ""}
             />
             <Button type="submit" color="inherit">
               Save

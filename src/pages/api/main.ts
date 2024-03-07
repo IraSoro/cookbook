@@ -57,7 +57,7 @@ export default async function handler(
         items[idx] = newItem;
         await fs.writeFile(itemsPath, JSON.stringify(items));
 
-        res.status(204).json(newItem);
+        res.status(205).json(newItem);
         break;
       }
       default: {

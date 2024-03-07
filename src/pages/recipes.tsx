@@ -53,6 +53,20 @@ const Page = (props: PageProps) => {
       .catch((err) => console.log(err));
   };
 
+  const editItem = (idx: number, newItem: Item) => {
+    fetch("http://localhost:3000/api/main", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: idx, item: newItem }),
+    })
+      .then(() => {
+        console.log(`edited ${idx} item`);
+        items[idx] = newItem;
+        setItems([...items]);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <AppBar
@@ -71,7 +85,7 @@ const Page = (props: PageProps) => {
           />
         </Toolbar>
       </AppBar>
-      <ItemsGrid items={items} deleteItem={deleteItem} />
+      <ItemsGrid items={items} deleteItem={deleteItem} editItem={editItem} />
     </main>
   );
 };

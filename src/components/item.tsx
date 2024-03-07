@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
@@ -10,6 +12,8 @@ import Grid from "@mui/material/Grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
+import CreationDialog from "../components/create-form";
+
 import styles from "./item.module.css";
 
 export interface Item {
@@ -21,9 +25,12 @@ interface PropsItem {
   item: Item;
   idx: number;
   deleteItem: (_idx: number) => void;
+  editItem: (_idx: number, _newItem: Item) => void;
 }
 
 const Item = (props: PropsItem) => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
   return (
     <Card className={styles.cardItem}>
       <CardHeader title={props.item.name} />
@@ -33,7 +40,19 @@ const Item = (props: PropsItem) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="edit">
+        <CreationDialog
+          open={isEditOpen}
+          setOpen={setIsEditOpen}
+          idx={props.idx}
+          item={props.item}
+          editItem={props.editItem}
+        />
+        <IconButton
+          aria-label="edit"
+          onClick={() => {
+            setIsEditOpen(true);
+          }}
+        >
           <EditIcon />
         </IconButton>
         <IconButton
@@ -52,6 +71,7 @@ const Item = (props: PropsItem) => {
 interface PropsItems {
   items: Item[];
   deleteItem: (_idx: number) => void;
+  editItem: (_idx: number, _newItem: Item) => void;
 }
 
 const ItemsGrid = (props: PropsItems) => {
@@ -64,7 +84,12 @@ const ItemsGrid = (props: PropsItems) => {
       >
         {Array.from(props.items).map((item, idx) => (
           <Grid item xs={12} sm={4} md={4} key={idx}>
-            <Item item={item} idx={idx} deleteItem={props.deleteItem} />
+            <Item
+              item={item}
+              idx={idx}
+              deleteItem={props.deleteItem}
+              editItem={props.editItem}
+            />
           </Grid>
         ))}
       </Grid>
