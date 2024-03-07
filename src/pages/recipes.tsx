@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -17,7 +17,12 @@ interface PageProps {
 }
 
 const Page = (props: PageProps) => {
+  const [items, setItems] = useState<Item[]>([]);
   const [isAddOpen, setIsAddOpen] = useState(false);
+
+  useEffect(() => {
+    setItems(props.data);
+  }, []);
 
   const addItem = (newItem: Item) => {
     const requestOptions = {
@@ -27,7 +32,9 @@ const Page = (props: PageProps) => {
     };
     fetch("http://localhost:3000/api/main", requestOptions)
       .then(() => {
-        console.log("newItem = ", newItem);
+        console.log("added new item: ", newItem);
+        items.unshift(newItem);
+        setItems([...items]);
       })
       .catch((err) => console.log(err));
   };
@@ -40,6 +47,8 @@ const Page = (props: PageProps) => {
     })
       .then(() => {
         console.log(`deleted ${idx} item`);
+        items.splice(idx, 1);
+        setItems([...items]);
       })
       .catch((err) => console.log(err));
   };
@@ -62,7 +71,7 @@ const Page = (props: PageProps) => {
           />
         </Toolbar>
       </AppBar>
-      <ItemsGrid items={props.data} deleteItem={deleteItem} />
+      <ItemsGrid items={items} deleteItem={deleteItem} />
     </main>
   );
 };
