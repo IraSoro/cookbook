@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
+import Fab from "@mui/material/Fab";
 
 import AddIcon from "@mui/icons-material/Add";
 
@@ -71,11 +72,13 @@ const Page = (props: PageProps) => {
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <AppBar
         position="fixed"
-        sx={{ top: "auto", bottom: 0 }}
-        style={{ backgroundColor: "#D3D3D3" }}
+        style={{ backgroundColor: "transparent", boxShadow: "none" }}
       >
         <Toolbar style={{ display: "flex", justifyContent: "center" }}>
-          <IconButton onClick={() => setIsAddOpen(true)}>
+          <IconButton
+            style={{ backgroundColor: "#d3d3d3" }}
+            onClick={() => setIsAddOpen(true)}
+          >
             <AddIcon />
           </IconButton>
           <CreationDialog
