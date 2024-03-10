@@ -20,17 +20,21 @@ export default function Hero() {
               textAlign: "center",
             }}
           >
-            Welcome to &nbsp;
-            <Typography component="span" variant="h1" color="primary">
+            Welcome to&nbsp;
+            <Typography component="span" variant="h1" color="#474d4e">
               cookbook
             </Typography>
           </Typography>
           <Typography variant="body1" textAlign="center" color="text.secondary">
-            A small information <br />
+            My cookbook application is a convenient tool that helps you save and
+            organize your favorite culinary discoveries. Explore diverse
+            recipes, add your own notes, and easily find inspiration for cooking
+            new dishes. Create your culinary archive with my cookbook app.
+            <br />
             Link to GitHub&nbsp;
             <Link
               href="https://github.com/IraSoro/cook-book-nextjs"
-              color="primary"
+              color="#474d4e"
             >
               here
             </Link>
@@ -41,7 +45,11 @@ export default function Hero() {
             spacing={1}
             useFlexGap
           >
-            <Button color="primary" href="/recipes">
+            <Button
+              href="/recipes"
+              variant="contained"
+              style={{ boxShadow: "none", backgroundColor: "#474d4e" }}
+            >
               Start now
             </Button>
           </Stack>
