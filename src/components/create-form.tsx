@@ -13,11 +13,11 @@ import styles from "./create-form.module.css";
 
 interface PropsDialog {
   open: boolean;
-  setOpen: (newOpen: boolean) => void;
+  setOpen: (_newOpen: boolean) => void;
 
-  addItem?: (newItem: Item) => void;
+  addItem?: (_newItem: Item) => void;
 
-  editItem?: (idx: number, newItem: Item) => void;
+  editItem?: (_idx: number, _newItem: Item) => void;
   item?: Item;
   idx?: number;
 }

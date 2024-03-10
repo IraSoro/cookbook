@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Fab from "@mui/material/Fab";
 
 import AddIcon from "@mui/icons-material/Add";
 
@@ -23,7 +22,7 @@ const Page = (props: PageProps) => {
 
   useEffect(() => {
     setItems(props.data);
-  }, []);
+  }, [props.data]);
 
   const addItem = (newItem: Item) => {
     const requestOptions = {
@@ -76,7 +75,7 @@ const Page = (props: PageProps) => {
       >
         <Toolbar style={{ display: "flex", justifyContent: "center" }}>
           <IconButton
-            style={{ backgroundColor: "#d3d3d3" }}
+            style={{ backgroundColor: "#fefefe" }}
             onClick={() => setIsAddOpen(true)}
           >
             <AddIcon />
