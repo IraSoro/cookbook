@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useReducer } from "react";
 
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,17 +12,60 @@ import CreationDialog from "../components/create-form";
 
 import "../app/globals.css";
 
+enum ActionType {
+  Set,
+  Added,
+  Changed,
+  Deleted,
+}
+
+interface Action {
+  type: ActionType;
+  id?: number;
+  item?: Item;
+  items?: Item[];
+}
+
+function itemsReducer(items: Item[], action: Action): Item[] {
+  switch (action.type) {
+    case ActionType.Set:
+      return action.items ? action.items : [];
+    case ActionType.Added: {
+      console.log("added new item: ", action.item);
+      return action.item ? [action.item, ...items] : items;
+    }
+    case ActionType.Changed: {
+      console.log(`edited ${action.id} item`);
+      if (action.id !== undefined && action.item) {
+        items[action.id] = action.item;
+        return [...items];
+      } else {
+        return items;
+      }
+    }
+    case ActionType.Deleted: {
+      console.log(`deleted ${action.id} item`);
+      if (action.id !== undefined) {
+        items.splice(action.id, 1);
+        return [...items];
+      } else {
+        return items;
+      }
+    }
+    default: {
+      console.log("Unknown action: " + action.type);
+      return items;
+    }
+  }
+}
+
 interface PageProps {
   data: Item[];
 }
 
 const Page = (props: PageProps) => {
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, dispatch] = useReducer(itemsReducer, props.data);
   const [isAddOpen, setIsAddOpen] = useState(false);
-
-  useEffect(() => {
-    setItems(props.data);
-  }, [props.data]);
 
   const addItem = (newItem: Item) => {
     const requestOptions = {
@@ -32,25 +75,14 @@ const Page = (props: PageProps) => {
     };
     fetch("http://localhost:3000/api/main", requestOptions)
       .then(() => {
-        console.log("added new item: ", newItem);
-        items.unshift(newItem);
-        setItems([...items]);
+        dispatch({
+          type: ActionType.Added,
+          item: newItem,
+        });
       })
-      .catch((err) => console.log(err));
-  };
-
-  const deleteItem = (idx: number) => {
-    fetch("http://localhost:3000/api/main", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(idx),
-    })
-      .then(() => {
-        console.log(`deleted ${idx} item`);
-        items.splice(idx, 1);
-        setItems([...items]);
-      })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const editItem = (idx: number, newItem: Item) => {
@@ -60,11 +92,32 @@ const Page = (props: PageProps) => {
       body: JSON.stringify({ id: idx, item: newItem }),
     })
       .then(() => {
-        console.log(`edited ${idx} item`);
-        items[idx] = newItem;
-        setItems([...items]);
+        dispatch({
+          type: ActionType.Changed,
+          id: idx,
+          item: newItem,
+        });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const deleteItem = (idx: number) => {
+    fetch("http://localhost:3000/api/main", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(idx),
+    })
+      .then(() => {
+        dispatch({
+          type: ActionType.Deleted,
+          id: idx,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
