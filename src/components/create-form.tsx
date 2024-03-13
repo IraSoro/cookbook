@@ -62,12 +62,18 @@ const CreationDialog = (props: PropsDialog) => {
     >
       <DialogContent className={styles.dialogContent}>
         <Box
-          height={600}
-          width={600}
           my={4}
           gap={4}
           p={2}
-          sx={{ backgroundColor: "#fefefe" }}
+          sx={{
+            backgroundColor: "#fefefe",
+            width: "600px",
+            height: "600px",
+            "@media (max-width: 600px)": {
+              width: "100%",
+              height: "100%",
+            },
+          }}
         >
           <Stack spacing={3}>
             <TextField
