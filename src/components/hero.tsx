@@ -10,16 +10,30 @@ export default function Hero() {
       <Stack spacing={2} alignItems="center">
         <Typography
           component="h1"
-          variant="h2"
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             alignSelf: "center",
             textAlign: "center",
+            fontSize: "5rem",
+            "@media (max-width: 600px)": {
+              fontSize: "3rem",
+            },
+            fontWeight: "bold",
           }}
         >
           Welcome to&nbsp;
-          <Typography component="span" variant="h2" color="#474d4e">
+          <Typography
+            component="span"
+            color="#474d4e"
+            sx={{
+              fontSize: "5rem",
+              "@media (max-width: 600px)": {
+                fontSize: "3rem",
+              },
+              fontWeight: "bold",
+            }}
+          >
             cookbook
           </Typography>
         </Typography>
@@ -43,7 +57,8 @@ export default function Hero() {
           style={{
             boxShadow: "none",
             backgroundColor: "#474d4e",
-            width: "200px",
+            width: "150px",
+            borderRadius: "12px",
           }}
         >
           Start now
