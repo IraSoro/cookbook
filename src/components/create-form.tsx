@@ -2,10 +2,14 @@ import { useRef } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
+import Input from "@mui/material/Input";
+
+import AddIcon from "@mui/icons-material/Add";
 
 import { Item } from "../components/item";
 
@@ -76,6 +80,30 @@ const CreationDialog = (props: PropsDialog) => {
           }}
         >
           <Stack spacing={3}>
+            <Input
+              type="file"
+              inputProps={{ accept: "image/*" }}
+              style={{ display: "none" }}
+              id="image-upload-input"
+            />
+            <label htmlFor="image-upload-input">
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                sx={{
+                  border: "solid #dedede",
+                  height: "200px",
+                  "@media (max-width: 600px)": {
+                    height: "100%",
+                  },
+                }}
+              >
+                <IconButton component="span">
+                  <AddIcon />
+                </IconButton>
+              </Box>
+            </label>
             <TextField
               style={{ marginTop: "10px" }}
               id="standard-multiline-flexible"
