@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, ChangeEvent } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -30,6 +30,8 @@ const CreationDialog = (props: PropsDialog) => {
   const nameRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
   const clearRef = () => {
     if (nameRef.current?.value) {
       nameRef.current.value = "";
@@ -37,6 +39,17 @@ const CreationDialog = (props: PropsDialog) => {
     if (descriptionRef.current?.value) {
       descriptionRef.current.value = "";
     }
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files?.[0];
+      setSelectedImage(file);
+    }
+  };
+
+  const handleImageUpload = () => {
+    console.log("Uploading image:", selectedImage);
   };
 
   return (
@@ -59,6 +72,7 @@ const CreationDialog = (props: PropsDialog) => {
           if (props.editItem && props.idx != undefined) {
             props.editItem(props.idx, newItem);
           }
+          handleImageUpload();
           clearRef();
           props.setOpen(false);
         },
@@ -85,6 +99,7 @@ const CreationDialog = (props: PropsDialog) => {
               inputProps={{ accept: "image/*" }}
               style={{ display: "none" }}
               id="image-upload-input"
+              onChange={handleImageChange}
             />
             <label htmlFor="image-upload-input">
               <Box
@@ -94,9 +109,9 @@ const CreationDialog = (props: PropsDialog) => {
                 sx={{
                   border: "solid #dedede",
                   height: "200px",
-                  "@media (max-width: 600px)": {
-                    height: "100%",
-                  },
+                  backgroundImage: selectedImage
+                    ? `url(${URL.createObjectURL(selectedImage)})`
+                    : "none",
                 }}
               >
                 <IconButton component="span">
