@@ -30,7 +30,7 @@ const CreationDialog = (props: PropsDialog) => {
   const nameRef = useRef<HTMLTextAreaElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [image, setImage] = useState<File | null>(null);
 
   const clearRef = () => {
     if (nameRef.current?.value) {
@@ -44,12 +44,28 @@ const CreationDialog = (props: PropsDialog) => {
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files?.[0];
-      setSelectedImage(file);
+      setImage(file);
     }
   };
 
   const handleImageUpload = () => {
-    console.log("Uploading image:", selectedImage);
+    const formData = new FormData();
+    if (image) {
+      formData.append("filename", "aaa");
+      formData.append("image", image);
+    }
+
+    const requestOptions = {
+      method: "POST",
+      body: formData,
+    };
+    fetch("http://localhost:3000/api/images", requestOptions)
+      .then(() => {
+        console.log("Image uploaded");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -65,6 +81,7 @@ const CreationDialog = (props: PropsDialog) => {
           const newItem: Item = {
             name: nameRef.current?.value as string,
             description: descriptionRef.current?.value as string,
+            image: "",
           };
           if (props.addItem) {
             props.addItem(newItem);
@@ -74,6 +91,7 @@ const CreationDialog = (props: PropsDialog) => {
           }
           handleImageUpload();
           clearRef();
+          setImage(null);
           props.setOpen(false);
         },
       }}
@@ -109,8 +127,8 @@ const CreationDialog = (props: PropsDialog) => {
                 sx={{
                   border: "solid #dedede",
                   height: "200px",
-                  backgroundImage: selectedImage
-                    ? `url(${URL.createObjectURL(selectedImage)})`
+                  backgroundImage: image
+                    ? `url(${URL.createObjectURL(image)})`
                     : "none",
                 }}
               >

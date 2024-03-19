@@ -19,6 +19,7 @@ import styles from "./item.module.css";
 export interface Item {
   name: string;
   description: string;
+  image: string;
 }
 
 interface PropsItem {
