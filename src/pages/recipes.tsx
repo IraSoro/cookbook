@@ -68,6 +68,9 @@ const Page = (props: PageProps) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const addItem = (newItem: Item) => {
+    if (items.length > 0) {
+      newItem.id = items[0].id + 1;
+    }
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },

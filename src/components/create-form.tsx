@@ -79,6 +79,7 @@ const CreationDialog = (props: PropsDialog) => {
           event.preventDefault();
 
           const newItem: Item = {
+            id: props.item?.id || 0,
             name: nameRef.current?.value as string,
             description: descriptionRef.current?.value as string,
             image: "",

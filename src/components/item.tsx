@@ -17,6 +17,7 @@ import CreationDialog from "../components/create-form";
 import styles from "./item.module.css";
 
 export interface Item {
+  id: number;
   name: string;
   description: string;
   image: string;
