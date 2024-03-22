@@ -19,7 +19,7 @@ interface PropsDialog {
   open: boolean;
   setOpen: (_newOpen: boolean) => void;
 
-  addItem?: (_newItem: Item) => void;
+  addItem?: (_newItem: Item, _image: File | null) => void;
 
   editItem?: (_idx: number, _newItem: Item) => void;
   item?: Item;
@@ -48,26 +48,6 @@ const CreationDialog = (props: PropsDialog) => {
     }
   };
 
-  const handleImageUpload = () => {
-    const formData = new FormData();
-    if (image) {
-      formData.append("filename", "aaa");
-      formData.append("image", image);
-    }
-
-    const requestOptions = {
-      method: "POST",
-      body: formData,
-    };
-    fetch("http://localhost:3000/api/images", requestOptions)
-      .then(() => {
-        console.log("Image uploaded");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   return (
     <Dialog
       fullScreen
@@ -82,15 +62,14 @@ const CreationDialog = (props: PropsDialog) => {
             id: props.item?.id || 0,
             name: nameRef.current?.value as string,
             description: descriptionRef.current?.value as string,
-            image: "",
+            image: props.item?.image || "",
           };
           if (props.addItem) {
-            props.addItem(newItem);
+            props.addItem(newItem, image);
           }
           if (props.editItem && props.idx != undefined) {
             props.editItem(props.idx, newItem);
           }
-          handleImageUpload();
           clearRef();
           setImage(null);
           props.setOpen(false);

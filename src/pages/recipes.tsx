@@ -67,10 +67,29 @@ const Page = (props: PageProps) => {
   const [items, dispatch] = useReducer(itemsReducer, props.data);
   const [isAddOpen, setIsAddOpen] = useState(false);
 
-  const addItem = (newItem: Item) => {
+  const addItem = (newItem: Item, image: File | null) => {
     if (items.length > 0) {
       newItem.id = items[0].id + 1;
     }
+    const formData = new FormData();
+    if (image) {
+      newItem.image = `${newItem.id}.jpg`;
+      formData.append("filename", newItem.image);
+      formData.append("image", image);
+    }
+
+    const requestImageUpload = {
+      method: "POST",
+      body: formData,
+    };
+    fetch("http://localhost:3000/api/images", requestImageUpload)
+      .then(() => {
+        console.log("Image uploaded");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
