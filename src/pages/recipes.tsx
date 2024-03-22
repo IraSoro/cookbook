@@ -126,6 +126,17 @@ const Page = (props: PageProps) => {
   };
 
   const deleteItem = (idx: number) => {
+    fetch("http://localhost:3000/api/images", {
+      method: "DELETE",
+      body: JSON.stringify(items[idx].image),
+    })
+      .then(() => {
+        console.log("Image deleted");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     fetch("http://localhost:3000/api/main", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },

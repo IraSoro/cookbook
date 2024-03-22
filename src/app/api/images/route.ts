@@ -1,6 +1,8 @@
 import fs from "fs/promises";
 import { NextRequest } from "next/server";
 
+const path = "data/";
+
 export async function POST(req: NextRequest) {
   const form = await req.formData();
 
@@ -26,9 +28,38 @@ export async function POST(req: NextRequest) {
   }
 
   await fs.writeFile(
-    `data/${filename}`,
+    `${path}${filename}`,
     new Uint8Array(await file.arrayBuffer()),
   );
+
+  return Response.json(
+    { status: "Success" },
+    {
+      status: 200,
+    },
+  );
+}
+
+export async function DELETE(req: NextRequest) {
+  const imageName = await req.json();
+  if (imageName === "") {
+    return Response.json(
+      { status: "no image name" },
+      {
+        status: 500,
+      },
+    );
+  }
+
+  const filePath = path + imageName;
+  await fs.unlink(filePath).catch((err) => {
+    return Response.json(
+      { error: err },
+      {
+        status: 500,
+      },
+    );
+  });
 
   return Response.json(
     { status: "Success" },
