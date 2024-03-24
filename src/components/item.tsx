@@ -4,6 +4,7 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
+import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
@@ -36,6 +37,11 @@ const Item = (props: PropsItem) => {
   return (
     <Card className={styles.cardItem}>
       <CardHeader title={props.item.name} />
+      <CardMedia
+        sx={{ height: 140 }}
+        image={props.item.image ? `/data/${props.item.image}` : "/default.jpg"}
+        title="recipes image"
+      />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {props.item.description}

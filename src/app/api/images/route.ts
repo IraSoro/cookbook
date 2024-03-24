@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import { NextRequest } from "next/server";
 
-const path = "data/";
+const path = "public/data/";
 
 export async function POST(req: NextRequest) {
   const form = await req.formData();
