@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -28,20 +28,40 @@ interface PropsItem {
   item: Item;
   idx: number;
   deleteItem: (_idx: number) => void;
-  editItem: (_idx: number, _newItem: Item) => void;
+  editItem: (_idx: number, _newItem: Item, _image: File | null) => void;
 }
 
 const Item = (props: PropsItem) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const defaultImage = "/default.jpg";
+  const [image, setImage] = useState(defaultImage);
+
+  useEffect(() => {
+    if (!props.item.image) {
+      setImage(defaultImage);
+      return;
+    }
+    const imageUrl = `/data/${props.item.image}`;
+
+    fetch(imageUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        setImage(URL.createObjectURL(blob));
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  }, [props.item]);
 
   return (
     <Card className={styles.cardItem}>
       <CardHeader title={props.item.name} />
-      <CardMedia
-        sx={{ height: 140 }}
-        image={props.item.image ? `/data/${props.item.image}` : "/default.jpg"}
-        title="recipes image"
-      />
+      <CardMedia sx={{ height: 140 }} image={image} title="dish image" />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {props.item.description}
@@ -79,7 +99,7 @@ const Item = (props: PropsItem) => {
 interface PropsItems {
   items: Item[];
   deleteItem: (_idx: number) => void;
-  editItem: (_idx: number, _newItem: Item) => void;
+  editItem: (_idx: number, _newItem: Item, _image: File | null) => void;
 }
 
 const ItemsGrid = (props: PropsItems) => {

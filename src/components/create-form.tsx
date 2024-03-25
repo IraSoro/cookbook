@@ -1,4 +1,4 @@
-import { useRef, useState, ChangeEvent } from "react";
+import { useRef, useState, ChangeEvent, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -21,7 +21,7 @@ interface PropsDialog {
 
   addItem?: (_newItem: Item, _image: File | null) => void;
 
-  editItem?: (_idx: number, _newItem: Item) => void;
+  editItem?: (_idx: number, _newItem: Item, _image: File | null) => void;
   item?: Item;
   idx?: number;
 }
@@ -31,6 +31,20 @@ const CreationDialog = (props: PropsDialog) => {
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const [image, setImage] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (!props.editItem || !props.item || !props.open) return;
+    fetch(`/data/${props.item.image}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        if (!props.item) return;
+        const file = new File([blob], props.item.image, { type: "image/jpeg" });
+        setImage(file);
+      })
+      .catch((error) => {
+        console.error("Failed to load default image:", error);
+      });
+  }, [props.open, props.item, props.editItem]);
 
   const clearRef = () => {
     if (nameRef.current?.value) {
@@ -68,7 +82,7 @@ const CreationDialog = (props: PropsDialog) => {
             props.addItem(newItem, image);
           }
           if (props.editItem && props.idx != undefined) {
-            props.editItem(props.idx, newItem);
+            props.editItem(props.idx, newItem, image);
           }
           clearRef();
           setImage(null);
