@@ -12,12 +12,14 @@ import CreationDialog from "../components/create-form";
 
 import "../app/globals.css";
 
+/* eslint-disable */
 enum ActionType {
   Set,
   Added,
   Changed,
   Deleted,
 }
+/* eslint-enable */
 
 interface Action {
   type: ActionType;
