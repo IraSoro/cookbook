@@ -107,7 +107,25 @@ const Page = (props: PageProps) => {
       });
   };
 
-  const editItem = (idx: number, newItem: Item) => {
+  const editItem = (idx: number, newItem: Item, image: File | null) => {
+    const formData = new FormData();
+    if (image) {
+      newItem.image = `${newItem.id}.jpg`;
+      formData.append("filename", newItem.image);
+      formData.append("image", image);
+    }
+
+    fetch("http://localhost:3000/api/images", {
+      method: "PATCH",
+      body: formData,
+    })
+      .then(() => {
+        console.log("Image edited");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     fetch("http://localhost:3000/api/main", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

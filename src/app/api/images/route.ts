@@ -68,3 +68,50 @@ export async function DELETE(req: NextRequest) {
     },
   );
 }
+
+export async function PATCH(req: NextRequest) {
+  const form = await req.formData();
+
+  if (!form.has("image")) {
+    return Response.json(
+      { status: "'image' field is null" },
+      {
+        status: 500,
+      },
+    );
+  }
+
+  const filename = form.get("filename") as string;
+  const file = form.get("image") as File;
+
+  if (!file) {
+    return Response.json(
+      { status: "image data is null" },
+      {
+        status: 500,
+      },
+    );
+  }
+
+  const filePath = path + filename;
+  await fs.unlink(filePath).catch((err) => {
+    return Response.json(
+      { error: err },
+      {
+        status: 500,
+      },
+    );
+  });
+
+  await fs.writeFile(
+    `${path}${filename}`,
+    new Uint8Array(await file.arrayBuffer()),
+  );
+
+  return Response.json(
+    { status: "Success" },
+    {
+      status: 200,
+    },
+  );
+}
