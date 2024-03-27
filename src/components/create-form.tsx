@@ -24,6 +24,7 @@ interface PropsDialog {
   editItem?: (_idx: number, _newItem: Item, _image: File | null) => void;
   item?: Item;
   idx?: number;
+  deleteItem?: () => void;
 }
 
 const CreationDialog = (props: PropsDialog) => {
@@ -152,6 +153,19 @@ const CreationDialog = (props: PropsDialog) => {
             <Button color="inherit" onClick={() => props.setOpen(false)}>
               Cancel
             </Button>
+            {props.editItem && (
+              <Button
+                color="error"
+                onClick={() => {
+                  if (props.deleteItem) {
+                    props.deleteItem();
+                  }
+                  props.setOpen(false);
+                }}
+              >
+                Delete recipe
+              </Button>
+            )}
           </Stack>
         </Box>
       </DialogContent>

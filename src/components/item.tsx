@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
-  CardActions,
-  IconButton,
-  Box,
-  Grid,
-  ImageListItem,
-  ImageListItemBar,
-} from "@mui/material";
-
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Grid, ImageListItem, ImageListItemBar } from "@mui/material";
 
 import CreationDialog from "../components/create-form";
 
@@ -70,16 +61,6 @@ const Item = (props: PropsItem) => {
           loading="lazy"
         />
         <ImageListItemBar title={props.item.name} position="below" />
-        <CardActions disableSpacing>
-          <IconButton
-            aria-label="delete"
-            onClick={() => {
-              props.deleteItem(props.idx);
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </CardActions>
       </ImageListItem>
       <CreationDialog
         open={isEditOpen}
@@ -87,6 +68,9 @@ const Item = (props: PropsItem) => {
         idx={props.idx}
         item={props.item}
         editItem={props.editItem}
+        deleteItem={() => {
+          props.deleteItem(props.idx);
+        }}
       />
     </>
   );
