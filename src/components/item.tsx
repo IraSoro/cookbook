@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
 
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import {
+  CardActions,
+  IconButton,
+  Box,
+  Grid,
+  ImageListItem,
+  ImageListItemBar,
+} from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import CreationDialog from "../components/create-form";
-
-import styles from "./item.module.css";
 
 export interface Item {
   id: number;
@@ -59,14 +56,15 @@ const Item = (props: PropsItem) => {
   }, [props.item]);
 
   return (
-    <Card className={styles.cardItem}>
-      <CardHeader title={props.item.name} />
-      <CardMedia sx={{ height: 140 }} image={image} title="dish image" />
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {props.item.description}
-        </Typography>
-      </CardContent>
+    <ImageListItem key={props.idx}>
+      <img
+        style={{ minHeight: 200 }}
+        srcSet={image}
+        src={image}
+        alt={props.item.name}
+        loading="lazy"
+      />
+      <ImageListItemBar title={props.item.name} position="below" />
       <CardActions disableSpacing>
         <CreationDialog
           open={isEditOpen}
@@ -92,7 +90,7 @@ const Item = (props: PropsItem) => {
           <DeleteIcon />
         </IconButton>
       </CardActions>
-    </Card>
+    </ImageListItem>
   );
 };
 
@@ -104,14 +102,10 @@ interface PropsItems {
 
 const ItemsGrid = (props: PropsItems) => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
+    <Box sx={{ flexGrow: 1, maxWidth: 1000 }}>
+      <Grid container spacing={{ xs: 1, md: 2 }}>
         {Array.from(props.items).map((item, idx) => (
-          <Grid item xs={12} sm={4} md={4} key={idx}>
+          <Grid item xs={6} sm={6} md={4} key={idx}>
             <Item
               item={item}
               idx={idx}

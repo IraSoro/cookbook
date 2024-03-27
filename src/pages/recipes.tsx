@@ -174,7 +174,7 @@ const Page = (props: PageProps) => {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between">
       <AppBar
         position="fixed"
         style={{ backgroundColor: "transparent", boxShadow: "none" }}
@@ -193,6 +193,7 @@ const Page = (props: PageProps) => {
           />
         </Toolbar>
       </AppBar>
+      <div style={{ marginTop: "70px" }} />
       <ItemsGrid items={items} deleteItem={deleteItem} editItem={editItem} />
     </main>
   );
