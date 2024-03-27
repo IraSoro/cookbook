@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 
 import CreationDialog from "../components/create-form";
 
@@ -56,41 +55,40 @@ const Item = (props: PropsItem) => {
   }, [props.item]);
 
   return (
-    <ImageListItem key={props.idx}>
-      <img
-        style={{ minHeight: 200 }}
-        srcSet={image}
-        src={image}
-        alt={props.item.name}
-        loading="lazy"
-      />
-      <ImageListItemBar title={props.item.name} position="below" />
-      <CardActions disableSpacing>
-        <CreationDialog
-          open={isEditOpen}
-          setOpen={setIsEditOpen}
-          idx={props.idx}
-          item={props.item}
-          editItem={props.editItem}
+    <>
+      <ImageListItem
+        key={props.idx}
+        onClick={() => {
+          setIsEditOpen(true);
+        }}
+      >
+        <img
+          style={{ minHeight: 200 }}
+          srcSet={image}
+          src={image}
+          alt={props.item.name}
+          loading="lazy"
         />
-        <IconButton
-          aria-label="edit"
-          onClick={() => {
-            setIsEditOpen(true);
-          }}
-        >
-          <EditIcon />
-        </IconButton>
-        <IconButton
-          aria-label="delete"
-          onClick={() => {
-            props.deleteItem(props.idx);
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
-      </CardActions>
-    </ImageListItem>
+        <ImageListItemBar title={props.item.name} position="below" />
+        <CardActions disableSpacing>
+          <IconButton
+            aria-label="delete"
+            onClick={() => {
+              props.deleteItem(props.idx);
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </CardActions>
+      </ImageListItem>
+      <CreationDialog
+        open={isEditOpen}
+        setOpen={setIsEditOpen}
+        idx={props.idx}
+        item={props.item}
+        editItem={props.editItem}
+      />
+    </>
   );
 };
 
