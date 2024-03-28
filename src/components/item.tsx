@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Box, Grid, ImageListItem, ImageListItemBar } from "@mui/material";
 
 import CreationDialog from "../components/create-form";
+import Image from "next/image";
 
 export interface Item {
   id: number;
@@ -53,13 +54,28 @@ const Item = (props: PropsItem) => {
           setIsEditOpen(true);
         }}
       >
-        <img
-          style={{ minHeight: 200 }}
-          srcSet={image}
-          src={image}
-          alt={props.item.name}
-          loading="lazy"
-        />
+        <Box
+          sx={{
+            height: 450,
+            maxWidth: 350,
+            "@media (max-width: 600px)": {
+              height: 250,
+              maxWidth: 180,
+            },
+          }}
+        >
+          <Image
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+            height={0}
+            width={0}
+            src={image}
+            alt={props.item.name}
+            loading="lazy"
+          />
+        </Box>
         <ImageListItemBar title={props.item.name} position="below" />
       </ImageListItem>
       <CreationDialog
