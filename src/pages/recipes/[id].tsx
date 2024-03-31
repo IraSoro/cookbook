@@ -7,7 +7,7 @@ interface Props {
   item: Item;
 }
 
-const Post: React.FC<Props> = ({ item }) => {
+const RecipePage: React.FC<Props> = ({ item }) => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
       <Recipe item={item} />
@@ -50,4 +50,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-export default Post;
+export default RecipePage;
