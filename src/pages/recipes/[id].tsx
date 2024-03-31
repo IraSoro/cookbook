@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
 import { GetStaticProps } from "next";
 
 import { Item } from "../../components/item";
+import Recipe from "../../components/recipe";
 
 interface Props {
   item: Item;
@@ -10,7 +10,7 @@ interface Props {
 const Post: React.FC<Props> = ({ item }) => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <Box>{item.name}</Box>
+      <Recipe item={item} />
     </main>
   );
 };
