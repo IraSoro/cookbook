@@ -1,19 +1,27 @@
 import { Box } from "@mui/material";
 import { GetStaticProps } from "next";
 
+import { Item } from "../../components/item";
+
 interface Props {
-  id: string;
+  item: Item;
 }
 
-const Post: React.FC<Props> = ({ id }) => {
-  return <Box>{id}</Box>;
+const Post: React.FC<Props> = ({ item }) => {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between">
+      <Box>{item.name}</Box>
+    </main>
+  );
 };
 
 export async function getStaticPaths() {
-  const recipeIds = [0, 1, 2];
+  const getFetch = await fetch("http://localhost:3000/api/main");
+  const response = await getFetch.json();
+  const data = await response.data;
 
-  const paths = recipeIds.map((id) => ({
-    params: { id: id.toString() },
+  const paths = data.map((item: Item) => ({
+    params: { id: item.id.toString() },
   }));
 
   return {
@@ -30,9 +38,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 
   const id = params.id;
+  const getFetch = await fetch("http://localhost:3000/api/main");
+  const response = await getFetch.json();
+  const data = await response.data;
+  const item = data.find((item: Item) => item.id.toString() === id);
+
   return {
     props: {
-      id,
+      item,
     },
   };
 };
