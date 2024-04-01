@@ -1,8 +1,7 @@
 import { GetStaticProps } from "next";
 
-import { Item } from "../../components/item";
-import Recipe from "../../components/recipe";
-import { Button } from "@mui/material";
+import { Item } from "../../../components/item";
+import Editor from "../../../components/edit-form";
 
 interface Props {
   item: Item;
@@ -11,15 +10,13 @@ interface Props {
 const RecipePage: React.FC<Props> = ({ item }) => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <Button
-        color="error"
-        onClick={() => {
-          console.log("delete");
+      <Editor
+        editItem={(item: Item, image: null | File) => {
+          console.log(item);
+          console.log(image);
         }}
-      >
-        Delete recipe
-      </Button>
-      <Recipe item={item} />
+        item={item}
+      />
     </main>
   );
 };
@@ -45,7 +42,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       notFound: true,
     };
   }
-
   const id = params.id;
   const getFetch = await fetch("http://localhost:3000/api/main");
   const response = await getFetch.json();
