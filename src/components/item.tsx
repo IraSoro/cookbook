@@ -21,8 +21,6 @@ export interface Item {
 interface PropsItem {
   item: Item;
   idx: number;
-  deleteItem: (_idx: number) => void;
-  editItem: (_idx: number, _newItem: Item, _image: File | null) => void;
 }
 
 const Item = (props: PropsItem) => {
@@ -86,10 +84,6 @@ const Item = (props: PropsItem) => {
         setOpen={setIsEditOpen}
         idx={props.idx}
         item={props.item}
-        editItem={props.editItem}
-        deleteItem={() => {
-          props.deleteItem(props.idx);
-        }}
       />
     </>
   );
@@ -97,8 +91,6 @@ const Item = (props: PropsItem) => {
 
 interface PropsItems {
   items: Item[];
-  deleteItem: (_idx: number) => void;
-  editItem: (_idx: number, _newItem: Item, _image: File | null) => void;
 }
 
 const ItemsGrid = (props: PropsItems) => {
@@ -107,12 +99,7 @@ const ItemsGrid = (props: PropsItems) => {
       <Grid container spacing={{ xs: 1, md: 2 }}>
         {Array.from(props.items).map((item, idx) => (
           <Grid item xs={6} sm={6} md={4} key={idx}>
-            <Item
-              item={item}
-              idx={idx}
-              deleteItem={props.deleteItem}
-              editItem={props.editItem}
-            />
+            <Item item={item} idx={idx} />
           </Grid>
         ))}
       </Grid>
