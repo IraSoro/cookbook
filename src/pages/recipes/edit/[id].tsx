@@ -3,6 +3,8 @@ import { GetStaticProps } from "next";
 import { Item } from "../../../components/item";
 import Editor from "../../../components/edit-form";
 
+import { getRequest } from "@/pages/api/handlers/apiRequests";
+
 interface Props {
   item: Item;
 }
@@ -22,9 +24,7 @@ const RecipePage: React.FC<Props> = ({ item }) => {
 };
 
 export async function getStaticPaths() {
-  const getFetch = await fetch("http://localhost:3000/api/routes");
-  const response = await getFetch.json();
-  const data = await response.data;
+  const data = await getRequest();
 
   const paths = data.map((item: Item) => ({
     params: { id: item.id.toString() },
@@ -43,9 +43,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     };
   }
   const id = params.id;
-  const getFetch = await fetch("http://localhost:3000/api/routes");
-  const response = await getFetch.json();
-  const data = await response.data;
+  const data = await getRequest();
   const item = data.find((item: Item) => item.id.toString() === id);
 
   return {
