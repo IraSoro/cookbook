@@ -42,3 +42,28 @@ export async function postAdditionRequest(
       console.log(err);
     });
 }
+
+export async function deleteRequest(idx: number, imageName: string) {
+  fetch("http://localhost:3000/api/images", {
+    method: "DELETE",
+    body: JSON.stringify(imageName),
+  })
+    .then(() => {
+      console.log("Image deleted");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  fetch("http://localhost:3000/api/routes", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(idx),
+  })
+    .then(() => {
+      console.log(`Deleted id=${idx} element`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}

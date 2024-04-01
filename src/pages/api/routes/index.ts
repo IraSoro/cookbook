@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-
 import { promises as fs } from "fs";
+
+import { Item } from "@/components/item";
+
 const itemsPath = "./data/items.json";
 
 export default async function handler(
@@ -31,12 +33,16 @@ export default async function handler(
         const idx = req.body;
         const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
 
-        if (idx < 0 && idx >= items.length) {
+        const deleteItemId = items.findIndex((item: Item) => {
+          return item.id === idx;
+        });
+
+        if (deleteItemId < 0) {
           throw `Item with idx ${idx} not found.`;
         }
 
-        const deleteItem = { ...items[idx] };
-        items.splice(idx, 1);
+        const deleteItem = { ...items[deleteItemId] };
+        items.splice(deleteItemId, 1);
         await fs.writeFile(itemsPath, JSON.stringify(items));
 
         res.status(203).json(deleteItem);

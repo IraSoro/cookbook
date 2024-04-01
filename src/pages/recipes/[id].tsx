@@ -1,24 +1,26 @@
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 
 import { Item } from "../../components/item";
 import Recipe from "../../components/recipe";
 import { Button } from "@mui/material";
 
-import { getRequest } from "../api/handlers/apiRequests";
+import { getRequest, deleteRequest } from "../api/handlers/apiRequests";
 
 interface Props {
   item: Item;
 }
 
 const RecipePage: React.FC<Props> = ({ item }) => {
+  const router = useRouter();
+  const handleDelete = async () => {
+    await deleteRequest(item.id, item.image);
+    router.push("/recipes");
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <Button
-        color="error"
-        onClick={() => {
-          console.log("delete");
-        }}
-      >
+      <Button color="error" onClick={handleDelete}>
         Delete recipe
       </Button>
       <Recipe item={item} />
