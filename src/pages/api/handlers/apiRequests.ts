@@ -67,3 +67,35 @@ export async function deleteRequest(idx: number, imageName: string) {
       console.log(err);
     });
 }
+
+export async function patchEditRequest(newItem: Item, image: File | null) {
+  const formData = new FormData();
+  if (image) {
+    newItem.image = `${newItem.id}.jpg`;
+    formData.append("filename", newItem.image);
+    formData.append("image", image);
+  }
+
+  fetch("http://localhost:3000/api/images", {
+    method: "PATCH",
+    body: formData,
+  })
+    .then(() => {
+      console.log("Image edited");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  fetch("http://localhost:3000/api/routes", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ item: newItem }),
+  })
+    .then(() => {
+      console.log(`Item id=${newItem.id} edited`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}

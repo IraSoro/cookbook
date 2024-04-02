@@ -91,17 +91,32 @@ const Editor = (props: PropsEdit) => {
           label="Name"
           multiline
           inputRef={nameRef}
-          defaultValue={props.item?.name || ""}
+          defaultValue={props.item.name}
         />
         <TextField
           id="outlined-multiline-static"
           label="Description"
           multiline
           inputRef={descriptionRef}
-          defaultValue={props.item?.description || ""}
+          defaultValue={props.item.description}
         />
-        <Button color="inherit">Save</Button>
-        <Button color="inherit">Cancel</Button>
+        <Button
+          color="inherit"
+          onClick={() => {
+            const newItem: Item = {
+              id: props.item.id,
+              name: nameRef.current?.value as string,
+              description: descriptionRef.current?.value as string,
+              image: props.item.image,
+            };
+            props.editItem(newItem, image);
+          }}
+        >
+          Save
+        </Button>
+        <Button href={`/recipes/${props.item.id}`} color="inherit">
+          Cancel
+        </Button>
       </Stack>
     </Box>
   );

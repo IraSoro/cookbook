@@ -23,6 +23,12 @@ const RecipePage: React.FC<Props> = ({ item }) => {
       <Button color="error" onClick={handleDelete}>
         Delete recipe
       </Button>
+      <Button
+        color="inherit"
+        onClick={() => router.push(`/recipes/edit/${item.id}`)}
+      >
+        Edit recipe
+      </Button>
       <Recipe item={item} />
     </main>
   );

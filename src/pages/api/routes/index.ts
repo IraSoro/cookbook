@@ -52,16 +52,16 @@ export default async function handler(
         if (Object.keys(req.body).length === 0) {
           throw `No body`;
         }
-        const idx = req.body.id;
         const newItem = req.body.item;
         const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
 
-        if (idx < 0 && idx >= items.length) {
-          throw `Item with idx ${idx} not found.`;
-        }
-
-        items[idx] = newItem;
-        await fs.writeFile(itemsPath, JSON.stringify(items));
+        const newItems = items.map((item: Item) => {
+          if (item.id === newItem.id) {
+            return newItem;
+          }
+          return item;
+        });
+        await fs.writeFile(itemsPath, JSON.stringify(newItems));
 
         res.status(205).json(newItem);
         break;

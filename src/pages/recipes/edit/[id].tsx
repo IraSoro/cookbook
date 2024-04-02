@@ -1,24 +1,25 @@
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 
 import { Item } from "../../../components/item";
 import Editor from "../../../components/edit-form";
 
-import { getRequest } from "@/pages/api/handlers/apiRequests";
+import { getRequest, patchEditRequest } from "@/pages/api/handlers/apiRequests";
 
 interface Props {
   item: Item;
 }
 
 const RecipePage: React.FC<Props> = ({ item }) => {
+  const router = useRouter();
+  const handleEdit = async (newItem: Item, newImage: null | File) => {
+    await patchEditRequest(newItem, newImage);
+    router.push(`/recipes/${item.id}`);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <Editor
-        editItem={(item: Item, image: null | File) => {
-          console.log(item);
-          console.log(image);
-        }}
-        item={item}
-      />
+      <Editor editItem={handleEdit} item={item} />
     </main>
   );
 };
