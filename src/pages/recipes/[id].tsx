@@ -2,7 +2,7 @@ import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
 import { Item } from "../../components/item";
-import Recipe from "../../components/recipe";
+import Recipe from "../../components/recipe-form";
 import { Button } from "@mui/material";
 
 import { getRequest, deleteRequest } from "../api/handlers/apiRequests";
