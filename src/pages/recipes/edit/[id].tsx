@@ -1,10 +1,13 @@
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { Item } from "../../../components/item";
-import Editor from "../../../components/edit-form";
+import { Item } from "@/components/item";
+import Editor from "@/components/edit-form";
 
 import { getRequest, patchEditRequest } from "@/pages/api/handlers/apiRequests";
+
+import "@/app/globals.css";
+import styles from "@/styles/utils.module.css";
 
 interface Props {
   item: Item;
@@ -18,7 +21,7 @@ const RecipePage: React.FC<Props> = ({ item }) => {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
+    <main className={styles.backgroundPage}>
       <Editor editItem={handleEdit} item={item} />
     </main>
   );
