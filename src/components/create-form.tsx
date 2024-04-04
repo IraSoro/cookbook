@@ -1,4 +1,4 @@
-import { useRef, useState, ChangeEvent, useEffect } from "react";
+import { useRef, useState, ChangeEvent } from "react";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -18,13 +18,7 @@ import styles from "./create-form.module.css";
 interface PropsDialog {
   open: boolean;
   setOpen: (_newOpen: boolean) => void;
-
-  addItem?: (_newItem: Item, _image: File | null) => void;
-
-  editItem?: (_idx: number, _newItem: Item, _image: File | null) => void;
-  item?: Item;
-  idx?: number;
-  deleteItem?: () => void;
+  addItem: (_newItem: Item, _image: File | null) => void;
 }
 
 const CreationDialog = (props: PropsDialog) => {
@@ -32,20 +26,6 @@ const CreationDialog = (props: PropsDialog) => {
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const [image, setImage] = useState<File | null>(null);
-
-  useEffect(() => {
-    if (!props.editItem || !props.item || !props.open) return;
-    fetch(`/data/${props.item.image}`)
-      .then((response) => response.blob())
-      .then((blob) => {
-        if (!props.item) return;
-        const file = new File([blob], props.item.image, { type: "image/jpeg" });
-        setImage(file);
-      })
-      .catch((error) => {
-        console.error("Failed to load default image:", error);
-      });
-  }, [props.open, props.item, props.editItem]);
 
   const clearRef = () => {
     if (nameRef.current?.value) {
@@ -74,17 +54,12 @@ const CreationDialog = (props: PropsDialog) => {
           event.preventDefault();
 
           const newItem: Item = {
-            id: props.item?.id || 0,
+            id: 0,
             name: nameRef.current?.value as string,
             description: descriptionRef.current?.value as string,
-            image: props.item?.image || "",
+            image: "",
           };
-          if (props.addItem) {
-            props.addItem(newItem, image);
-          }
-          if (props.editItem && props.idx != undefined) {
-            props.editItem(props.idx, newItem, image);
-          }
+          props.addItem(newItem, image);
           clearRef();
           setImage(null);
           props.setOpen(false);
@@ -138,14 +113,12 @@ const CreationDialog = (props: PropsDialog) => {
               label="Name"
               multiline
               inputRef={nameRef}
-              defaultValue={props.item?.name || ""}
             />
             <TextField
               id="outlined-multiline-static"
               label="Description"
               multiline
               inputRef={descriptionRef}
-              defaultValue={props.item?.description || ""}
             />
             <Button type="submit" color="inherit">
               Save
@@ -153,19 +126,6 @@ const CreationDialog = (props: PropsDialog) => {
             <Button color="inherit" onClick={() => props.setOpen(false)}>
               Cancel
             </Button>
-            {props.editItem && (
-              <Button
-                color="error"
-                onClick={() => {
-                  if (props.deleteItem) {
-                    props.deleteItem();
-                  }
-                  props.setOpen(false);
-                }}
-              >
-                Delete recipe
-              </Button>
-            )}
           </Stack>
         </Box>
       </DialogContent>
