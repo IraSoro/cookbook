@@ -1,11 +1,14 @@
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { Item } from "../../components/item";
-import Recipe from "../../components/recipe-form";
+import { Item } from "@/components/item";
+import Recipe from "@/components/recipe-form";
 import { Button } from "@mui/material";
 
 import { getRequest, deleteRequest } from "../api/handlers/apiRequests";
+
+import "@/app/globals.css";
+import styles from "@/styles/utils.module.css";
 
 interface Props {
   item: Item;
@@ -17,17 +20,17 @@ const RecipePage: React.FC<Props> = ({ item }) => {
     await deleteRequest(item.id, item.image);
     router.push("/recipes");
   };
+  const handleEdit = async () => {
+    router.push(`/recipes/edit/${item.id}`);
+  };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
+    <main className={styles.backgroundPage}>
+      <Button color="inherit" onClick={handleEdit}>
+        Edit recipe
+      </Button>
       <Button color="error" onClick={handleDelete}>
         Delete recipe
-      </Button>
-      <Button
-        color="inherit"
-        onClick={() => router.push(`/recipes/edit/${item.id}`)}
-      >
-        Edit recipe
       </Button>
       <Recipe item={item} />
     </main>
