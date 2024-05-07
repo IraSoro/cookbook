@@ -3,12 +3,26 @@ import { useRouter } from "next/router";
 
 import { Item } from "@/components/item";
 import Recipe from "@/components/recipe-form";
-import { Button } from "@mui/material";
+
+import {
+  AppBar,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Container,
+} from "@mui/material";
+import MoreIcon from "@mui/icons-material/MoreVert";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditIcon from "@mui/icons-material/Edit";
 
 import { getRequest, deleteRequest } from "../api/handlers/apiRequests";
 
 import "@/app/globals.css";
 import styles from "@/styles/utils.module.css";
+import { useState } from "react";
 
 interface Props {
   item: Item;
@@ -24,15 +38,76 @@ const RecipePage: React.FC<Props> = ({ item }) => {
     router.push(`/recipes/edit/${item.id}`);
   };
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <main className={styles.backgroundPage}>
-      <Button color="inherit" onClick={handleEdit}>
-        Edit recipe
-      </Button>
-      <Button color="error" onClick={handleDelete}>
-        Delete recipe
-      </Button>
-      <Recipe item={item} />
+      <AppBar
+        position="static"
+        style={{
+          boxShadow: "none",
+          maxWidth: "800px",
+          backgroundColor: "#fefefe",
+        }}
+      >
+        <Toolbar style={{ justifyContent: "space-between" }}>
+          <IconButton href="/recipes" size="large" color="default">
+            <ArrowBackIosIcon />
+          </IconButton>
+          <IconButton
+            size="large"
+            color="default"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={(event) => {
+              setAnchorEl(event.currentTarget);
+            }}
+          >
+            <MoreIcon />
+          </IconButton>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleClose}>
+              <Button
+                color="inherit"
+                onClick={handleEdit}
+                startIcon={<EditIcon />}
+              >
+                Edit recipe
+              </Button>
+            </MenuItem>
+            <MenuItem onClick={handleClose}>
+              <Button
+                color="error"
+                onClick={handleDelete}
+                startIcon={<DeleteOutlineIcon />}
+              >
+                Delete recipe
+              </Button>
+            </MenuItem>
+          </Menu>
+        </Toolbar>
+      </AppBar>
+      <Container
+        style={{
+          maxWidth: "800px",
+          backgroundColor: "#fefefe",
+        }}
+      >
+        <Recipe item={item} />
+      </Container>
     </main>
   );
 };

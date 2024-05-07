@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 
 import { Item } from "./item";
@@ -9,7 +9,7 @@ interface ItemProps {
 
 const Recipe = ({ item }: ItemProps) => {
   return (
-    <Container style={{ marginTop: "5%" }}>
+    <Container>
       <Stack spacing={2} alignItems="center">
         <Typography
           color="#474d4e"
@@ -53,18 +53,6 @@ const Recipe = ({ item }: ItemProps) => {
         <Typography variant="body1" textAlign="center" color="text.secondary">
           {item.description}
         </Typography>
-        <Button
-          href="/recipes"
-          variant="contained"
-          style={{
-            boxShadow: "none",
-            backgroundColor: "#474d4e",
-            width: "150px",
-            borderRadius: "12px",
-          }}
-        >
-          Return
-        </Button>
       </Stack>
     </Container>
   );
