@@ -8,6 +8,7 @@ import {
   Typography,
   Avatar,
   IconButton,
+  Divider,
 } from "@mui/material";
 import Image from "next/image";
 
@@ -17,6 +18,63 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 import { Item } from "./item";
 import { TempItem } from "../../resources/tempItem";
+
+interface Ingredient {
+  name: string;
+  quantity: string;
+}
+
+interface IngredientProps {
+  ingredient: Ingredient;
+}
+
+const Ingredient = (props: IngredientProps) => {
+  return (
+    <Grid container spacing={2} alignItems="center">
+      <Grid item xs={6}>
+        <Typography variant="body1" align="left">
+          {props.ingredient.name}
+        </Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <Typography variant="body1" align="right">
+          {props.ingredient.quantity}
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
+interface IngredientListProps {
+  ingredients: Ingredient[];
+}
+
+const IngredientList: React.FC<IngredientListProps> = ({ ingredients }) => {
+  return (
+    <Box
+      bgcolor="#f2f2f2"
+      p={2}
+      borderRadius={4}
+      textAlign="center"
+      style={{ width: "100%" }}
+    >
+      <Typography variant="h4" gutterBottom>
+        Ingredients
+      </Typography>
+      <Box mt={5} style={{ maxWidth: "400px", margin: "0 auto" }}>
+        <Grid container spacing={2}>
+          {ingredients.map((ingredient, index) => (
+            <Grid key={index} item xs={12}>
+              <Ingredient ingredient={ingredient} />
+              <Divider />
+              <Box mt={2} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Box>
+  );
+};
 
 interface ItemProps {
   item: Item;
@@ -132,6 +190,7 @@ const Recipe = ({ item }: ItemProps) => {
             </Grid>
           </Grid>
         </Grid>
+        <IngredientList ingredients={TempItem.ingredients} />
         <Typography variant="body1" textAlign="center" color="text.secondary">
           {item.description}
         </Typography>
