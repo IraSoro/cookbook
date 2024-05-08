@@ -48,8 +48,7 @@ const Ingredient = (props: IngredientProps) => {
 interface IngredientListProps {
   ingredients: Ingredient[];
 }
-
-const IngredientList: React.FC<IngredientListProps> = ({ ingredients }) => {
+const IngredientList = ({ ingredients }: IngredientListProps) => {
   return (
     <Box
       bgcolor="#f2f2f2"
@@ -76,14 +75,69 @@ const IngredientList: React.FC<IngredientListProps> = ({ ingredients }) => {
   );
 };
 
+const Tags = () => {
+  return (
+    <>
+      <Grid item>
+        <Chip
+          icon={<AccessTimeIcon />}
+          label={TempItem.cookingTime}
+          variant="outlined"
+          sx={{
+            border: 2,
+            borderColor: "#808080",
+            fontWeight: "600",
+            color: "#808080",
+            marginBottom: "20px",
+          }}
+        />
+      </Grid>
+      <Grid container>
+        {TempItem.tags.map((tag, index) => (
+          <Chip key={index} label={tag} style={{ margin: "5px" }} />
+        ))}
+      </Grid>
+    </>
+  );
+};
+
+const Likes = () => {
+  const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(TempItem.likes);
+  return (
+    <Grid
+      container
+      alignItems="center"
+      justifyContent="flex-end"
+      sx={{ marginBottom: "20px" }}
+    >
+      <Grid item>
+        <IconButton
+          onClick={() => {
+            if (liked) {
+              setLikesCount((prevCount) => prevCount - 1);
+            } else {
+              setLikesCount((prevCount) => prevCount + 1);
+            }
+            setLiked(!liked);
+          }}
+          color="default"
+        >
+          {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+        </IconButton>
+      </Grid>
+      <Grid item>
+        <Typography variant="body1">{likesCount}</Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
 interface ItemProps {
   item: Item;
 }
 
 const Recipe = ({ item }: ItemProps) => {
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(TempItem.likes);
-
   return (
     <Container>
       <Stack spacing={2} alignItems="center">
@@ -142,52 +196,8 @@ const Recipe = ({ item }: ItemProps) => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <Grid
-              container
-              alignItems="center"
-              justifyContent="flex-end"
-              sx={{ marginBottom: "20px" }}
-            >
-              <Grid item>
-                <IconButton
-                  onClick={() => {
-                    if (liked) {
-                      setLikesCount((prevCount) => prevCount - 1);
-                    } else {
-                      setLikesCount((prevCount) => prevCount + 1);
-                    }
-                    setLiked(!liked);
-                  }}
-                  color="default"
-                >
-                  {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                </IconButton>
-              </Grid>
-              <Grid item>
-                <Typography variant="body1">{likesCount}</Typography>
-              </Grid>
-            </Grid>
-
-            <Grid item>
-              <Chip
-                icon={<AccessTimeIcon />}
-                label={TempItem.cookingTime}
-                variant="outlined"
-                sx={{
-                  border: 2,
-                  borderColor: "#808080",
-                  fontWeight: "600",
-                  color: "#808080",
-                  marginBottom: "20px",
-                }}
-              />
-            </Grid>
-
-            <Grid container>
-              {TempItem.tags.map((tag, index) => (
-                <Chip key={index} label={tag} style={{ margin: "5px" }} />
-              ))}
-            </Grid>
+            <Likes />
+            <Tags />
           </Grid>
         </Grid>
         <IngredientList ingredients={TempItem.ingredients} />
