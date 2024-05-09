@@ -161,6 +161,38 @@ const Steps = ({ steps }: StepsProps) => {
   );
 };
 
+interface Comment {
+  author: string;
+  comment: string;
+}
+
+interface CommentsProps {
+  comments: Comment[];
+}
+
+const Comments = ({ comments }: CommentsProps) => {
+  return (
+    <Box p={2} textAlign="left" style={{ width: "100%" }}>
+      <Typography mb={4} variant="h4">
+        Comments
+      </Typography>
+      {comments.map((comment, index) => (
+        <Box key={index} p={2} bgcolor="#f2f2f2" mb={2} borderRadius={4}>
+          <Box display="flex" alignItems="flex-start">
+            <Avatar>{comment.author[0]}</Avatar>
+            <Box ml={2}>
+              <Typography variant="body1" gutterBottom>
+                <strong>{comment.author}</strong>
+              </Typography>
+              <Typography variant="body2">{comment.comment}</Typography>
+            </Box>
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  );
+};
+
 interface ItemProps {
   item: Item;
 }
@@ -230,6 +262,7 @@ const Recipe = ({ item }: ItemProps) => {
         </Grid>
         <IngredientList ingredients={TempItem.ingredients} />
         <Steps steps={TempItem.steps} />
+        <Comments comments={TempItem.comments} />
       </Stack>
     </Container>
   );
