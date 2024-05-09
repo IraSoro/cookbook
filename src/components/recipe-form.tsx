@@ -12,6 +12,8 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Button,
+  TextField,
 } from "@mui/material";
 import Image from "next/image";
 
@@ -170,7 +172,16 @@ interface CommentsProps {
   comments: Comment[];
 }
 
-const Comments = ({ comments }: CommentsProps) => {
+const Comments = (props: CommentsProps) => {
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState(props.comments);
+
+  const handleSubmit = () => {
+    comments.push({ author: TempItem.username, comment: newComment });
+    setComments([...comments]);
+    setNewComment("");
+  };
+
   return (
     <Box p={2} textAlign="left" style={{ width: "100%" }}>
       <Typography mb={4} variant="h4">
@@ -189,6 +200,32 @@ const Comments = ({ comments }: CommentsProps) => {
           </Box>
         </Box>
       ))}
+      {true && (
+        <Box p={2} bgcolor="#f2f2f2" mb={2} borderRadius={4} textAlign="right">
+          <TextField
+            fullWidth
+            label="Your Comment"
+            variant="outlined"
+            multiline
+            rows={3}
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            margin="normal"
+          />
+          <Button
+            variant="contained"
+            style={{
+              boxShadow: "none",
+              backgroundColor: "#474d4e",
+              width: "150px",
+              borderRadius: "12px",
+            }}
+            onClick={handleSubmit}
+          >
+            Add comment
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
