@@ -1,136 +1,257 @@
-import { useRef, useState, ChangeEvent } from "react";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
-
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import Input from "@mui/material/Input";
-
+import { ChangeEvent, useState } from "react";
+import {
+  Box,
+  Chip,
+  Container,
+  Grid,
+  Stack,
+  Typography,
+  IconButton,
+  Divider,
+  Stepper,
+  Step,
+  StepLabel,
+  TextField,
+  Input,
+  FormControl,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
-import { Item } from "../components/item";
+import { Item } from "./item";
+import { TempItem } from "../../resources/tempItem";
 
-import styles from "./create-form.module.css";
-
-interface PropsDialog {
-  open: boolean;
-  setOpen: (_newOpen: boolean) => void;
-  addItem: (_newItem: Item, _image: File | null) => void;
+interface Ingredient {
+  name: string;
+  quantity: string;
 }
 
-const CreationDialog = (props: PropsDialog) => {
-  const nameRef = useRef<HTMLTextAreaElement>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+interface IngredientProps {
+  ingredient: Ingredient;
+}
 
-  const [image, setImage] = useState<File | null>(null);
+const Ingredient = (props: IngredientProps) => {
+  return (
+    <Grid container spacing={2} alignItems="center">
+      <Grid item xs={6}>
+        <Typography variant="body1" align="left">
+          {props.ingredient.name}
+        </Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <Typography variant="body1" align="right">
+          {props.ingredient.quantity}
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
 
-  const clearRef = () => {
-    if (nameRef.current?.value) {
-      nameRef.current.value = "";
-    }
-    if (descriptionRef.current?.value) {
-      descriptionRef.current.value = "";
-    }
-  };
+interface IngredientListProps {
+  ingredients: Ingredient[];
+}
+const IngredientList = ({ ingredients }: IngredientListProps) => {
+  return (
+    <Box
+      bgcolor="#f2f2f2"
+      p={2}
+      borderRadius={4}
+      textAlign="center"
+      style={{ width: "100%" }}
+    >
+      <Typography variant="h4" gutterBottom>
+        Ingredients
+      </Typography>
+      <Box mt={5} style={{ maxWidth: "400px", margin: "0 auto" }}>
+        <Grid container spacing={2}>
+          {ingredients.map((ingredient, index) => (
+            <Grid key={index} item xs={12}>
+              <Ingredient ingredient={ingredient} />
+              <Divider />
+              <Box mt={2} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Box>
+  );
+};
 
+interface TagsProps {
+  tags: string[];
+  setTags: (_newTags: string[]) => void;
+}
+
+const Tags = (props: TagsProps) => {
+  return (
+    <>
+      <Grid container>
+        {TempItem.tags.map((tag, index) => (
+          <Chip key={index} label={tag} style={{ margin: "5px" }} />
+        ))}
+      </Grid>
+    </>
+  );
+};
+
+interface StepsProps {
+  steps: string[];
+}
+
+const Steps = ({ steps }: StepsProps) => {
+  return (
+    <Box p={2} style={{ width: "100%" }}>
+      <Typography variant="h4" mb={4}>
+        Let&apos;s cook
+      </Typography>
+      <Stepper orientation="vertical">
+        {steps.map((step, index) => (
+          <Step key={index}>
+            <StepLabel>
+              <Typography variant="body1" align="left">
+                {step}
+              </Typography>
+            </StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+    </Box>
+  );
+};
+
+interface ImageProps {
+  image: File | null;
+  setImage: (_newImage: File | null) => void;
+}
+
+const CreateImage = (props: ImageProps) => {
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files?.[0];
-      setImage(file);
+      props.setImage(file);
     }
   };
 
   return (
-    <Dialog
-      fullScreen
-      open={props.open}
-      onClose={() => props.setOpen(false)}
-      PaperProps={{
-        component: "form",
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-
-          const newItem: Item = {
-            id: 0,
-            name: nameRef.current?.value as string,
-            description: descriptionRef.current?.value as string,
-            image: "",
-          };
-          props.addItem(newItem, image);
-          clearRef();
-          setImage(null);
-          props.setOpen(false);
+    <Box
+      sx={{
+        height: 450,
+        maxWidth: 350,
+        "@media (max-width: 600px)": {
+          maxWidth: 290,
         },
       }}
     >
-      <DialogContent className={styles.dialogContent}>
+      <Input
+        type="file"
+        inputProps={{ accept: "image/*" }}
+        style={{ display: "none" }}
+        id="image-upload-input"
+        onChange={handleImageChange}
+      />
+      <label htmlFor="image-upload-input">
         <Box
-          my={4}
-          gap={4}
-          p={2}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
           sx={{
-            backgroundColor: "#fefefe",
-            width: "600px",
-            height: "600px",
-            "@media (max-width: 600px)": {
-              width: "100%",
-              height: "100%",
-            },
+            border: "solid #dedede",
+            width: "100%",
+            height: "100%",
+            backgroundImage: props.image
+              ? `url(${URL.createObjectURL(props.image)})`
+              : "none",
           }}
         >
-          <Stack spacing={3}>
-            <Input
-              type="file"
-              inputProps={{ accept: "image/*" }}
-              style={{ display: "none" }}
-              id="image-upload-input"
-              onChange={handleImageChange}
-            />
-            <label htmlFor="image-upload-input">
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                sx={{
-                  border: "solid #dedede",
-                  height: "200px",
-                  backgroundImage: image
-                    ? `url(${URL.createObjectURL(image)})`
-                    : "none",
-                }}
-              >
-                <IconButton component="span">
-                  <AddIcon />
-                </IconButton>
-              </Box>
-            </label>
-            <TextField
-              style={{ marginTop: "10px" }}
-              id="standard-multiline-flexible"
-              label="Name"
-              multiline
-              inputRef={nameRef}
-            />
-            <TextField
-              id="outlined-multiline-static"
-              label="Description"
-              multiline
-              inputRef={descriptionRef}
-            />
-            <Button type="submit" color="inherit">
-              Save
-            </Button>
-            <Button color="inherit" onClick={() => props.setOpen(false)}>
-              Cancel
-            </Button>
-          </Stack>
+          <IconButton component="span">
+            <AddIcon />
+          </IconButton>
         </Box>
-      </DialogContent>
-    </Dialog>
+      </label>
+    </Box>
   );
 };
 
-export default CreationDialog;
+interface CookingTimeProps {
+  valueTime: string;
+  setValueTime: (_newValue: string) => void;
+
+  timeType: string;
+  setTimeType: (_newType: string) => void;
+}
+
+const CookingTime = (props: CookingTimeProps) => {
+  return (
+    <FormControl style={{ width: "100%" }}>
+      <Grid container spacing={2} style={{ maxWidth: "300px" }}>
+        <Grid item xs={6}>
+          <TextField
+            id="time-value"
+            label="Cooking time"
+            value={props.valueTime}
+            onChange={(e) => props.setValueTime(e.target.value)}
+            type="number"
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Select
+            labelId="time-type-label"
+            id="time-type"
+            value={props.timeType}
+            onChange={(e) => props.setTimeType(e.target.value as string)}
+          >
+            <MenuItem value="mins">mins</MenuItem>
+            <MenuItem value="hours">hours</MenuItem>
+          </Select>
+        </Grid>
+      </Grid>
+    </FormControl>
+  );
+};
+
+const CreationForm = () => {
+  const [image, setImage] = useState<File | null>(null);
+  const [recipeName, setRecipeName] = useState("");
+  const [cookingTime, setCookingTime] = useState("");
+  const [timeType, setTimeType] = useState("mins");
+  const [tags, setTags] = useState<string[]>([]);
+
+  return (
+    <Container>
+      <Stack spacing={2} alignItems="center">
+        <Typography variant="h5">Create a new recipe</Typography>
+        <TextField
+          fullWidth
+          label="Recipe name"
+          variant="outlined"
+          multiline
+          rows={1}
+          value={recipeName}
+          onChange={(e) => setRecipeName(e.target.value)}
+          margin="normal"
+        />
+        <CookingTime
+          valueTime={cookingTime}
+          setValueTime={setCookingTime}
+          timeType={timeType}
+          setTimeType={setTimeType}
+        />
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <CreateImage image={image} setImage={setImage} />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Tags tags={tags} setTags={setTags} />
+          </Grid>
+        </Grid>
+        <IngredientList ingredients={TempItem.ingredients} />
+        <Steps steps={TempItem.steps} />
+      </Stack>
+    </Container>
+  );
+};
+
+export default CreationForm;
