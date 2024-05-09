@@ -142,21 +142,21 @@ interface StepsProps {
 
 const Steps = ({ steps }: StepsProps) => {
   return (
-    <Box p={2}>
-      <Typography variant="h4">Let&apos;s cook</Typography>
-      <Box mt={4}>
-        <Stepper orientation="vertical">
-          {steps.map((step, index) => (
-            <Step key={index}>
-              <StepLabel>
-                <Typography variant="body1" align="left">
-                  {step}
-                </Typography>
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </Box>
+    <Box p={2} style={{ width: "100%" }}>
+      <Typography variant="h4" mb={4}>
+        Let&apos;s cook
+      </Typography>
+      <Stepper orientation="vertical">
+        {steps.map((step, index) => (
+          <Step key={index}>
+            <StepLabel>
+              <Typography variant="body1" align="left">
+                {step}
+              </Typography>
+            </StepLabel>
+          </Step>
+        ))}
+      </Stepper>
     </Box>
   );
 };
