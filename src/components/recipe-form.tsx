@@ -9,6 +9,9 @@ import {
   Avatar,
   IconButton,
   Divider,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import Image from "next/image";
 
@@ -133,6 +136,31 @@ const Likes = () => {
   );
 };
 
+interface StepsProps {
+  steps: string[];
+}
+
+const Steps = ({ steps }: StepsProps) => {
+  return (
+    <Box p={2}>
+      <Typography variant="h4">Let&apos;s cook</Typography>
+      <Box mt={4}>
+        <Stepper orientation="vertical">
+          {steps.map((step, index) => (
+            <Step key={index}>
+              <StepLabel>
+                <Typography variant="body1" align="left">
+                  {step}
+                </Typography>
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+    </Box>
+  );
+};
+
 interface ItemProps {
   item: Item;
 }
@@ -201,9 +229,7 @@ const Recipe = ({ item }: ItemProps) => {
           </Grid>
         </Grid>
         <IngredientList ingredients={TempItem.ingredients} />
-        <Typography variant="body1" textAlign="center" color="text.secondary">
-          {item.description}
-        </Typography>
+        <Steps steps={TempItem.steps} />
       </Stack>
     </Container>
   );
