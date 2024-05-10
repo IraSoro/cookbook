@@ -16,6 +16,7 @@ import {
   FormControl,
   Select,
   MenuItem,
+  Button,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -84,14 +85,53 @@ interface TagsProps {
 }
 
 const Tags = (props: TagsProps) => {
+  const [tags, setTags] = useState<string[]>(props.tags || []);
+  const [inputValue, setInputValue] = useState("");
+
+  const handleAddTag = () => {
+    if (inputValue.trim() !== "" && !tags.includes(inputValue)) {
+      setTags([...tags, inputValue.trim()]);
+      setInputValue("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleAddTag();
+    }
+  };
+
   return (
-    <>
-      <Grid container>
-        {TempItem.tags.map((tag, index) => (
-          <Chip key={index} label={tag} style={{ margin: "5px" }} />
-        ))}
+    <Grid container spacing={1} alignItems="center">
+      <Grid item xs={9}>
+        <TextField
+          label="Add tags"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          fullWidth
+        />
       </Grid>
-    </>
+      <Grid item xs={3}>
+        <Button
+          variant="contained"
+          color="inherit"
+          fullWidth
+          style={{ boxShadow: "none", borderRadius: "20px" }}
+          onClick={handleAddTag}
+        >
+          Add
+        </Button>
+      </Grid>
+      {tags.map((tag, index) => (
+        <Grid item key={index}>
+          <Chip
+            label={tag}
+            onDelete={() => setTags(tags.filter((_, i) => i !== index))}
+          />
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 
