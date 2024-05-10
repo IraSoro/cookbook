@@ -198,16 +198,44 @@ const Tags = (props: TagsProps) => {
 
 interface StepsProps {
   steps: string[];
+  setSteps: (_newSteps: string[]) => void;
 }
 
-const Steps = ({ steps }: StepsProps) => {
+const Steps = (props: StepsProps) => {
+  const [inputStep, setInputStep] = useState("");
+
+  const handleAddStep = () => {
+    if (inputStep.trim() !== "") {
+      props.setSteps([...props.steps, inputStep.trim()]);
+      setInputStep("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleAddStep();
+    }
+  };
+
   return (
-    <Box p={2} style={{ width: "100%" }}>
-      <Typography variant="h4" mb={4}>
-        Let&apos;s cook
-      </Typography>
+    <Box p={2} textAlign="center" style={{ width: "100%" }}>
+      <Typography variant="h5">Cooking steps</Typography>
+      <TextField
+        fullWidth
+        label="Step description"
+        variant="outlined"
+        margin="normal"
+        multiline
+        rows={3}
+        value={inputStep}
+        onChange={(e) => setInputStep(e.target.value)}
+        onKeyDown={handleKeyDown}
+      />
+      <IconButton component="span" onClick={handleAddStep}>
+        <AddIcon />
+      </IconButton>
       <Stepper orientation="vertical">
-        {steps.map((step, index) => (
+        {props.steps.map((step, index) => (
           <Step key={index}>
             <StepLabel>
               <Typography variant="body1" align="left">
@@ -318,6 +346,7 @@ const CreationForm = () => {
   const [timeType, setTimeType] = useState("mins");
   const [tags, setTags] = useState<string[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [steps, setSteps] = useState<string[]>([]);
 
   return (
     <Container>
@@ -327,8 +356,6 @@ const CreationForm = () => {
           fullWidth
           label="Recipe name"
           variant="outlined"
-          multiline
-          rows={1}
           value={recipeName}
           onChange={(e) => setRecipeName(e.target.value)}
           margin="normal"
@@ -353,7 +380,7 @@ const CreationForm = () => {
           ingredients={ingredients}
           setIngredients={setIngredients}
         />
-        <Steps steps={TempItem.steps} />
+        <Steps steps={steps} setSteps={setSteps} />
       </Stack>
     </Container>
   );
