@@ -85,12 +85,11 @@ interface TagsProps {
 }
 
 const Tags = (props: TagsProps) => {
-  const [tags, setTags] = useState<string[]>(props.tags || []);
   const [inputValue, setInputValue] = useState("");
 
   const handleAddTag = () => {
-    if (inputValue.trim() !== "" && !tags.includes(inputValue)) {
-      setTags([...tags, inputValue.trim()]);
+    if (inputValue.trim() !== "" && !props.tags.includes(inputValue)) {
+      props.setTags([...props.tags, inputValue.trim()]);
       setInputValue("");
     }
   };
@@ -123,11 +122,13 @@ const Tags = (props: TagsProps) => {
           Add
         </Button>
       </Grid>
-      {tags.map((tag, index) => (
+      {props.tags.map((tag, index) => (
         <Grid item key={index}>
           <Chip
             label={tag}
-            onDelete={() => setTags(tags.filter((_, i) => i !== index))}
+            onDelete={() =>
+              props.setTags(props.tags.filter((_, i) => i !== index))
+            }
           />
         </Grid>
       ))}
