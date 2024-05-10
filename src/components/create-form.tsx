@@ -19,6 +19,7 @@ import {
   Button,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import ClearIcon from "@mui/icons-material/Clear";
 
 import { Item } from "./item";
 import { TempItem } from "../../resources/tempItem";
@@ -30,20 +31,32 @@ interface Ingredient {
 
 interface IngredientProps {
   ingredient: Ingredient;
+  delete: () => void;
 }
 
 const Ingredient = (props: IngredientProps) => {
   return (
     <Grid container spacing={2} alignItems="center">
-      <Grid item xs={6}>
+      <Grid item xs={5}>
         <Typography variant="body1" align="left">
           {props.ingredient.name}
         </Typography>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={5}>
         <Typography variant="body1" align="right">
           {props.ingredient.quantity}
         </Typography>
+      </Grid>
+      <Grid item xs={2}>
+        <IconButton
+          color="inherit"
+          size="small"
+          onClick={() => {
+            props.delete();
+          }}
+        >
+          <ClearIcon />
+        </IconButton>
       </Grid>
     </Grid>
   );
@@ -51,29 +64,76 @@ const Ingredient = (props: IngredientProps) => {
 
 interface IngredientListProps {
   ingredients: Ingredient[];
+  setIngredients: (_newIngredients: Ingredient[]) => void;
 }
-const IngredientList = ({ ingredients }: IngredientListProps) => {
+const IngredientList = (props: IngredientListProps) => {
+  const [inputIngredient, setInputIngredient] = useState("");
+  const [inputCount, setInputCount] = useState("");
+
+  const handleAddIngredient = () => {
+    if (inputIngredient.trim() !== "" && inputCount.trim() !== "") {
+      props.setIngredients([
+        ...props.ingredients,
+        { name: inputIngredient, quantity: inputCount },
+      ]);
+      setInputIngredient("");
+      setInputCount("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleAddIngredient();
+    }
+  };
+
   return (
-    <Box
-      bgcolor="#f2f2f2"
-      p={2}
-      borderRadius={4}
-      textAlign="center"
-      style={{ width: "100%" }}
-    >
-      <Typography variant="h4" gutterBottom>
+    <Box p={2} textAlign="center" style={{ width: "100%" }}>
+      <Typography variant="h5" gutterBottom>
         Ingredients
       </Typography>
-      <Box mt={5} style={{ maxWidth: "400px", margin: "0 auto" }}>
-        <Grid container spacing={2}>
-          {ingredients.map((ingredient, index) => (
-            <Grid key={index} item xs={12}>
-              <Ingredient ingredient={ingredient} />
-              <Divider />
-              <Box mt={2} />
-            </Grid>
-          ))}
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={8}>
+          <TextField
+            label="Add ingredient"
+            value={inputIngredient}
+            onChange={(e) => setInputIngredient(e.target.value)}
+            onKeyDown={handleKeyDown}
+            fullWidth
+          />
         </Grid>
+        <Grid item xs={4}>
+          <TextField
+            label="Count"
+            value={inputCount}
+            onChange={(e) => setInputCount(e.target.value)}
+            onKeyDown={handleKeyDown}
+            fullWidth
+          />
+        </Grid>
+      </Grid>
+      <IconButton component="span" onClick={handleAddIngredient}>
+        <AddIcon />
+      </IconButton>
+      <Box mt={2} bgcolor="#f2f2f2" borderRadius={4}>
+        <Box style={{ maxWidth: "400px", margin: "0 auto" }}>
+          <Grid container spacing={2}>
+            {props.ingredients.map((ingredient, index) => (
+              <Grid key={index} item xs={12}>
+                <Ingredient
+                  ingredient={ingredient}
+                  delete={() => {
+                    props.setIngredients(
+                      props.ingredients.filter((_, i) => i !== index)
+                    );
+                  }}
+                />
+                <Divider />
+                <Box mt={2} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Box>
     </Box>
   );
@@ -257,6 +317,7 @@ const CreationForm = () => {
   const [cookingTime, setCookingTime] = useState("");
   const [timeType, setTimeType] = useState("mins");
   const [tags, setTags] = useState<string[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
   return (
     <Container>
@@ -288,7 +349,10 @@ const CreationForm = () => {
             <Tags tags={tags} setTags={setTags} />
           </Grid>
         </Grid>
-        <IngredientList ingredients={TempItem.ingredients} />
+        <IngredientList
+          ingredients={ingredients}
+          setIngredients={setIngredients}
+        />
         <Steps steps={TempItem.steps} />
       </Stack>
     </Container>
