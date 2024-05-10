@@ -23,7 +23,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { Item } from "./item";
-import { TempItem } from "../../resources/tempItem";
 
 interface Ingredient {
   name: string;
@@ -90,10 +89,28 @@ const IngredientList = (props: IngredientListProps) => {
 
   return (
     <Box p={2} textAlign="center" style={{ width: "100%" }}>
-      <Typography variant="h5" gutterBottom>
-        Ingredients
-      </Typography>
-      <Grid container spacing={1} alignItems="center">
+      <Typography variant="h5">Ingredients</Typography>
+      <Box mt={3} bgcolor="#f2f2f2" borderRadius={4}>
+        <Box style={{ maxWidth: "400px", margin: "0 auto" }}>
+          <Grid container spacing={2}>
+            {props.ingredients.map((ingredient, index) => (
+              <Grid key={index} item xs={12}>
+                <Ingredient
+                  ingredient={ingredient}
+                  delete={() => {
+                    props.setIngredients(
+                      props.ingredients.filter((_, i) => i !== index)
+                    );
+                  }}
+                />
+                <Divider />
+                <Box mt={2} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
+      <Grid container spacing={1} alignItems="center" mt={2}>
         <Grid item xs={8}>
           <TextField
             label="Add ingredient"
@@ -116,26 +133,6 @@ const IngredientList = (props: IngredientListProps) => {
       <IconButton component="span" onClick={handleAddIngredient}>
         <AddIcon />
       </IconButton>
-      <Box mt={2} bgcolor="#f2f2f2" borderRadius={4}>
-        <Box style={{ maxWidth: "400px", margin: "0 auto" }}>
-          <Grid container spacing={2}>
-            {props.ingredients.map((ingredient, index) => (
-              <Grid key={index} item xs={12}>
-                <Ingredient
-                  ingredient={ingredient}
-                  delete={() => {
-                    props.setIngredients(
-                      props.ingredients.filter((_, i) => i !== index)
-                    );
-                  }}
-                />
-                <Divider />
-                <Box mt={2} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Box>
     </Box>
   );
 };
@@ -236,6 +233,35 @@ const Steps = (props: StepsProps) => {
   return (
     <Box p={2} textAlign="center" style={{ width: "100%" }}>
       <Typography variant="h5">Cooking steps</Typography>
+      <Stepper orientation="vertical">
+        {props.steps.map((step, index) => (
+          <Step key={index}>
+            <StepLabel>
+              <Typography variant="body1">{step}</Typography>
+              <div style={{ textAlign: "right" }}>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    setOnEdit(true);
+                    setInputEdit({ index: index, description: step });
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    props.setSteps(props.steps.filter((_, i) => i !== index));
+                  }}
+                >
+                  <ClearIcon />
+                </IconButton>
+              </div>
+              <Divider />
+            </StepLabel>
+          </Step>
+        ))}
+      </Stepper>
       {onEdit ? (
         <>
           <TextField
@@ -286,35 +312,6 @@ const Steps = (props: StepsProps) => {
           </IconButton>
         </>
       )}
-      <Stepper orientation="vertical">
-        {props.steps.map((step, index) => (
-          <Step key={index}>
-            <StepLabel>
-              <Typography variant="body1">{step}</Typography>
-              <div style={{ textAlign: "right" }}>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    setOnEdit(true);
-                    setInputEdit({ index: index, description: step });
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    props.setSteps(props.steps.filter((_, i) => i !== index));
-                  }}
-                >
-                  <ClearIcon />
-                </IconButton>
-              </div>
-              <Divider />
-            </StepLabel>
-          </Step>
-        ))}
-      </Stepper>
     </Box>
   );
 };
