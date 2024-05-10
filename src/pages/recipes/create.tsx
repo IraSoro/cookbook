@@ -1,35 +1,22 @@
-import { AppBar, Container, IconButton, Toolbar } from "@mui/material";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { useRouter } from "next/router";
 
 import CreationForm from "@/components/create-form";
+
+import { RecipeType } from "@/state/recipe-types";
 
 import styles from "@/styles/utils.module.css";
 
 const Creation = () => {
+  const router = useRouter();
+
+  const handleAdd = async (newRecipe: RecipeType) => {
+    router.push("/recipes");
+    // postAdditionRequest(newItem, image, update);
+  };
+
   return (
     <main className={styles.backgroundPage}>
-      <AppBar
-        position="static"
-        style={{
-          boxShadow: "none",
-          maxWidth: "800px",
-          backgroundColor: "#fefefe",
-        }}
-      >
-        <Toolbar style={{ justifyContent: "space-between" }}>
-          <IconButton href="/recipes" size="large" color="default">
-            <ArrowBackIosIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Container
-        style={{
-          maxWidth: "800px",
-          backgroundColor: "#fefefe",
-        }}
-      >
-        <CreationForm />
-      </Container>
+      <CreationForm hrefBack="/recipes" addRecipe={handleAdd} />
     </main>
   );
 };

@@ -17,20 +17,22 @@ import {
   Select,
   MenuItem,
   Button,
+  AppBar,
+  Toolbar,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import EditIcon from "@mui/icons-material/Edit";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-import { Item } from "./item";
-
-interface Ingredient {
-  name: string;
-  quantity: string;
-}
+import {
+  RecipeType,
+  CookingTimeType,
+  IngredientType,
+} from "@/state/recipe-types";
 
 interface IngredientProps {
-  ingredient: Ingredient;
+  ingredient: IngredientType;
   delete: () => void;
 }
 
@@ -63,8 +65,8 @@ const Ingredient = (props: IngredientProps) => {
 };
 
 interface IngredientListProps {
-  ingredients: Ingredient[];
-  setIngredients: (_newIngredients: Ingredient[]) => void;
+  ingredients: IngredientType[];
+  setIngredients: (_newIngredients: IngredientType[]) => void;
 }
 const IngredientList = (props: IngredientListProps) => {
   const [inputIngredient, setInputIngredient] = useState("");
@@ -174,7 +176,7 @@ const Tags = (props: TagsProps) => {
           variant="contained"
           color="inherit"
           fullWidth
-          style={{ boxShadow: "none", borderRadius: "20px" }}
+          style={{ boxShadow: "none", borderRadius: "12px" }}
           onClick={handleAddTag}
         >
           Add
@@ -370,11 +372,8 @@ const CreateImage = (props: ImageProps) => {
 };
 
 interface CookingTimeProps {
-  valueTime: string;
-  setValueTime: (_newValue: string) => void;
-
-  timeType: string;
-  setTimeType: (_newType: string) => void;
+  cookingTime: CookingTimeType;
+  setCookingTime: (_newValue: CookingTimeType) => void;
 }
 
 const CookingTime = (props: CookingTimeProps) => {
@@ -385,8 +384,13 @@ const CookingTime = (props: CookingTimeProps) => {
           <TextField
             id="time-value"
             label="Cooking time"
-            value={props.valueTime}
-            onChange={(e) => props.setValueTime(e.target.value)}
+            value={props.cookingTime.time}
+            onChange={(e) =>
+              props.setCookingTime({
+                time: Number(e.target.value),
+                typeTime: props.cookingTime.typeTime,
+              })
+            }
             type="number"
           />
         </Grid>
@@ -394,8 +398,13 @@ const CookingTime = (props: CookingTimeProps) => {
           <Select
             labelId="time-type-label"
             id="time-type"
-            value={props.timeType}
-            onChange={(e) => props.setTimeType(e.target.value as string)}
+            value={props.cookingTime.typeTime}
+            onChange={(e) =>
+              props.setCookingTime({
+                time: props.cookingTime.time,
+                typeTime: e.target.value as "mins" | "hours",
+              })
+            }
           >
             <MenuItem value="mins">mins</MenuItem>
             <MenuItem value="hours">hours</MenuItem>
@@ -406,50 +415,100 @@ const CookingTime = (props: CookingTimeProps) => {
   );
 };
 
-const CreationForm = () => {
+interface CreateRecipeProps {
+  addRecipe: (_newRecipe: RecipeType) => void;
+  hrefBack: string;
+}
+
+const CreationForm = (props: CreateRecipeProps) => {
   const [image, setImage] = useState<File | null>(null);
   const [recipeName, setRecipeName] = useState("");
-  const [cookingTime, setCookingTime] = useState("");
-  const [timeType, setTimeType] = useState("mins");
+  const [cookingTime, setCookingTime] = useState<CookingTimeType>({
+    time: 0,
+    typeTime: "mins",
+  });
   const [tags, setTags] = useState<string[]>([]);
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [ingredients, setIngredients] = useState<IngredientType[]>([]);
   const [steps, setSteps] = useState<string[]>([]);
 
+  const handleSaveButton = () => {
+    const newRecipe: RecipeType = {
+      name: recipeName,
+      image: "",
+      tags: tags,
+      username: "_username",
+      cookingTime: cookingTime,
+      likes: 0,
+      ingredients: ingredients,
+      steps: steps,
+      comments: [],
+    };
+    props.addRecipe(newRecipe);
+  };
+
   return (
-    <Container>
-      <Stack spacing={2} alignItems="center">
-        <Typography variant="h5">Create a new recipe</Typography>
-        <TextField
-          fullWidth
-          label="Recipe name"
-          variant="outlined"
-          value={recipeName}
-          onChange={(e) => setRecipeName(e.target.value)}
-          margin="normal"
-        />
-        <CookingTime
-          valueTime={cookingTime}
-          setValueTime={setCookingTime}
-          timeType={timeType}
-          setTimeType={setTimeType}
-        />
+    <>
+      <AppBar
+        position="static"
+        style={{
+          boxShadow: "none",
+          maxWidth: "800px",
+          backgroundColor: "#fefefe",
+        }}
+      >
+        <Toolbar style={{ justifyContent: "space-between" }}>
+          <IconButton href={props.hrefBack} size="large" color="default">
+            <ArrowBackIosIcon />
+          </IconButton>
+          <Button
+            variant="contained"
+            style={{
+              boxShadow: "none",
+              backgroundColor: "#474d4e",
+              width: "100px",
+              borderRadius: "12px",
+            }}
+            onClick={handleSaveButton}
+          >
+            Save
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Container style={{ maxWidth: "800px", backgroundColor: "#fefefe" }}>
+        <Stack spacing={2} alignItems="center">
+          <Typography align="center" variant="h4">
+            Create a new recipe
+          </Typography>
+          <TextField
+            fullWidth
+            label="Recipe name"
+            variant="outlined"
+            value={recipeName}
+            onChange={(e) => setRecipeName(e.target.value)}
+            margin="normal"
+          />
+          <CookingTime
+            cookingTime={cookingTime}
+            setCookingTime={setCookingTime}
+          />
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <CreateImage image={image} setImage={setImage} />
-          </Grid>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <CreateImage image={image} setImage={setImage} />
+            </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <Tags tags={tags} setTags={setTags} />
+            <Grid item xs={12} sm={6}>
+              <Tags tags={tags} setTags={setTags} />
+            </Grid>
           </Grid>
-        </Grid>
-        <IngredientList
-          ingredients={ingredients}
-          setIngredients={setIngredients}
-        />
-        <Steps steps={steps} setSteps={setSteps} />
-      </Stack>
-    </Container>
+          <IngredientList
+            ingredients={ingredients}
+            setIngredients={setIngredients}
+          />
+          <Steps steps={steps} setSteps={setSteps} />
+        </Stack>
+      </Container>
+    </>
   );
 };
 
