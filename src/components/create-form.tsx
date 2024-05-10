@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
+import EditIcon from "@mui/icons-material/Edit";
 
 import { Item } from "./item";
 import { TempItem } from "../../resources/tempItem";
@@ -203,6 +204,8 @@ interface StepsProps {
 
 const Steps = (props: StepsProps) => {
   const [inputStep, setInputStep] = useState("");
+  const [onEdit, setOnEdit] = useState(false);
+  const [inputEdit, setInputEdit] = useState({ index: -1, description: "" });
 
   const handleAddStep = () => {
     if (inputStep.trim() !== "") {
@@ -211,36 +214,103 @@ const Steps = (props: StepsProps) => {
     }
   };
 
+  const handleEditStep = () => {
+    if (inputEdit.description.trim() !== "") {
+      props.steps[inputEdit.index] = inputEdit.description;
+      props.setSteps([...props.steps]);
+      setInputEdit({ index: -1, description: "" });
+      setOnEdit(false);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleAddStep();
+      if (onEdit) {
+        handleEditStep();
+      } else {
+        handleAddStep();
+      }
     }
   };
 
   return (
     <Box p={2} textAlign="center" style={{ width: "100%" }}>
       <Typography variant="h5">Cooking steps</Typography>
-      <TextField
-        fullWidth
-        label="Step description"
-        variant="outlined"
-        margin="normal"
-        multiline
-        rows={3}
-        value={inputStep}
-        onChange={(e) => setInputStep(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-      <IconButton component="span" onClick={handleAddStep}>
-        <AddIcon />
-      </IconButton>
+      {onEdit ? (
+        <>
+          <TextField
+            fullWidth
+            label="Step description"
+            variant="outlined"
+            margin="normal"
+            multiline
+            rows={3}
+            value={inputEdit.description}
+            onChange={(e) =>
+              setInputEdit({
+                index: inputEdit.index,
+                description: e.target.value,
+              })
+            }
+            onKeyDown={handleKeyDown}
+          />
+          <Button
+            variant="contained"
+            color="inherit"
+            fullWidth
+            style={{
+              boxShadow: "none",
+              borderRadius: "20px",
+              maxWidth: "100px",
+            }}
+            onClick={handleEditStep}
+          >
+            Edit
+          </Button>
+        </>
+      ) : (
+        <>
+          <TextField
+            fullWidth
+            label="Step description"
+            variant="outlined"
+            margin="normal"
+            multiline
+            rows={3}
+            value={inputStep}
+            onChange={(e) => setInputStep(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <IconButton component="span" onClick={handleAddStep}>
+            <AddIcon />
+          </IconButton>
+        </>
+      )}
       <Stepper orientation="vertical">
         {props.steps.map((step, index) => (
           <Step key={index}>
             <StepLabel>
-              <Typography variant="body1" align="left">
-                {step}
-              </Typography>
+              <Typography variant="body1">{step}</Typography>
+              <div style={{ textAlign: "right" }}>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    setOnEdit(true);
+                    setInputEdit({ index: index, description: step });
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    props.setSteps(props.steps.filter((_, i) => i !== index));
+                  }}
+                >
+                  <ClearIcon />
+                </IconButton>
+              </div>
+              <Divider />
             </StepLabel>
           </Step>
         ))}
