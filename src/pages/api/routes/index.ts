@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { promises as fs } from "fs";
 
-import { Item } from "@/components/item";
+import { RecipeType } from "@/state/recipe-types";
 
 const itemsPath = "./data/items.json";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   try {
     switch (req.method) {
@@ -33,7 +33,7 @@ export default async function handler(
         const idx = req.body;
         const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
 
-        const deleteItemId = items.findIndex((item: Item) => {
+        const deleteItemId = items.findIndex((item: RecipeType) => {
           return item.id === idx;
         });
 
@@ -55,7 +55,7 @@ export default async function handler(
         const newItem = req.body.item;
         const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
 
-        const newItems = items.map((item: Item) => {
+        const newItems = items.map((item: RecipeType) => {
           if (item.id === newItem.id) {
             return newItem;
           }

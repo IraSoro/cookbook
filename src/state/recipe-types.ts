@@ -14,6 +14,7 @@ export interface CommentType {
 }
 
 export interface RecipeType {
+  id: number;
   name: string;
   image?: string;
   tags: string[];
@@ -26,6 +27,7 @@ export interface RecipeType {
 }
 
 export const EmptyRecipe: RecipeType = {
+  id: 0,
   name: "",
   image: "",
   tags: [],

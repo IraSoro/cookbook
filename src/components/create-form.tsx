@@ -416,7 +416,7 @@ const CookingTime = (props: CookingTimeProps) => {
 };
 
 interface CreateRecipeProps {
-  addRecipe: (_newRecipe: RecipeType) => void;
+  addRecipe: (_newRecipe: RecipeType, _image: File | null) => void;
   hrefBack: string;
 }
 
@@ -433,6 +433,7 @@ const CreationForm = (props: CreateRecipeProps) => {
 
   const handleSaveButton = () => {
     const newRecipe: RecipeType = {
+      id: 0,
       name: recipeName,
       image: "",
       tags: tags,
@@ -443,7 +444,7 @@ const CreationForm = (props: CreateRecipeProps) => {
       steps: steps,
       comments: [],
     };
-    props.addRecipe(newRecipe);
+    props.addRecipe(newRecipe, image);
   };
 
   return (

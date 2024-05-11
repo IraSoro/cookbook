@@ -1,4 +1,5 @@
-import { Item } from "@/components/item";
+// import { Item } from "@/components/item";
+import { RecipeType } from "@/state/recipe-types";
 
 export async function getRequest() {
   const getFetch = await fetch("http://localhost:3000/api/routes");
@@ -8,14 +9,18 @@ export async function getRequest() {
 }
 
 export async function postAdditionRequest(
-  newItem: Item,
-  image: File | null,
-  updateFun: Function,
+  newRecipe: RecipeType,
+  image: File | null
 ) {
+  // TODO: delete and rewrite this
+  const recipes = await getRequest();
+  const id = recipes[0].id + 1;
+  newRecipe.id = id;
+
   const formData = new FormData();
   if (image) {
-    newItem.image = `${newItem.id}.jpg`;
-    formData.append("filename", newItem.image);
+    newRecipe.image = `${id}.jpg`;
+    formData.append("filename", newRecipe.image);
     formData.append("image", image);
   }
 
@@ -33,10 +38,10 @@ export async function postAdditionRequest(
   fetch("http://localhost:3000/api/routes", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newItem),
+    body: JSON.stringify(newRecipe),
   })
     .then(() => {
-      updateFun();
+      console.log("Recipe uploaded");
     })
     .catch((err) => {
       console.log(err);
