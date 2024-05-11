@@ -21,16 +21,15 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
-import { Item } from "./item";
-import { TempItem } from "../../resources/tempItem";
-
-interface Ingredient {
-  name: string;
-  quantity: string;
-}
+import {
+  RecipeType,
+  IngredientType,
+  CommentType,
+  CookingTimeType,
+} from "@/state/recipe-types";
 
 interface IngredientProps {
-  ingredient: Ingredient;
+  ingredient: IngredientType;
 }
 
 const Ingredient = (props: IngredientProps) => {
@@ -51,7 +50,7 @@ const Ingredient = (props: IngredientProps) => {
 };
 
 interface IngredientListProps {
-  ingredients: Ingredient[];
+  ingredients: IngredientType[];
 }
 const IngredientList = ({ ingredients }: IngredientListProps) => {
   return (
@@ -80,13 +79,18 @@ const IngredientList = ({ ingredients }: IngredientListProps) => {
   );
 };
 
-const Tags = () => {
+interface TagsProps {
+  cookingTime: CookingTimeType;
+  tags: string[];
+}
+
+const Tags = (props: TagsProps) => {
   return (
     <>
       <Grid item>
         <Chip
           icon={<AccessTimeIcon />}
-          label={TempItem.cookingTime}
+          label={`${props.cookingTime.time} ${props.cookingTime.typeTime}`}
           variant="outlined"
           sx={{
             border: 2,
@@ -98,7 +102,7 @@ const Tags = () => {
         />
       </Grid>
       <Grid container>
-        {TempItem.tags.map((tag, index) => (
+        {props.tags.map((tag, index) => (
           <Chip key={index} label={tag} style={{ margin: "5px" }} />
         ))}
       </Grid>
@@ -106,9 +110,13 @@ const Tags = () => {
   );
 };
 
-const Likes = () => {
+interface LikesProps {
+  likes: number;
+}
+
+const Likes = (props: LikesProps) => {
   const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(TempItem.likes);
+  const [likesCount, setLikesCount] = useState(props.likes);
   return (
     <Grid
       container
@@ -163,13 +171,9 @@ const Steps = ({ steps }: StepsProps) => {
   );
 };
 
-interface Comment {
-  author: string;
-  comment: string;
-}
-
 interface CommentsProps {
-  comments: Comment[];
+  comments: CommentType[];
+  username: string;
 }
 
 const Comments = (props: CommentsProps) => {
@@ -177,7 +181,7 @@ const Comments = (props: CommentsProps) => {
   const [comments, setComments] = useState(props.comments);
 
   const handleSubmit = () => {
-    comments.push({ author: TempItem.username, comment: newComment });
+    comments.push({ author: props.username, comment: newComment });
     setComments([...comments]);
     setNewComment("");
   };
@@ -231,10 +235,10 @@ const Comments = (props: CommentsProps) => {
 };
 
 interface ItemProps {
-  item: Item;
+  recipe: RecipeType;
 }
 
-const Recipe = ({ item }: ItemProps) => {
+const Recipe = ({ recipe }: ItemProps) => {
   return (
     <Container>
       <Stack spacing={2} alignItems="center">
@@ -252,7 +256,7 @@ const Recipe = ({ item }: ItemProps) => {
             fontWeight: "bold",
           }}
         >
-          {item.name}
+          {recipe.name}
         </Typography>
         <Grid container alignItems="center" justifyContent="center">
           <Grid item>
@@ -260,14 +264,14 @@ const Recipe = ({ item }: ItemProps) => {
           </Grid>
           <Grid item>
             <Typography variant="body1" color="textSecondary">
-              {TempItem.username}
+              {recipe.username}
             </Typography>
           </Grid>
         </Grid>
 
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            {item.image && (
+            {recipe.image && (
               <Box
                 sx={{
                   height: 450,
@@ -284,8 +288,8 @@ const Recipe = ({ item }: ItemProps) => {
                   }}
                   height={0}
                   width={0}
-                  src={`/data/${item.image}`}
-                  alt={item.name}
+                  src={`/data/${recipe.image}`}
+                  alt={recipe.name}
                   loading="lazy"
                 />
               </Box>
@@ -293,13 +297,13 @@ const Recipe = ({ item }: ItemProps) => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <Likes />
-            <Tags />
+            <Likes likes={recipe.likes} />
+            <Tags cookingTime={recipe.cookingTime} tags={recipe.tags} />
           </Grid>
         </Grid>
-        <IngredientList ingredients={TempItem.ingredients} />
-        <Steps steps={TempItem.steps} />
-        <Comments comments={TempItem.comments} />
+        <IngredientList ingredients={recipe.ingredients} />
+        <Steps steps={recipe.steps} />
+        <Comments comments={recipe.comments} username={recipe.username} />
       </Stack>
     </Container>
   );

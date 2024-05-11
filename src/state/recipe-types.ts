@@ -16,14 +16,14 @@ export interface CommentType {
 export interface RecipeType {
   id: number;
   name: string;
-  image?: string;
+  image: string;
   tags: string[];
   username: string;
   cookingTime: CookingTimeType;
   likes: number;
   ingredients: IngredientType[];
   steps: string[];
-  comments: Comment[];
+  comments: CommentType[];
 }
 
 export const EmptyRecipe: RecipeType = {
