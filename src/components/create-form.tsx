@@ -344,7 +344,7 @@ const CreateImage = memo(function CreateImage(props: ImageProps) {
       .catch((error) => {
         console.error("Failed to load default image:", error);
       });
-  });
+  }, [props.editableImage]);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -465,16 +465,16 @@ const CreationForm = (props: CreateRecipeProps) => {
 
   const handleSaveButton = () => {
     const newRecipe: RecipeType = {
-      id: 0,
+      id: props.editableRecipe?.id || 0,
       name: recipeName,
-      image: "",
+      image: props.editableRecipe?.image || "",
       tags: tags,
-      username: "_username",
+      username: props.editableRecipe?.username || "username",
       cookingTime: cookingTime,
-      likes: 0,
+      likes: props.editableRecipe?.likes || 0,
       ingredients: ingredients,
       steps: steps,
-      comments: [],
+      comments: props.editableRecipe?.comments || [],
     };
     props.update(newRecipe, image);
   };
