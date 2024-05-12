@@ -1,8 +1,8 @@
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { Item } from "@/components/item";
-import Editor from "@/components/edit-form";
+import { RecipeType } from "@/state/recipe-types";
+import CreationForm from "@/components/create-form";
 
 import { getRequest, patchEditRequest } from "@/pages/api/handlers/apiRequests";
 
@@ -10,19 +10,19 @@ import "@/app/globals.css";
 import styles from "@/styles/utils.module.css";
 
 interface Props {
-  item: Item;
+  recipe: RecipeType;
 }
 
-const RecipePage: React.FC<Props> = ({ item }) => {
+const RecipePage = ({ recipe }: Props) => {
   const router = useRouter();
-  const handleEdit = async (newItem: Item, newImage: null | File) => {
-    await patchEditRequest(newItem, newImage);
-    router.push(`/recipes/${item.id}`);
+  const handleEdit = async (newRecipe: RecipeType, newImage: null | File) => {
+    await patchEditRequest(newRecipe, newImage);
+    router.push(`/recipes/${recipe.id}`);
   };
 
   return (
     <main className={styles.backgroundPage}>
-      <Editor editItem={handleEdit} item={item} />
+      <CreationForm hrefBack={`/recipes/${recipe.id}`} update={handleEdit} />
     </main>
   );
 };
@@ -30,8 +30,8 @@ const RecipePage: React.FC<Props> = ({ item }) => {
 export async function getStaticPaths() {
   const data = await getRequest();
 
-  const paths = data.map((item: Item) => ({
-    params: { id: item.id.toString() },
+  const paths = data.map((recipe: RecipeType) => ({
+    params: { id: recipe.id.toString() },
   }));
 
   return {
@@ -48,11 +48,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
   const id = params.id;
   const data = await getRequest();
-  const item = data.find((item: Item) => item.id.toString() === id);
+  const recipe = data.find((item: RecipeType) => item.id.toString() === id);
 
   return {
     props: {
-      item,
+      recipe,
     },
   };
 };

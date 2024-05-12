@@ -176,7 +176,11 @@ const Tags = (props: TagsProps) => {
           variant="contained"
           color="inherit"
           fullWidth
-          style={{ boxShadow: "none", borderRadius: "12px" }}
+          style={{
+            boxShadow: "none",
+            borderRadius: "12px",
+            backgroundColor: "#e0e0e0",
+          }}
           onClick={handleAddTag}
         >
           Add
@@ -416,8 +420,10 @@ const CookingTime = (props: CookingTimeProps) => {
 };
 
 interface CreateRecipeProps {
-  addRecipe: (_newRecipe: RecipeType, _image: File | null) => void;
+  update: (_newRecipe: RecipeType, _image: File | null) => void;
   hrefBack: string;
+
+  editableRecipe?: RecipeType;
 }
 
 const CreationForm = (props: CreateRecipeProps) => {
@@ -444,7 +450,7 @@ const CreationForm = (props: CreateRecipeProps) => {
       steps: steps,
       comments: [],
     };
-    props.addRecipe(newRecipe, image);
+    props.update(newRecipe, image);
   };
 
   return (
