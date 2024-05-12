@@ -22,7 +22,11 @@ const RecipePage = ({ recipe }: Props) => {
 
   return (
     <main className={styles.backgroundPage}>
-      <CreationForm hrefBack={`/recipes/${recipe.id}`} update={handleEdit} />
+      <CreationForm
+        hrefBack={`/recipes/${recipe.id}`}
+        update={handleEdit}
+        editableRecipe={recipe}
+      />
     </main>
   );
 };

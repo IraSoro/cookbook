@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Chip,
@@ -325,9 +325,27 @@ const Steps = (props: StepsProps) => {
 interface ImageProps {
   image: File | null;
   setImage: (_newImage: File | null) => void;
+
+  editableImage: string;
 }
 
 const CreateImage = (props: ImageProps) => {
+  useEffect(() => {
+    if (props.editableImage === "") return;
+    //TODO: write a request to the future storage
+    fetch(`/data/${props.editableImage}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const file = new File([blob], props.editableImage || "", {
+          type: "image/jpeg",
+        });
+        props.setImage(file);
+      })
+      .catch((error) => {
+        console.error("Failed to load default image:", error);
+      });
+  });
+
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files?.[0];
@@ -428,14 +446,22 @@ interface CreateRecipeProps {
 
 const CreationForm = (props: CreateRecipeProps) => {
   const [image, setImage] = useState<File | null>(null);
-  const [recipeName, setRecipeName] = useState("");
-  const [cookingTime, setCookingTime] = useState<CookingTimeType>({
-    time: 0,
-    typeTime: "mins",
-  });
-  const [tags, setTags] = useState<string[]>([]);
-  const [ingredients, setIngredients] = useState<IngredientType[]>([]);
-  const [steps, setSteps] = useState<string[]>([]);
+  const [recipeName, setRecipeName] = useState(
+    props.editableRecipe?.name || ""
+  );
+  const [cookingTime, setCookingTime] = useState<CookingTimeType>(
+    props.editableRecipe?.cookingTime || {
+      time: 0,
+      typeTime: "mins",
+    }
+  );
+  const [tags, setTags] = useState<string[]>(props.editableRecipe?.tags || []);
+  const [ingredients, setIngredients] = useState<IngredientType[]>(
+    props.editableRecipe?.ingredients || []
+  );
+  const [steps, setSteps] = useState<string[]>(
+    props.editableRecipe?.steps || []
+  );
 
   const handleSaveButton = () => {
     const newRecipe: RecipeType = {
@@ -501,7 +527,11 @@ const CreationForm = (props: CreateRecipeProps) => {
 
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <CreateImage image={image} setImage={setImage} />
+              <CreateImage
+                image={image}
+                setImage={setImage}
+                editableImage={props.editableRecipe?.image || ""}
+              />
             </Grid>
 
             <Grid item xs={12} sm={6}>
