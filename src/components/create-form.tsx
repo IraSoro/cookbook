@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, memo } from "react";
 import {
   Box,
   Chip,
@@ -329,7 +329,7 @@ interface ImageProps {
   editableImage: string;
 }
 
-const CreateImage = (props: ImageProps) => {
+const CreateImage = memo(function CreateImage(props: ImageProps) {
   useEffect(() => {
     if (props.editableImage === "") return;
     //TODO: write a request to the future storage
@@ -391,7 +391,7 @@ const CreateImage = (props: ImageProps) => {
       </label>
     </Box>
   );
-};
+});
 
 interface CookingTimeProps {
   cookingTime: CookingTimeType;
@@ -509,9 +509,15 @@ const CreationForm = (props: CreateRecipeProps) => {
       </AppBar>
       <Container style={{ maxWidth: "800px", backgroundColor: "#fefefe" }}>
         <Stack spacing={2} alignItems="center">
-          <Typography align="center" variant="h4">
-            Create a new recipe
-          </Typography>
+          {props.editableRecipe ? (
+            <Typography align="center" variant="h4">
+              Editing a recipe
+            </Typography>
+          ) : (
+            <Typography align="center" variant="h4">
+              Create a new recipe
+            </Typography>
+          )}
           <TextField
             fullWidth
             label="Recipe name"
