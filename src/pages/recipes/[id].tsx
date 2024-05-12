@@ -1,8 +1,7 @@
+import { useState } from "react";
+
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
-
-import { Item } from "@/components/item";
-import Recipe from "@/components/recipe-form";
 
 import {
   AppBar,
@@ -18,24 +17,25 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
 
+import Recipe from "@/components/recipe-form";
 import { getRequest, deleteRequest } from "../api/handlers/apiRequests";
+import { RecipeType } from "@/state/recipe-types";
 
 import "@/app/globals.css";
 import styles from "@/styles/utils.module.css";
-import { useState } from "react";
 
 interface Props {
-  item: Item;
+  recipe: RecipeType;
 }
 
-const RecipePage: React.FC<Props> = ({ item }) => {
+const RecipePage = ({ recipe }: Props) => {
   const router = useRouter();
   const handleDelete = async () => {
-    await deleteRequest(item.id, item.image);
+    await deleteRequest(recipe.id, recipe.image);
     router.push("/recipes");
   };
   const handleEdit = async () => {
-    router.push(`/recipes/edit/${item.id}`);
+    router.push(`/recipes/edit/${recipe.id}`);
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -106,7 +106,7 @@ const RecipePage: React.FC<Props> = ({ item }) => {
           backgroundColor: "#fefefe",
         }}
       >
-        <Recipe item={item} />
+        <Recipe recipe={recipe} />
       </Container>
     </main>
   );
@@ -115,8 +115,8 @@ const RecipePage: React.FC<Props> = ({ item }) => {
 export async function getStaticPaths() {
   const data = await getRequest();
 
-  const paths = data.map((item: Item) => ({
-    params: { id: item.id.toString() },
+  const paths = data.map((recipe: RecipeType) => ({
+    params: { id: recipe.id.toString() },
   }));
 
   return {
@@ -134,11 +134,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const id = params.id;
   const data = await getRequest();
-  const item = data.find((item: Item) => item.id.toString() === id);
+  const recipe = data.find((recipe: RecipeType) => recipe.id.toString() === id);
 
   return {
     props: {
-      item,
+      recipe,
     },
   };
 };

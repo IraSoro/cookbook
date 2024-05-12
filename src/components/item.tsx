@@ -8,7 +8,6 @@ import {
   Link,
 } from "@mui/material";
 
-import CreationDialog from "../components/create-form";
 import Image from "next/image";
 
 export interface Item {
@@ -24,7 +23,6 @@ interface PropsItem {
 }
 
 const Item = (props: PropsItem) => {
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const defaultImage = "/default.jpg";
   const [image, setImage] = useState(defaultImage);
 
@@ -79,12 +77,6 @@ const Item = (props: PropsItem) => {
         </Link>
         <ImageListItemBar title={props.item.name} position="below" />
       </ImageListItem>
-      <CreationDialog
-        open={isEditOpen}
-        setOpen={setIsEditOpen}
-        idx={props.idx}
-        item={props.item}
-      />
     </>
   );
 };

@@ -8,9 +8,8 @@ import AddIcon from "@mui/icons-material/Add";
 
 import { Item } from "../components/item";
 import ItemsGrid from "../components/item";
-import CreationDialog from "../components/create-form";
 
-import { getRequest, postAdditionRequest } from "./api/handlers/apiRequests";
+import { getRequest } from "./api/handlers/apiRequests";
 
 import "../app/globals.css";
 
@@ -20,18 +19,6 @@ interface PageProps {
 
 const Page = ({ data }: PageProps) => {
   const [items, setItems] = useState(data);
-  const [isAddOpen, setIsAddOpen] = useState(false);
-
-  const addItem = (newItem: Item, image: File | null) => {
-    if (items.length > 0) {
-      newItem.id = items[0].id + 1;
-    }
-    function update() {
-      items.unshift(newItem);
-      setItems([...items]);
-    }
-    postAdditionRequest(newItem, image, update);
-  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
@@ -42,15 +29,10 @@ const Page = ({ data }: PageProps) => {
         <Toolbar style={{ display: "flex", justifyContent: "center" }}>
           <IconButton
             style={{ backgroundColor: "#fefefe" }}
-            onClick={() => setIsAddOpen(true)}
+            href="/recipes/create"
           >
             <AddIcon />
           </IconButton>
-          <CreationDialog
-            open={isAddOpen}
-            setOpen={setIsAddOpen}
-            addItem={addItem}
-          />
         </Toolbar>
       </AppBar>
       <div style={{ marginTop: "70px" }} />
