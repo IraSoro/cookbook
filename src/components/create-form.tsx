@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState, memo } from "react";
 import {
   Box,
   Chip,
@@ -176,7 +176,11 @@ const Tags = (props: TagsProps) => {
           variant="contained"
           color="inherit"
           fullWidth
-          style={{ boxShadow: "none", borderRadius: "12px" }}
+          style={{
+            boxShadow: "none",
+            borderRadius: "12px",
+            backgroundColor: "#e0e0e0",
+          }}
           onClick={handleAddTag}
         >
           Add
@@ -321,9 +325,27 @@ const Steps = (props: StepsProps) => {
 interface ImageProps {
   image: File | null;
   setImage: (_newImage: File | null) => void;
+
+  editableImage: string;
 }
 
-const CreateImage = (props: ImageProps) => {
+const CreateImage = memo(function CreateImage(props: ImageProps) {
+  useEffect(() => {
+    if (props.editableImage === "") return;
+    //TODO: write a request to the future storage
+    fetch(`/data/${props.editableImage}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const file = new File([blob], props.editableImage || "", {
+          type: "image/jpeg",
+        });
+        props.setImage(file);
+      })
+      .catch((error) => {
+        console.error("Failed to load default image:", error);
+      });
+  }, [props.editableImage]);
+
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files?.[0];
@@ -369,7 +391,7 @@ const CreateImage = (props: ImageProps) => {
       </label>
     </Box>
   );
-};
+});
 
 interface CookingTimeProps {
   cookingTime: CookingTimeType;
@@ -416,35 +438,45 @@ const CookingTime = (props: CookingTimeProps) => {
 };
 
 interface CreateRecipeProps {
-  addRecipe: (_newRecipe: RecipeType, _image: File | null) => void;
+  update: (_newRecipe: RecipeType, _image: File | null) => void;
   hrefBack: string;
+
+  editableRecipe?: RecipeType;
 }
 
 const CreationForm = (props: CreateRecipeProps) => {
   const [image, setImage] = useState<File | null>(null);
-  const [recipeName, setRecipeName] = useState("");
-  const [cookingTime, setCookingTime] = useState<CookingTimeType>({
-    time: 0,
-    typeTime: "mins",
-  });
-  const [tags, setTags] = useState<string[]>([]);
-  const [ingredients, setIngredients] = useState<IngredientType[]>([]);
-  const [steps, setSteps] = useState<string[]>([]);
+  const [recipeName, setRecipeName] = useState(
+    props.editableRecipe?.name || ""
+  );
+  const [cookingTime, setCookingTime] = useState<CookingTimeType>(
+    props.editableRecipe?.cookingTime || {
+      time: 0,
+      typeTime: "mins",
+    }
+  );
+  const [tags, setTags] = useState<string[]>(props.editableRecipe?.tags || []);
+  const [ingredients, setIngredients] = useState<IngredientType[]>(
+    props.editableRecipe?.ingredients || []
+  );
+  const [steps, setSteps] = useState<string[]>(
+    props.editableRecipe?.steps || []
+  );
 
   const handleSaveButton = () => {
     const newRecipe: RecipeType = {
-      id: 0,
+      id: props.editableRecipe?.id || 0,
       name: recipeName,
-      image: "",
+      image: props.editableRecipe?.image || "",
       tags: tags,
-      username: "_username",
+      username: props.editableRecipe?.username || "username",
       cookingTime: cookingTime,
-      likes: 0,
+      likes: props.editableRecipe?.likes || 0,
       ingredients: ingredients,
       steps: steps,
-      comments: [],
+      comments: props.editableRecipe?.comments || [],
     };
-    props.addRecipe(newRecipe, image);
+    props.update(newRecipe, image);
   };
 
   return (
@@ -477,9 +509,15 @@ const CreationForm = (props: CreateRecipeProps) => {
       </AppBar>
       <Container style={{ maxWidth: "800px", backgroundColor: "#fefefe" }}>
         <Stack spacing={2} alignItems="center">
-          <Typography align="center" variant="h4">
-            Create a new recipe
-          </Typography>
+          {props.editableRecipe ? (
+            <Typography align="center" variant="h4">
+              Editing a recipe
+            </Typography>
+          ) : (
+            <Typography align="center" variant="h4">
+              Create a new recipe
+            </Typography>
+          )}
           <TextField
             fullWidth
             label="Recipe name"
@@ -495,7 +533,11 @@ const CreationForm = (props: CreateRecipeProps) => {
 
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <CreateImage image={image} setImage={setImage} />
+              <CreateImage
+                image={image}
+                setImage={setImage}
+                editableImage={props.editableRecipe?.image || ""}
+              />
             </Grid>
 
             <Grid item xs={12} sm={6}>

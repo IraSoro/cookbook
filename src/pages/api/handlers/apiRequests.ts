@@ -1,4 +1,3 @@
-// import { Item } from "@/components/item";
 import { RecipeType } from "@/state/recipe-types";
 
 export async function getRequest() {
@@ -73,11 +72,11 @@ export async function deleteRequest(idx: number, imageName: string) {
     });
 }
 
-export async function patchEditRequest(newItem: Item, image: File | null) {
+export async function patchEditRequest(newRecipe: RecipeType, image: File | null) {
   const formData = new FormData();
   if (image) {
-    newItem.image = `${newItem.id}.jpg`;
-    formData.append("filename", newItem.image);
+    newRecipe.image = `${newRecipe.id}.jpg`;
+    formData.append("filename", newRecipe.image);
     formData.append("image", image);
   }
 
@@ -95,10 +94,10 @@ export async function patchEditRequest(newItem: Item, image: File | null) {
   fetch("http://localhost:3000/api/routes", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ item: newItem }),
+    body: JSON.stringify({ item: newRecipe }),
   })
     .then(() => {
-      console.log(`Item id=${newItem.id} edited`);
+      console.log(`Recipe id=${newRecipe.id} edited`);
     })
     .catch((err) => {
       console.log(err);

@@ -10,15 +10,10 @@ import {
 
 import Image from "next/image";
 
-export interface Item {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-}
+import { RecipeType } from "@/state/recipe-types";
 
 interface PropsItem {
-  item: Item;
+  item: RecipeType;
   idx: number;
 }
 
@@ -82,7 +77,7 @@ const Item = (props: PropsItem) => {
 };
 
 interface PropsItems {
-  items: Item[];
+  items: RecipeType[];
 }
 
 const ItemsGrid = (props: PropsItems) => {
