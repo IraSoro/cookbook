@@ -1,25 +1,21 @@
-import { useState } from "react";
-
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 
 import AddIcon from "@mui/icons-material/Add";
 
-import { Item } from "../components/item";
 import ItemsGrid from "../components/item";
+import { RecipeType } from "@/state/recipe-types";
 
 import { getRequest } from "./api/handlers/apiRequests";
 
 import "../app/globals.css";
 
 interface PageProps {
-  data: Item[];
+  data: RecipeType[];
 }
 
 const Page = ({ data }: PageProps) => {
-  const [items, setItems] = useState(data);
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
       <AppBar
@@ -36,7 +32,7 @@ const Page = ({ data }: PageProps) => {
         </Toolbar>
       </AppBar>
       <div style={{ marginTop: "70px" }} />
-      <ItemsGrid items={items} />
+      <ItemsGrid items={data} />
     </main>
   );
 };
