@@ -72,7 +72,10 @@ export async function deleteRequest(idx: number, imageName: string) {
     });
 }
 
-export async function patchEditRequest(newRecipe: RecipeType, image: File | null) {
+export async function patchEditRequest(
+  newRecipe: RecipeType,
+  image: File | null
+) {
   const formData = new FormData();
   if (image) {
     newRecipe.image = `${newRecipe.id}.jpg`;
@@ -109,4 +112,32 @@ export async function getCategories() {
   const response = await getFetch.json();
   const data = await response.data;
   return data;
+}
+
+export async function postAdditionCategoryRequest(newCategory: string) {
+  fetch("http://localhost:3000/api/routes/categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newCategory),
+  })
+    .then(() => {
+      console.log("Category uploaded");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+export async function deleteCategoryRequest(categoryName: string) {
+  fetch("http://localhost:3000/api/routes/categories", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(categoryName),
+  })
+    .then(() => {
+      console.log(`Deleted ${categoryName} category`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
