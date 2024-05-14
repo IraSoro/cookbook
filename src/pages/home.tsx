@@ -5,17 +5,16 @@ import ItemsGrid from "../components/item";
 import Categories from "@/components/categories";
 import { RecipeType } from "@/state/recipe-types";
 
-import { getRequest } from "./api/handlers/apiRequests";
+import { getCategories, getRequest } from "./api/handlers/apiRequests";
 
 import "../app/globals.css";
 
 interface PageProps {
-  data: RecipeType[];
+  recipes: RecipeType[];
+  categories: string[];
 }
 
-const TempCategories = ["Soups", "Breakfast", "Desserts", "Snacks", "Vegan"];
-
-const Page = ({ data }: PageProps) => {
+const Page = (props: PageProps) => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
       <AppBar
@@ -39,7 +38,7 @@ const Page = ({ data }: PageProps) => {
         </Toolbar>
       </AppBar>
       <div style={{ margin: "20px 10px 0", maxWidth: "1000px" }}>
-        <Categories categories={TempCategories} />
+        <Categories categories={props.categories} />
         <Typography
           variant="h6"
           component="div"
@@ -47,16 +46,17 @@ const Page = ({ data }: PageProps) => {
         >
           All Recipes
         </Typography>
-        <ItemsGrid items={data} />
+        <ItemsGrid items={props.recipes} />
       </div>
     </main>
   );
 };
 
 export async function getStaticProps() {
-  const data = await getRequest();
+  const recipes = await getRequest();
+  const categories = await getCategories();
 
-  if (!data) {
+  if (!recipes) {
     return {
       notFound: true,
     };
@@ -64,7 +64,8 @@ export async function getStaticProps() {
 
   return {
     props: {
-      data: data,
+      recipes: recipes,
+      categories: categories,
     },
   };
 }

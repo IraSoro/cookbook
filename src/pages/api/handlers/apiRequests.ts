@@ -1,7 +1,7 @@
 import { RecipeType } from "@/state/recipe-types";
 
 export async function getRequest() {
-  const getFetch = await fetch("http://localhost:3000/api/routes");
+  const getFetch = await fetch("http://localhost:3000/api/routes/recipes");
   const response = await getFetch.json();
   const data = await response.data;
   return data;
@@ -34,7 +34,7 @@ export async function postAdditionRequest(
       console.log(err);
     });
 
-  fetch("http://localhost:3000/api/routes", {
+  fetch("http://localhost:3000/api/routes/recipes", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newRecipe),
@@ -59,7 +59,7 @@ export async function deleteRequest(idx: number, imageName: string) {
       console.log(err);
     });
 
-  fetch("http://localhost:3000/api/routes", {
+  fetch("http://localhost:3000/api/routes/recipes", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(idx),
@@ -91,7 +91,7 @@ export async function patchEditRequest(newRecipe: RecipeType, image: File | null
       console.log(err);
     });
 
-  fetch("http://localhost:3000/api/routes", {
+  fetch("http://localhost:3000/api/routes/recipes", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ item: newRecipe }),
@@ -102,4 +102,11 @@ export async function patchEditRequest(newRecipe: RecipeType, image: File | null
     .catch((err) => {
       console.log(err);
     });
+}
+
+export async function getCategories() {
+  const getFetch = await fetch("http://localhost:3000/api/routes/categories");
+  const response = await getFetch.json();
+  const data = await response.data;
+  return data;
 }
