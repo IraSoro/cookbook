@@ -1,10 +1,18 @@
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
+import { useState } from "react";
 
-import AddIcon from "@mui/icons-material/Add";
+import {
+  IconButton,
+  TextField,
+  InputAdornment,
+  Box,
+  Grid,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+
+import { debounce } from "../data/utils";
 
 import ItemsGrid from "../components/item";
+import Tags from "@/components/tags";
 import { RecipeType } from "@/state/recipe-types";
 
 import { getRequest } from "./api/handlers/apiRequests";
@@ -16,23 +24,55 @@ interface PageProps {
 }
 
 const Page = ({ data }: PageProps) => {
+  const [search, setSearch] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+
+  function onQueryChange(event: React.ChangeEvent<HTMLInputElement>) {
+    debounce(() => {
+      setSearch(event.target.value);
+    }, 1 * 1000);
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <AppBar
-        position="fixed"
-        style={{ backgroundColor: "transparent", boxShadow: "none" }}
+      <Box
+        sx={{
+          flexGrow: 1,
+          maxWidth: 1000,
+          marginLeft: "10px",
+          marginRight: "10px",
+        }}
       >
-        <Toolbar style={{ display: "flex", justifyContent: "center" }}>
-          <IconButton
-            style={{ backgroundColor: "#fefefe" }}
-            href="/recipes/create"
-          >
-            <AddIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <div style={{ marginTop: "70px" }} />
-      <ItemsGrid items={data} />
+        <Grid
+          container
+          spacing={1}
+          sx={{ marginBottom: "15px", marginTop: "15px" }}
+        >
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              sx={{ backgroundColor: "#ededed" }}
+              label="Search keywords..."
+              variant="outlined"
+              onChange={onQueryChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Tags tags={tags} setTags={setTags} />
+          </Grid>
+        </Grid>
+
+        <ItemsGrid items={data} />
+      </Box>
     </main>
   );
 };

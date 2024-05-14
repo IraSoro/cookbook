@@ -82,15 +82,13 @@ interface PropsItems {
 
 const ItemsGrid = (props: PropsItems) => {
   return (
-    <Box sx={{ flexGrow: 1, maxWidth: 1000 }}>
-      <Grid container spacing={{ xs: 1, md: 2 }}>
-        {Array.from(props.items).map((item, idx) => (
-          <Grid item xs={6} sm={6} md={4} key={idx}>
-            <Item item={item} idx={idx} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+    <Grid container spacing={{ xs: 1, md: 2 }}>
+      {Array.from(props.items).map((item, idx) => (
+        <Grid item xs={6} sm={6} md={4} key={idx}>
+          <Item item={item} idx={idx} />
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 
