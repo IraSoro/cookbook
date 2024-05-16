@@ -141,3 +141,20 @@ export async function deleteCategoryRequest(categoryName: string) {
       console.log(err);
     });
 }
+
+export async function patchEditCategoryRequest(
+  oldName: string,
+  newCategory: string
+) {
+  fetch("http://localhost:3000/api/routes/categories", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ newCategory: newCategory, oldName: oldName }),
+  })
+    .then(() => {
+      console.log(`Recipe id=${oldName} renamed`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
