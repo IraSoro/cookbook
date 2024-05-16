@@ -9,6 +9,7 @@ import {
   DialogActions,
   DialogContent,
   TextField,
+  Link,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -107,27 +108,21 @@ const CategoriesDialog = (props: CategoriesDialogProps) => {
         />
         <Grid container spacing={1}>
           {props.categories.map((category, index) => (
-            <Grid
-              item
-              xs={6}
-              sm={6}
-              key={index}
-              onClick={() => {
-                console.log("category");
-              }}
-            >
-              <div
-                style={{
-                  height: "50px",
-                  backgroundColor: "#e0e0e0",
-                  borderRadius: "8px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Typography>{category}</Typography>
-              </div>
+            <Grid item xs={6} sm={6} key={index}>
+              <Link href={`/categories/${category}`}>
+                <div
+                  style={{
+                    height: "50px",
+                    backgroundColor: "#e0e0e0",
+                    borderRadius: "8px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography>{category}</Typography>
+                </div>
+              </Link>
             </Grid>
           ))}
         </Grid>
