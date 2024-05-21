@@ -13,11 +13,13 @@ import {
   Container,
   Typography,
   Stack,
+  Divider,
 } from "@mui/material";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddIcon from "@mui/icons-material/Add";
 
 import ItemsGrid from "@/components/item";
 
@@ -25,7 +27,7 @@ import { RecipeType } from "@/state/recipe-types";
 import { CategoryType } from "@/state/category-type";
 import AddCategoryDialog from "@/components/create-category-form";
 import {
-  getRequest,
+  getRecipeParamRequest,
   getCategories,
   deleteCategoryRequest,
   patchEditCategoryRequest,
@@ -97,6 +99,21 @@ const CategoryPage = (props: Props) => {
               "aria-labelledby": "basic-button",
             }}
           >
+            <MenuItem onClick={handleClose}>
+              <Button
+                color="inherit"
+                startIcon={<AddIcon />}
+                onClick={() => {
+                  router.push({
+                    pathname: "/recipes/create",
+                    query: { categoryId: props.category.id },
+                  });
+                }}
+              >
+                Add recipe
+              </Button>
+            </MenuItem>
+            <Divider />
             <MenuItem onClick={handleClose}>
               <Button
                 color="inherit"
@@ -179,7 +196,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const data = await getCategories();
 
   const category = data.find((item: CategoryType) => item.id.toString() === id);
-  const recipes = await getRequest();
+  const recipes = await getRecipeParamRequest(Number(id));
 
   return {
     props: {

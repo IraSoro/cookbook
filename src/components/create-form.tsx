@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState, memo } from "react";
+import { useRouter } from "next/router";
 import {
   Box,
   Chip,
@@ -19,6 +20,7 @@ import {
   Button,
   AppBar,
   Toolbar,
+  InputLabel,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -30,6 +32,8 @@ import {
   CookingTimeType,
   IngredientType,
 } from "@/state/recipe-types";
+import { getCategories } from "@/pages/api/handlers/apiRequests";
+import { CategoryType } from "@/state/category-type";
 
 interface IngredientProps {
   ingredient: IngredientType;
@@ -101,7 +105,7 @@ const IngredientList = (props: IngredientListProps) => {
                   ingredient={ingredient}
                   delete={() => {
                     props.setIngredients(
-                      props.ingredients.filter((_, i) => i !== index),
+                      props.ingredients.filter((_, i) => i !== index)
                     );
                   }}
                 />
@@ -437,6 +441,44 @@ const CookingTime = (props: CookingTimeProps) => {
   );
 };
 
+interface CategorySelectProps {
+  categoryId: number;
+  setCategoryId: (_newCategoryId: number) => void;
+}
+
+const CategorySelect = (props: CategorySelectProps) => {
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <FormControl fullWidth variant="outlined" margin="normal">
+      <InputLabel id="item-selector-label">Category Select</InputLabel>
+      <Select
+        labelId="item-selector-label"
+        id="item-selector"
+        value={props.categoryId ? props.categoryId.toString() : ""}
+        onChange={(event) => {
+          props.setCategoryId(Number(event.target.value));
+        }}
+        label="Select Category"
+      >
+        {categories.map((item) => (
+          <MenuItem key={item.id} value={item.id}>
+            {item.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
+
 interface CreateRecipeProps {
   update: (_newRecipe: RecipeType, _image: File | null) => void;
   hrefBack: string;
@@ -445,22 +487,27 @@ interface CreateRecipeProps {
 }
 
 const CreationForm = (props: CreateRecipeProps) => {
+  const { query } = useRouter();
+
   const [image, setImage] = useState<File | null>(null);
   const [recipeName, setRecipeName] = useState(
-    props.editableRecipe?.name || "",
+    props.editableRecipe?.name || ""
   );
   const [cookingTime, setCookingTime] = useState<CookingTimeType>(
     props.editableRecipe?.cookingTime || {
       time: 0,
       typeTime: "mins",
-    },
+    }
   );
   const [tags, setTags] = useState<string[]>(props.editableRecipe?.tags || []);
   const [ingredients, setIngredients] = useState<IngredientType[]>(
-    props.editableRecipe?.ingredients || [],
+    props.editableRecipe?.ingredients || []
   );
   const [steps, setSteps] = useState<string[]>(
-    props.editableRecipe?.steps || [],
+    props.editableRecipe?.steps || []
+  );
+  const [category, setCategory] = useState(
+    props.editableRecipe?.categoryId || Number(query.categoryId) || 0
   );
 
   const handleSaveButton = () => {
@@ -475,6 +522,7 @@ const CreationForm = (props: CreateRecipeProps) => {
       ingredients: ingredients,
       steps: steps,
       comments: props.editableRecipe?.comments || [],
+      categoryId: category || 0,
     };
     props.update(newRecipe, image);
   };
@@ -526,6 +574,8 @@ const CreationForm = (props: CreateRecipeProps) => {
             onChange={(e) => setRecipeName(e.target.value)}
             margin="normal"
           />
+          <CategorySelect categoryId={category} setCategoryId={setCategory} />
+
           <CookingTime
             cookingTime={cookingTime}
             setCookingTime={setCookingTime}
