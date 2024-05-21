@@ -1,41 +1,10 @@
 import { useState } from "react";
 
-import { Typography, Grid, Link, Stack, Button } from "@mui/material";
-
-import EggAltIcon from "@mui/icons-material/EggAlt";
-import SoupKitchenIcon from "@mui/icons-material/SoupKitchen";
-import DinnerDiningIcon from "@mui/icons-material/DinnerDining";
-import CookieIcon from "@mui/icons-material/Cookie";
-import FreeBreakfastIcon from "@mui/icons-material/FreeBreakfast";
-import LocalPizzaIcon from "@mui/icons-material/LocalPizza";
-import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import { Typography, Grid, Link, Button } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-
-interface IconCategoryProps {
-  category: string;
-}
-
-const IconCategory = ({ category }: IconCategoryProps) => {
-  switch (category) {
-    case "Breakfast":
-      return <EggAltIcon />;
-    case "Lunch":
-      return <SoupKitchenIcon />;
-    case "Dinner":
-      return <DinnerDiningIcon />;
-    case "Desserts":
-      return <CookieIcon />;
-    case "Drinks":
-      return <FreeBreakfastIcon />;
-    case "Snacks":
-      return <LocalPizzaIcon />;
-    default:
-      return <RestaurantMenuIcon />;
-  }
-};
 
 interface CategoriesProps {
   categories: string[];
@@ -114,10 +83,7 @@ const Categories = (props: CategoriesProps) => {
                 href={`/categories/${category}`}
                 style={{ textDecoration: "none", color: "#000000" }}
               >
-                <Stack direction="row" alignItems="center" gap={1}>
-                  <IconCategory category={category} />
-                  <Typography>{category}</Typography>
-                </Stack>
+                <Typography>{category}</Typography>
               </Link>
             </div>
           </Grid>
