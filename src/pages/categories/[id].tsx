@@ -17,12 +17,17 @@ import {
 import MoreIcon from "@mui/icons-material/MoreVert";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import ItemsGrid from "@/components/item";
 
 import { RecipeType } from "@/state/recipe-types";
 import { CategoryType } from "@/state/category-type";
-import { getRequest, getCategories } from "../api/handlers/apiRequests";
+import {
+  getRequest,
+  getCategories,
+  deleteCategoryRequest,
+} from "../api/handlers/apiRequests";
 
 import "@/app/globals.css";
 import styles from "@/styles/utils.module.css";
@@ -37,6 +42,11 @@ const CategoryPage = (props: Props) => {
 
   const handleEdit = async () => {
     router.push(`/categories/edit/${props.category}`);
+  };
+
+  const handleDelete = async () => {
+    await deleteCategoryRequest(props.category.id);
+    router.push("/home");
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -87,6 +97,15 @@ const CategoryPage = (props: Props) => {
                 startIcon={<EditIcon />}
               >
                 Edit category
+              </Button>
+            </MenuItem>
+            <MenuItem onClick={handleClose}>
+              <Button
+                color="error"
+                onClick={handleDelete}
+                startIcon={<DeleteOutlineIcon />}
+              >
+                Delete category
               </Button>
             </MenuItem>
           </Menu>

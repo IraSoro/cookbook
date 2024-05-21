@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { promises as fs } from "fs";
+import { CategoryType } from "@/state/category-type";
 
 const itemsPath = "./data/categories.json";
 
@@ -25,6 +26,21 @@ export default async function handler(
 
         await fs.writeFile(itemsPath, JSON.stringify(items));
         res.status(202).json(newItem);
+        break;
+      }
+      case "DELETE": {
+        const deletedId = req.body;
+        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
+
+        const deleteItemIndex = items.findIndex((item: CategoryType) => {
+          return item.id === Number(deletedId);
+        });
+
+        const deleteItem = { ...items[deleteItemIndex] };
+        items.splice(deleteItemIndex, 1);
+        await fs.writeFile(itemsPath, JSON.stringify(items));
+
+        res.status(203).json(deleteItem);
         break;
       }
       case "PATCH": {

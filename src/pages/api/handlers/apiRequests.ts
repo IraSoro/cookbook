@@ -133,6 +133,20 @@ export async function postAdditionCategoryRequest(newCategory: CategoryType) {
     });
 }
 
+export async function deleteCategoryRequest(idx: number) {
+  fetch("http://localhost:3000/api/routes/categories", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(idx),
+  })
+    .then(() => {
+      console.log(`Deleted id=${idx} category`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 export async function patchEditCategoryRequest(
   oldName: string,
   newCategory: CategoryType
