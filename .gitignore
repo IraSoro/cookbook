@@ -36,6 +36,6 @@ yarn-error.log*
 next-env.d.ts
 
 # my
-/data/items.json
+/data/
 /public/data/
 /resources
