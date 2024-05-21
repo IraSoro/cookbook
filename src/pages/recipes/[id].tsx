@@ -32,7 +32,7 @@ const RecipePage = ({ recipe }: Props) => {
   const router = useRouter();
   const handleDelete = async () => {
     await deleteRequest(recipe.id, recipe.image);
-    router.push("/recipes");
+    router.push("/home");
   };
   const handleEdit = async () => {
     router.push(`/recipes/edit/${recipe.id}`);
