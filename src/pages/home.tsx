@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
@@ -5,7 +7,11 @@ import ItemsGrid from "../components/item";
 import Categories from "@/components/categories";
 import { RecipeType } from "@/state/recipe-types";
 
-import { getCategories, getRequest } from "./api/handlers/apiRequests";
+import {
+  getCategories,
+  getRequest,
+  postAdditionCategoryRequest,
+} from "./api/handlers/apiRequests";
 
 import "../app/globals.css";
 
@@ -15,6 +21,14 @@ interface PageProps {
 }
 
 const Page = (props: PageProps) => {
+  const [categories, setCategories] = useState<string[]>(props.categories);
+
+  function updateCategories(newCategory: string) {
+    postAdditionCategoryRequest(newCategory);
+    categories.unshift(newCategory);
+    setCategories([...categories]);
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
       <AppBar
@@ -38,7 +52,7 @@ const Page = (props: PageProps) => {
         </Toolbar>
       </AppBar>
       <div style={{ margin: "20px 10px 0", maxWidth: "1000px" }}>
-        <Categories categories={props.categories} />
+        <Categories categories={props.categories} update={updateCategories} />
         <Typography
           variant="h6"
           component="div"

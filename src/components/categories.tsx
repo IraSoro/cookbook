@@ -1,21 +1,86 @@
 import { useState } from "react";
 
-import { Typography, Grid, Link, Button } from "@mui/material";
+import {
+  Typography,
+  Grid,
+  Link,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  TextField,
+} from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
+interface AddCategoryDialogProps {
+  open: boolean;
+  setOpen: (_open: boolean) => void;
+
+  updateCategories: (_newCategory: string) => void;
+}
+
+const AddCategoryDialog = (props: AddCategoryDialogProps) => {
+  const [newCategory, setNewCategory] = useState("");
+  return (
+    <Dialog
+      fullWidth
+      open={props.open}
+      onClose={() => {
+        props.setOpen(false);
+      }}
+    >
+      <DialogTitle>New Category</DialogTitle>
+      <DialogContent>
+        <TextField
+          fullWidth
+          style={{ marginTop: "10px" }}
+          label="New category"
+          variant="outlined"
+          value={newCategory}
+          onChange={(e) => {
+            setNewCategory(e.target.value);
+          }}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => {
+            props.setOpen(false);
+          }}
+        >
+          Close
+        </Button>
+        <Button
+          onClick={() => {
+            props.updateCategories(newCategory);
+            setNewCategory("");
+            props.setOpen(false);
+          }}
+        >
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 interface CategoriesProps {
   categories: string[];
+  update: (_newCategory: string) => void;
 }
 
 const Categories = (props: CategoriesProps) => {
   const defaultLimitCategories = 3;
   const [limitCategories, setLimitCategories] = useState(
-    defaultLimitCategories
+    defaultLimitCategories,
   );
   const [isSeeAll, setIsSeeAll] = useState(false);
+
+  const [isOpenAddDialog, setIsOpenAddDialog] = useState(false);
 
   return (
     <>
@@ -61,10 +126,17 @@ const Categories = (props: CategoriesProps) => {
               startIcon={<AddIcon />}
               variant="text"
               style={{ color: "#000" }}
-              onClick={() => {}}
+              onClick={() => {
+                setIsOpenAddDialog(true);
+              }}
             >
               Add new
             </Button>
+            <AddCategoryDialog
+              open={isOpenAddDialog}
+              setOpen={setIsOpenAddDialog}
+              updateCategories={props.update}
+            />
           </div>
         </Grid>
         {props.categories.slice(0, limitCategories).map((category, index) => (

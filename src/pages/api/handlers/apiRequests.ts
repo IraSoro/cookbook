@@ -114,6 +114,20 @@ export async function getCategories() {
   return data;
 }
 
+export async function postAdditionCategoryRequest(newCategory: string) {
+  fetch("http://localhost:3000/api/routes/categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newCategory),
+  })
+    .then(() => {
+      console.log("Category uploaded");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 export async function patchEditCategoryRequest(
   oldName: string,
   newCategory: string,
