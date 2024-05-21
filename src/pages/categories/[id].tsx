@@ -102,8 +102,13 @@ const CategoryPage = (props: Props) => {
             <MenuItem onClick={handleClose}>
               <Button
                 color="inherit"
-                href="/recipes/create"
                 startIcon={<AddIcon />}
+                onClick={() => {
+                  router.push({
+                    pathname: "/recipes/create",
+                    query: { categoryId: props.category.id },
+                  });
+                }}
               >
                 Add recipe
               </Button>

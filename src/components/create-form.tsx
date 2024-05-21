@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState, memo } from "react";
+import { useRouter } from "next/router";
 import {
   Box,
   Chip,
@@ -447,7 +448,6 @@ interface CategorySelectProps {
 
 const CategorySelect = (props: CategorySelectProps) => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [selected, setSelected] = useState(props.categoryId);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -463,12 +463,11 @@ const CategorySelect = (props: CategorySelectProps) => {
       <Select
         labelId="item-selector-label"
         id="item-selector"
-        value={selected}
+        value={props.categoryId ? props.categoryId.toString() : ""}
         onChange={(event) => {
-          console.log("select = ", event.target.value);
-          setSelected(Number(event.target.value));
+          props.setCategoryId(Number(event.target.value));
         }}
-        label="Select an Item"
+        label="Select Category"
       >
         {categories.map((item) => (
           <MenuItem key={item.id} value={item.id}>
@@ -488,6 +487,8 @@ interface CreateRecipeProps {
 }
 
 const CreationForm = (props: CreateRecipeProps) => {
+  const { query } = useRouter();
+
   const [image, setImage] = useState<File | null>(null);
   const [recipeName, setRecipeName] = useState(
     props.editableRecipe?.name || ""
@@ -506,7 +507,7 @@ const CreationForm = (props: CreateRecipeProps) => {
     props.editableRecipe?.steps || []
   );
   const [category, setCategory] = useState(
-    props.editableRecipe?.categoryId || 0
+    props.editableRecipe?.categoryId || Number(query.categoryId) || 0
   );
 
   const handleSaveButton = () => {
@@ -521,7 +522,7 @@ const CreationForm = (props: CreateRecipeProps) => {
       ingredients: ingredients,
       steps: steps,
       comments: props.editableRecipe?.comments || [],
-      categoryId: props.editableRecipe?.categoryId || 0,
+      categoryId: category || 0,
     };
     props.update(newRecipe, image);
   };
