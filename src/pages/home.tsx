@@ -22,7 +22,9 @@ interface PageProps {
 }
 
 const Page = (props: PageProps) => {
-  const [categories, setCategories] = useState<CategoryType[]>(props.categories);
+  const [categories, setCategories] = useState<CategoryType[]>(
+    props.categories,
+  );
 
   function updateCategories(newCategory: CategoryType) {
     postAdditionCategoryRequest(newCategory);

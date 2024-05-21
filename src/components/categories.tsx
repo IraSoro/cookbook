@@ -78,7 +78,7 @@ interface CategoriesProps {
 const Categories = (props: CategoriesProps) => {
   const defaultLimitCategories = 3;
   const [limitCategories, setLimitCategories] = useState(
-    defaultLimitCategories
+    defaultLimitCategories,
   );
   const [isSeeAll, setIsSeeAll] = useState(false);
 
