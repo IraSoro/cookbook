@@ -1,74 +1,13 @@
 import { useState } from "react";
 
-import {
-  Typography,
-  Grid,
-  Link,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
-  TextField,
-} from "@mui/material";
+import { Typography, Grid, Link, Button } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 import { CategoryType } from "@/state/category-type";
-
-interface AddCategoryDialogProps {
-  open: boolean;
-  setOpen: (_open: boolean) => void;
-
-  updateCategories: (_newCategory: CategoryType) => void;
-}
-
-const AddCategoryDialog = (props: AddCategoryDialogProps) => {
-  const [newCategoryName, setNewCategoryName] = useState("");
-  return (
-    <Dialog
-      fullWidth
-      open={props.open}
-      onClose={() => {
-        props.setOpen(false);
-      }}
-    >
-      <DialogTitle>New Category</DialogTitle>
-      <DialogContent>
-        <TextField
-          fullWidth
-          style={{ marginTop: "10px" }}
-          label="New category"
-          variant="outlined"
-          value={newCategoryName}
-          onChange={(e) => {
-            setNewCategoryName(e.target.value);
-          }}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={() => {
-            props.setOpen(false);
-          }}
-        >
-          Close
-        </Button>
-        <Button
-          onClick={() => {
-            props.updateCategories({ id: 0, name: newCategoryName });
-            setNewCategoryName("");
-            props.setOpen(false);
-          }}
-        >
-          Add
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+import AddCategoryDialog from "@/components/create-category-form";
 
 interface CategoriesProps {
   categories: CategoryType[];
