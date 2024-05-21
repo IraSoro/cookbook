@@ -23,10 +23,12 @@ import ItemsGrid from "@/components/item";
 
 import { RecipeType } from "@/state/recipe-types";
 import { CategoryType } from "@/state/category-type";
+import AddCategoryDialog from "@/components/create-category-form";
 import {
   getRequest,
   getCategories,
   deleteCategoryRequest,
+  patchEditCategoryRequest,
 } from "../api/handlers/apiRequests";
 
 import "@/app/globals.css";
@@ -40,19 +42,24 @@ interface Props {
 const CategoryPage = (props: Props) => {
   const router = useRouter();
 
-  const handleEdit = async () => {
-    router.push(`/categories/edit/${props.category}`);
-  };
+  const [editedCategory, setEditedCategory] = useState(props.category);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
-  const handleDelete = async () => {
-    await deleteCategoryRequest(props.category.id);
-    router.push("/home");
-  };
-
+  // for menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleEdit = async (editedCategory: CategoryType) => {
+    setEditedCategory({ ...editedCategory });
+    await patchEditCategoryRequest(editedCategory);
+  };
+
+  const handleDelete = async () => {
+    await deleteCategoryRequest(editedCategory.id);
+    router.push("/home");
   };
 
   return (
@@ -93,7 +100,9 @@ const CategoryPage = (props: Props) => {
             <MenuItem onClick={handleClose}>
               <Button
                 color="inherit"
-                onClick={handleEdit}
+                onClick={() => {
+                  setIsEditOpen(true);
+                }}
                 startIcon={<EditIcon />}
               >
                 Edit category
@@ -111,6 +120,12 @@ const CategoryPage = (props: Props) => {
           </Menu>
         </Toolbar>
       </AppBar>
+      <AddCategoryDialog
+        open={isEditOpen}
+        setOpen={setIsEditOpen}
+        updateCategories={handleEdit}
+        editedCategory={editedCategory}
+      />
       <Container
         style={{
           maxWidth: "1000px",
@@ -132,7 +147,7 @@ const CategoryPage = (props: Props) => {
               fontWeight: "bold",
             }}
           >
-            {props.category.name}
+            {editedCategory.name}
           </Typography>
           <ItemsGrid items={props.recipes} />
         </Stack>

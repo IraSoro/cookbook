@@ -147,17 +147,14 @@ export async function deleteCategoryRequest(idx: number) {
     });
 }
 
-export async function patchEditCategoryRequest(
-  oldName: string,
-  newCategory: CategoryType,
-) {
+export async function patchEditCategoryRequest(editedCategory: CategoryType) {
   fetch("http://localhost:3000/api/routes/categories", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ newCategory: newCategory, oldName: oldName }),
+    body: JSON.stringify({ editedCategory: editedCategory }),
   })
     .then(() => {
-      console.log(`Recipe id=${oldName} renamed`);
+      console.log(`Recipe id=${editedCategory.id} changed`);
     })
     .catch((err) => {
       console.log(err);

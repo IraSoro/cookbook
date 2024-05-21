@@ -47,19 +47,18 @@ export default async function handler(
         if (Object.keys(req.body).length === 0) {
           throw `No body`;
         }
-        const newItem = req.body.newCategory;
-        const oldName = req.body.oldName;
+        const editedItem = req.body.editedCategory;
         const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
 
-        const newItems = items.map((item: string) => {
-          if (item === oldName) {
-            return newItem;
+        const newItems = items.map((item: CategoryType) => {
+          if (item.id === editedItem.id) {
+            return editedItem;
           }
           return item;
         });
         await fs.writeFile(itemsPath, JSON.stringify(newItems));
 
-        res.status(205).json(newItem);
+        res.status(205).json(editedItem);
         break;
       }
       default: {
