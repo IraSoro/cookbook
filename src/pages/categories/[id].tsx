@@ -13,11 +13,13 @@ import {
   Container,
   Typography,
   Stack,
+  Divider,
 } from "@mui/material";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddIcon from "@mui/icons-material/Add";
 
 import ItemsGrid from "@/components/item";
 
@@ -97,6 +99,16 @@ const CategoryPage = (props: Props) => {
               "aria-labelledby": "basic-button",
             }}
           >
+            <MenuItem onClick={handleClose}>
+              <Button
+                color="inherit"
+                href="/recipes/create"
+                startIcon={<AddIcon />}
+              >
+                Add recipe
+              </Button>
+            </MenuItem>
+            <Divider />
             <MenuItem onClick={handleClose}>
               <Button
                 color="inherit"
