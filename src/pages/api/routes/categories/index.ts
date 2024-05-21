@@ -14,34 +14,6 @@ export default async function handler(
         res.status(201).json({ data: JSON.parse(items) });
         break;
       }
-      case "POST": {
-        const newItem = req.body;
-        if (Object.keys(newItem).length === 0) {
-          throw `No body`;
-        }
-
-        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
-        items.unshift(newItem);
-
-        await fs.writeFile(itemsPath, JSON.stringify(items));
-        res.status(202).json(newItem);
-        break;
-      }
-      case "DELETE": {
-        const deletedName = req.body;
-        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
-
-        const deleteItemId = items.findIndex((item: string) => {
-          return item === deletedName;
-        });
-
-        const deleteItem = { ...items[deleteItemId] };
-        items.splice(deleteItemId, 1);
-        await fs.writeFile(itemsPath, JSON.stringify(items));
-
-        res.status(203).json(deleteItem);
-        break;
-      }
       case "PATCH": {
         if (Object.keys(req.body).length === 0) {
           throw `No body`;

@@ -33,7 +33,6 @@ const IconCategory = ({ category }: IconCategoryProps) => {
 
 interface CategoriesProps {
   categories: string[];
-  update: (_newCategory: string) => void;
 }
 
 const Categories = (props: CategoriesProps) => {
