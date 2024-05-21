@@ -24,6 +24,7 @@ export interface RecipeType {
   ingredients: IngredientType[];
   steps: string[];
   comments: CommentType[];
+  categoryId: number;
 }
 
 export const EmptyRecipe: RecipeType = {
@@ -37,4 +38,5 @@ export const EmptyRecipe: RecipeType = {
   ingredients: [],
   steps: [],
   comments: [],
+  categoryId: 0,
 };

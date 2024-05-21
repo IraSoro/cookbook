@@ -8,9 +8,16 @@ export async function getRequest() {
   return data;
 }
 
+export async function getRecipeParamRequest(categoryId: number) {
+  const getFetch = await fetch("http://localhost:3000/api/routes/recipes");
+  const response = await getFetch.json();
+  const data = await response.data;
+  return data.filter((item: RecipeType) => item.categoryId === categoryId);
+}
+
 export async function postAdditionRequest(
   newRecipe: RecipeType,
-  image: File | null,
+  image: File | null
 ) {
   // TODO: delete and rewrite this
   const recipes = await getRequest();
@@ -75,7 +82,7 @@ export async function deleteRequest(idx: number, imageName: string) {
 
 export async function patchEditRequest(
   newRecipe: RecipeType,
-  image: File | null,
+  image: File | null
 ) {
   const formData = new FormData();
   if (image) {

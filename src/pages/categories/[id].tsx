@@ -25,7 +25,7 @@ import { RecipeType } from "@/state/recipe-types";
 import { CategoryType } from "@/state/category-type";
 import AddCategoryDialog from "@/components/create-category-form";
 import {
-  getRequest,
+  getRecipeParamRequest,
   getCategories,
   deleteCategoryRequest,
   patchEditCategoryRequest,
@@ -179,7 +179,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const data = await getCategories();
 
   const category = data.find((item: CategoryType) => item.id.toString() === id);
-  const recipes = await getRequest();
+  const recipes = await getRecipeParamRequest(Number(id));
 
   return {
     props: {

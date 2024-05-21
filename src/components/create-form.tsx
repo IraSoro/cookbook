@@ -475,6 +475,7 @@ const CreationForm = (props: CreateRecipeProps) => {
       ingredients: ingredients,
       steps: steps,
       comments: props.editableRecipe?.comments || [],
+      categoryId: props.editableRecipe?.categoryId || 0,
     };
     props.update(newRecipe, image);
   };
