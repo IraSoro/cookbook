@@ -1,13 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { promises as fs } from "fs";
+import { CategoryType } from "@/state/category-type";
 
-import { RecipeType } from "@/state/recipe-types";
-
-const itemsPath = "./data/items.json";
+const itemsPath = "./data/categories.json";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   try {
     switch (req.method) {
@@ -30,19 +29,15 @@ export default async function handler(
         break;
       }
       case "DELETE": {
-        const idx = req.body;
+        const deletedId = req.body;
         const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
 
-        const deleteItemId = items.findIndex((item: RecipeType) => {
-          return item.id === idx;
+        const deleteItemIndex = items.findIndex((item: CategoryType) => {
+          return item.id === Number(deletedId);
         });
 
-        if (deleteItemId < 0) {
-          throw `Item with idx ${idx} not found.`;
-        }
-
-        const deleteItem = { ...items[deleteItemId] };
-        items.splice(deleteItemId, 1);
+        const deleteItem = { ...items[deleteItemIndex] };
+        items.splice(deleteItemIndex, 1);
         await fs.writeFile(itemsPath, JSON.stringify(items));
 
         res.status(203).json(deleteItem);
@@ -52,25 +47,25 @@ export default async function handler(
         if (Object.keys(req.body).length === 0) {
           throw `No body`;
         }
-        const newItem = req.body.item;
+        const editedItem = req.body.editedCategory;
         const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
 
-        const newItems = items.map((item: RecipeType) => {
-          if (item.id === newItem.id) {
-            return newItem;
+        const newItems = items.map((item: CategoryType) => {
+          if (item.id === editedItem.id) {
+            return editedItem;
           }
           return item;
         });
         await fs.writeFile(itemsPath, JSON.stringify(newItems));
 
-        res.status(205).json(newItem);
+        res.status(205).json(editedItem);
         break;
       }
       default: {
-        throw "unknown method";
+        res.status(405).json({ error: "Method not allowed" });
       }
     }
   } catch (err) {
-    res.status(400).json({ error: err });
+    res.status(500).json({ error: err });
   }
 }

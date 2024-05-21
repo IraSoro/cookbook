@@ -13,12 +13,12 @@ const Creation = () => {
 
   const handleAdd = async (newRecipe: RecipeType, image: File | null) => {
     await postAdditionRequest(newRecipe, image);
-    router.push("/recipes");
+    router.push("/home");
   };
 
   return (
     <main className={styles.backgroundPage}>
-      <CreationForm hrefBack="/recipes" update={handleAdd} />
+      <CreationForm hrefBack="/home" update={handleAdd} />
     </main>
   );
 };

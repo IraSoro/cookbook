@@ -101,7 +101,7 @@ const IngredientList = (props: IngredientListProps) => {
                   ingredient={ingredient}
                   delete={() => {
                     props.setIngredients(
-                      props.ingredients.filter((_, i) => i !== index)
+                      props.ingredients.filter((_, i) => i !== index),
                     );
                   }}
                 />
@@ -447,20 +447,20 @@ interface CreateRecipeProps {
 const CreationForm = (props: CreateRecipeProps) => {
   const [image, setImage] = useState<File | null>(null);
   const [recipeName, setRecipeName] = useState(
-    props.editableRecipe?.name || ""
+    props.editableRecipe?.name || "",
   );
   const [cookingTime, setCookingTime] = useState<CookingTimeType>(
     props.editableRecipe?.cookingTime || {
       time: 0,
       typeTime: "mins",
-    }
+    },
   );
   const [tags, setTags] = useState<string[]>(props.editableRecipe?.tags || []);
   const [ingredients, setIngredients] = useState<IngredientType[]>(
-    props.editableRecipe?.ingredients || []
+    props.editableRecipe?.ingredients || [],
   );
   const [steps, setSteps] = useState<string[]>(
-    props.editableRecipe?.steps || []
+    props.editableRecipe?.steps || [],
   );
 
   const handleSaveButton = () => {

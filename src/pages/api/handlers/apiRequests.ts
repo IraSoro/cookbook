@@ -1,7 +1,8 @@
 import { RecipeType } from "@/state/recipe-types";
+import { CategoryType } from "@/state/category-type";
 
 export async function getRequest() {
-  const getFetch = await fetch("http://localhost:3000/api/routes");
+  const getFetch = await fetch("http://localhost:3000/api/routes/recipes");
   const response = await getFetch.json();
   const data = await response.data;
   return data;
@@ -9,7 +10,7 @@ export async function getRequest() {
 
 export async function postAdditionRequest(
   newRecipe: RecipeType,
-  image: File | null
+  image: File | null,
 ) {
   // TODO: delete and rewrite this
   const recipes = await getRequest();
@@ -34,7 +35,7 @@ export async function postAdditionRequest(
       console.log(err);
     });
 
-  fetch("http://localhost:3000/api/routes", {
+  fetch("http://localhost:3000/api/routes/recipes", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newRecipe),
@@ -59,7 +60,7 @@ export async function deleteRequest(idx: number, imageName: string) {
       console.log(err);
     });
 
-  fetch("http://localhost:3000/api/routes", {
+  fetch("http://localhost:3000/api/routes/recipes", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(idx),
@@ -72,7 +73,10 @@ export async function deleteRequest(idx: number, imageName: string) {
     });
 }
 
-export async function patchEditRequest(newRecipe: RecipeType, image: File | null) {
+export async function patchEditRequest(
+  newRecipe: RecipeType,
+  image: File | null,
+) {
   const formData = new FormData();
   if (image) {
     newRecipe.image = `${newRecipe.id}.jpg`;
@@ -91,13 +95,66 @@ export async function patchEditRequest(newRecipe: RecipeType, image: File | null
       console.log(err);
     });
 
-  fetch("http://localhost:3000/api/routes", {
+  fetch("http://localhost:3000/api/routes/recipes", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ item: newRecipe }),
   })
     .then(() => {
       console.log(`Recipe id=${newRecipe.id} edited`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+export async function getCategories() {
+  const getFetch = await fetch("http://localhost:3000/api/routes/categories");
+  const response = await getFetch.json();
+  const data = await response.data;
+  return data;
+}
+
+export async function postAdditionCategoryRequest(newCategory: CategoryType) {
+  const categories = await getCategories();
+  const id = categories[0].id + 1;
+  newCategory.id = id;
+
+  fetch("http://localhost:3000/api/routes/categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newCategory),
+  })
+    .then(() => {
+      console.log("Category uploaded");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+export async function deleteCategoryRequest(idx: number) {
+  fetch("http://localhost:3000/api/routes/categories", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(idx),
+  })
+    .then(() => {
+      console.log(`Deleted id=${idx} category`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+export async function patchEditCategoryRequest(editedCategory: CategoryType) {
+  fetch("http://localhost:3000/api/routes/categories", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ editedCategory: editedCategory }),
+  })
+    .then(() => {
+      console.log(`Recipe id=${editedCategory.id} changed`);
     })
     .catch((err) => {
       console.log(err);
