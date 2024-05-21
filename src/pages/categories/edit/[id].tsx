@@ -7,7 +7,7 @@ import { TextField, Container, Stack, Button } from "@mui/material";
 
 import {
   getCategories,
-    patchEditCategoryRequest,
+  patchEditCategoryRequest,
 } from "@/pages/api/handlers/apiRequests";
 
 import "@/app/globals.css";

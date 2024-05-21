@@ -9,7 +9,7 @@ export async function getRequest() {
 
 export async function postAdditionRequest(
   newRecipe: RecipeType,
-  image: File | null
+  image: File | null,
 ) {
   // TODO: delete and rewrite this
   const recipes = await getRequest();
@@ -74,7 +74,7 @@ export async function deleteRequest(idx: number, imageName: string) {
 
 export async function patchEditRequest(
   newRecipe: RecipeType,
-  image: File | null
+  image: File | null,
 ) {
   const formData = new FormData();
   if (image) {
@@ -116,7 +116,7 @@ export async function getCategories() {
 
 export async function patchEditCategoryRequest(
   oldName: string,
-  newCategory: string
+  newCategory: string,
 ) {
   fetch("http://localhost:3000/api/routes/categories", {
     method: "PATCH",
