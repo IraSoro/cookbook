@@ -63,7 +63,7 @@ const CategoryPage = (props: Props) => {
         }}
       >
         <Toolbar style={{ justifyContent: "space-between" }}>
-          <IconButton href="/recipes" size="large" color="default">
+          <IconButton href="/home" size="large" color="default">
             <ArrowBackIosIcon />
           </IconButton>
           <IconButton
