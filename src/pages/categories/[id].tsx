@@ -21,13 +21,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import ItemsGrid from "@/components/item";
 
 import { RecipeType } from "@/state/recipe-types";
+import { CategoryType } from "@/state/category-type";
 import { getRequest, getCategories } from "../api/handlers/apiRequests";
 
 import "@/app/globals.css";
 import styles from "@/styles/utils.module.css";
 
 interface Props {
-  category: string;
+  category: CategoryType;
   recipes: RecipeType[];
 }
 
@@ -112,7 +113,7 @@ const CategoryPage = (props: Props) => {
               fontWeight: "bold",
             }}
           >
-            {props.category}
+            {props.category.name}
           </Typography>
           <ItemsGrid items={props.recipes} />
         </Stack>
@@ -123,8 +124,8 @@ const CategoryPage = (props: Props) => {
 
 export async function getStaticPaths() {
   const data = await getCategories();
-  const paths = data.map((category: string) => ({
-    params: { id: category },
+  const paths = data.map((category: CategoryType) => ({
+    params: { id: category.id.toString() },
   }));
 
   return {
@@ -142,7 +143,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const id = params.id;
   const data = await getCategories();
-  const category = data.find((item: string) => item.toString() === id);
+
+  const category = data.find((item: CategoryType) => item.id.toString() === id);
   const recipes = await getRequest();
 
   return {

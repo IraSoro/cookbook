@@ -1,4 +1,5 @@
 import { RecipeType } from "@/state/recipe-types";
+import { CategoryType } from "@/state/category-type";
 
 export async function getRequest() {
   const getFetch = await fetch("http://localhost:3000/api/routes/recipes");
@@ -9,7 +10,7 @@ export async function getRequest() {
 
 export async function postAdditionRequest(
   newRecipe: RecipeType,
-  image: File | null,
+  image: File | null
 ) {
   // TODO: delete and rewrite this
   const recipes = await getRequest();
@@ -74,7 +75,7 @@ export async function deleteRequest(idx: number, imageName: string) {
 
 export async function patchEditRequest(
   newRecipe: RecipeType,
-  image: File | null,
+  image: File | null
 ) {
   const formData = new FormData();
   if (image) {
@@ -114,7 +115,11 @@ export async function getCategories() {
   return data;
 }
 
-export async function postAdditionCategoryRequest(newCategory: string) {
+export async function postAdditionCategoryRequest(newCategory: CategoryType) {
+  const categories = await getCategories();
+  const id = categories[0].id + 1;
+  newCategory.id = id;
+
   fetch("http://localhost:3000/api/routes/categories", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -130,7 +135,7 @@ export async function postAdditionCategoryRequest(newCategory: string) {
 
 export async function patchEditCategoryRequest(
   oldName: string,
-  newCategory: string,
+  newCategory: CategoryType
 ) {
   fetch("http://localhost:3000/api/routes/categories", {
     method: "PATCH",

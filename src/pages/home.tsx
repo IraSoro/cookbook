@@ -6,6 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ItemsGrid from "../components/item";
 import Categories from "@/components/categories";
 import { RecipeType } from "@/state/recipe-types";
+import { CategoryType } from "@/state/category-type";
 
 import {
   getCategories,
@@ -17,13 +18,13 @@ import "../app/globals.css";
 
 interface PageProps {
   recipes: RecipeType[];
-  categories: string[];
+  categories: CategoryType[];
 }
 
 const Page = (props: PageProps) => {
-  const [categories, setCategories] = useState<string[]>(props.categories);
+  const [categories, setCategories] = useState<CategoryType[]>(props.categories);
 
-  function updateCategories(newCategory: string) {
+  function updateCategories(newCategory: CategoryType) {
     postAdditionCategoryRequest(newCategory);
     categories.unshift(newCategory);
     setCategories([...categories]);

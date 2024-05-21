@@ -16,15 +16,17 @@ import AddIcon from "@mui/icons-material/Add";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
+import { CategoryType } from "@/state/category-type";
+
 interface AddCategoryDialogProps {
   open: boolean;
   setOpen: (_open: boolean) => void;
 
-  updateCategories: (_newCategory: string) => void;
+  updateCategories: (_newCategory: CategoryType) => void;
 }
 
 const AddCategoryDialog = (props: AddCategoryDialogProps) => {
-  const [newCategory, setNewCategory] = useState("");
+  const [newCategoryName, setNewCategoryName] = useState("");
   return (
     <Dialog
       fullWidth
@@ -40,9 +42,9 @@ const AddCategoryDialog = (props: AddCategoryDialogProps) => {
           style={{ marginTop: "10px" }}
           label="New category"
           variant="outlined"
-          value={newCategory}
+          value={newCategoryName}
           onChange={(e) => {
-            setNewCategory(e.target.value);
+            setNewCategoryName(e.target.value);
           }}
         />
       </DialogContent>
@@ -56,8 +58,8 @@ const AddCategoryDialog = (props: AddCategoryDialogProps) => {
         </Button>
         <Button
           onClick={() => {
-            props.updateCategories(newCategory);
-            setNewCategory("");
+            props.updateCategories({ id: 0, name: newCategoryName });
+            setNewCategoryName("");
             props.setOpen(false);
           }}
         >
@@ -69,14 +71,14 @@ const AddCategoryDialog = (props: AddCategoryDialogProps) => {
 };
 
 interface CategoriesProps {
-  categories: string[];
-  update: (_newCategory: string) => void;
+  categories: CategoryType[];
+  update: (_newCategory: CategoryType) => void;
 }
 
 const Categories = (props: CategoriesProps) => {
   const defaultLimitCategories = 3;
   const [limitCategories, setLimitCategories] = useState(
-    defaultLimitCategories,
+    defaultLimitCategories
   );
   const [isSeeAll, setIsSeeAll] = useState(false);
 
@@ -152,10 +154,10 @@ const Categories = (props: CategoriesProps) => {
               }}
             >
               <Link
-                href={`/categories/${category}`}
+                href={`/categories/${category.id}`}
                 style={{ textDecoration: "none", color: "#000000" }}
               >
-                <Typography>{category}</Typography>
+                <Typography>{category.name}</Typography>
               </Link>
             </div>
           </Grid>
