@@ -31,8 +31,8 @@ interface Props {
 const RecipePage = ({ recipe }: Props) => {
   const router = useRouter();
   const handleDelete = async () => {
-    await deleteRequest(recipe.id, recipe.image);
     router.push("/home");
+    await deleteRequest(recipe.id, recipe.image);
   };
   const handleEdit = async () => {
     router.push(`/recipes/edit/${recipe.id}`);

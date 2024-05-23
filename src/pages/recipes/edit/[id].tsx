@@ -16,7 +16,7 @@ interface Props {
 const RecipePage = ({ recipe }: Props) => {
   const router = useRouter();
   const handleEdit = async (newRecipe: RecipeType, newImage: null | File) => {
-    patchEditRequest(newRecipe, newImage);
+    await patchEditRequest(newRecipe, newImage);
     router.push(`/recipes/${recipe.id}`);
   };
 

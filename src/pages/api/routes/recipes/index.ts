@@ -1,20 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { promises as fs } from "fs";
+import { createClient } from "@supabase/supabase-js";
 
-import { RecipeType } from "@/state/recipe-types";
+const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
 
-const itemsPath = "./data/items.json";
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   try {
     switch (req.method) {
       case "GET": {
-        const items = await fs.readFile(itemsPath, "utf8");
-        res.status(201).json({ data: JSON.parse(items) });
-        break;
+        const { data, error } = await supabase.from("Recipes").select("*");
+
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+        return res.status(200).json({ data });
       }
       case "POST": {
         const newItem = req.body;
@@ -22,49 +26,39 @@ export default async function handler(
           throw `No body`;
         }
 
-        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
-        items.unshift(newItem);
-
-        await fs.writeFile(itemsPath, JSON.stringify(items));
-        res.status(202).json(newItem);
-        break;
+        delete newItem.id;
+        const { data, error } = await supabase.from("Recipes").insert(newItem);
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+        return res.status(201).json({ data });
       }
       case "DELETE": {
         const idx = req.body;
-        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
+        const { data, error } = await supabase
+          .from("Recipes")
+          .delete()
+          .eq("id", idx);
 
-        const deleteItemId = items.findIndex((item: RecipeType) => {
-          return item.id === idx;
-        });
-
-        if (deleteItemId < 0) {
-          throw `Item with idx ${idx} not found.`;
+        if (error) {
+          return res.status(500).json({ error: error.message });
         }
-
-        const deleteItem = { ...items[deleteItemId] };
-        items.splice(deleteItemId, 1);
-        await fs.writeFile(itemsPath, JSON.stringify(items));
-
-        res.status(203).json(deleteItem);
-        break;
+        return res.status(202).json({ data });
       }
       case "PATCH": {
         if (Object.keys(req.body).length === 0) {
           throw `No body`;
         }
         const newItem = req.body.item;
-        const items = JSON.parse(await fs.readFile(itemsPath, "utf8"));
+        const { data, error } = await supabase
+          .from("Recipes")
+          .update(newItem)
+          .eq("id", newItem.id);
 
-        const newItems = items.map((item: RecipeType) => {
-          if (item.id === newItem.id) {
-            return newItem;
-          }
-          return item;
-        });
-        await fs.writeFile(itemsPath, JSON.stringify(newItems));
-
-        res.status(205).json(newItem);
-        break;
+        if (error) {
+          return res.status(500).json({ error: error.message });
+        }
+        return res.status(203).json({ data });
       }
       default: {
         throw "unknown method";
