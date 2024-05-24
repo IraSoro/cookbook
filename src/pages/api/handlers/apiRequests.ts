@@ -20,13 +20,13 @@ export async function postAdditionRequest(
   image: File | null
 ) {
   // TODO: delete and rewrite this
-  const recipes = await getRequest();
-  const id = recipes[0].id + 1;
-  newRecipe.id = id;
+  // const recipes = await getRequest();
+  // const id = recipes[0].id + 1;
+  // newRecipe.id = id;
 
   const formData = new FormData();
   if (image) {
-    newRecipe.image = `${id}.jpg`;
+    newRecipe.image = `${newRecipe.name}.jpg`;
     formData.append("filename", newRecipe.image);
     formData.append("image", image);
   }
@@ -123,10 +123,6 @@ export async function getCategories() {
 }
 
 export async function postAdditionCategoryRequest(newCategory: CategoryType) {
-  const categories = await getCategories();
-  const id = categories[0].id + 1;
-  newCategory.id = id;
-
   fetch("http://localhost:3000/api/routes/categories", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

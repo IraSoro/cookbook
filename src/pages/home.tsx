@@ -26,9 +26,9 @@ const Page = (props: PageProps) => {
     props.categories,
   );
 
-  function updateCategories(newCategory: CategoryType) {
-    postAdditionCategoryRequest(newCategory);
-    categories.unshift(newCategory);
+  const updateCategories = async (newCategory: CategoryType) => {
+    await postAdditionCategoryRequest(newCategory);
+    categories.push(newCategory);
     setCategories([...categories]);
   }
 
