@@ -12,6 +12,8 @@ import Image from "next/image";
 
 import { RecipeType } from "@/state/recipe-types";
 
+import { getImageURL } from "@/pages/api/handlers/apiRequests";
+
 interface PropsItem {
   item: RecipeType;
   idx: number;
@@ -26,20 +28,13 @@ const Item = (props: PropsItem) => {
       setImage(defaultImage);
       return;
     }
-    const imageUrl = `/data/${props.item.image}`;
 
-    fetch(imageUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.blob();
+    getImageURL(props.item.image)
+      .then((res) => {
+        setImage(res);
       })
-      .then((blob) => {
-        setImage(URL.createObjectURL(blob));
-      })
-      .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
+      .catch((err) => {
+        console.log(err);
       });
   }, [props.item]);
 
@@ -83,11 +78,13 @@ interface PropsItems {
 const ItemsGrid = (props: PropsItems) => {
   return (
     <Grid container spacing={{ xs: 1, md: 2 }}>
-      {Array.from(props.items).map((item, idx) => (
-        <Grid item xs={6} sm={6} md={4} key={idx}>
-          <Item item={item} idx={idx} />
-        </Grid>
-      ))}
+      {Array.from(props.items)
+        .reverse()
+        .map((item, idx) => (
+          <Grid item xs={6} sm={6} md={4} key={idx}>
+            <Item item={item} idx={idx} />
+          </Grid>
+        ))}
     </Grid>
   );
 };

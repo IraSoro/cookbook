@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Chip,
@@ -27,6 +27,7 @@ import {
   CommentType,
   CookingTimeType,
 } from "@/state/recipe-types";
+import { getImageURL } from "@/pages/api/handlers/apiRequests";
 
 interface IngredientProps {
   ingredient: IngredientType;
@@ -239,6 +240,19 @@ interface ItemProps {
 }
 
 const Recipe = ({ recipe }: ItemProps) => {
+  const defaultImage = "/default.jpg";
+  const [image, setImage] = useState(defaultImage);
+
+  useEffect(() => {
+    getImageURL(recipe.image)
+      .then((res) => {
+        setImage(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+
   return (
     <Container>
       <Stack spacing={2} alignItems="center">
@@ -288,7 +302,7 @@ const Recipe = ({ recipe }: ItemProps) => {
                   }}
                   height={0}
                   width={0}
-                  src={`/data/${recipe.image}`}
+                  src={image}
                   alt={recipe.name}
                   loading="lazy"
                 />

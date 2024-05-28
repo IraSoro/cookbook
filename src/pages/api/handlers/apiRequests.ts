@@ -19,40 +19,39 @@ export async function postAdditionRequest(
   newRecipe: RecipeType,
   image: File | null
 ) {
-  // TODO: delete and rewrite this
-  // const recipes = await getRequest();
-  // const id = recipes[0].id + 1;
-  // newRecipe.id = id;
-
   const formData = new FormData();
   if (image) {
-    newRecipe.image = `${newRecipe.name}.jpg`;
+    newRecipe.image = `${newRecipe.id}.jpg`;
     formData.append("filename", newRecipe.image);
     formData.append("image", image);
   }
 
-  fetch("http://localhost:3000/api/images", {
+  const recipeResponse = await fetch(
+    "http://localhost:3000/api/routes/recipes",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newRecipe),
+    }
+  );
+  if (!recipeResponse.ok) {
+    console.log("Error " + recipeResponse.status);
+    return;
+  } else {
+    console.log("Recipe uploaded");
+  }
+
+  const imageResponse = await fetch("http://localhost:3000/api/images", {
     method: "POST",
     body: formData,
-  })
-    .then(() => {
-      console.log("Image uploaded");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  });
 
-  fetch("http://localhost:3000/api/routes/recipes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newRecipe),
-  })
-    .then(() => {
-      console.log("Recipe uploaded");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  if (!imageResponse.ok) {
+    console.log("Error " + imageResponse.status);
+    return;
+  } else {
+    console.log("Image uploaded");
+  }
 }
 
 export async function deleteRequest(idx: number, imageName: string) {
@@ -162,4 +161,19 @@ export async function patchEditCategoryRequest(editedCategory: CategoryType) {
     .catch((err) => {
       console.log(err);
     });
+}
+
+export async function getImageURL(filename: string) {
+  const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL + filename;
+
+  fetch(imageUrl)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
+    return imageUrl;
 }
