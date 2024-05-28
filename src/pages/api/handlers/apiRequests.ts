@@ -94,35 +94,42 @@ export async function patchEditRequest(
   newRecipe: RecipeType,
   image: File | null
 ) {
-  const formData = new FormData();
-  if (image) {
-    newRecipe.image = `${newRecipe.id}.jpg`;
-    formData.append("filename", newRecipe.image);
-    formData.append("image", image);
-  }
+  try {
+    const recipeResponse = await fetch(
+      "http://localhost:3000/api/routes/recipes",
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item: newRecipe }),
+      }
+    );
 
-  fetch("http://localhost:3000/api/images", {
-    method: "PATCH",
-    body: formData,
-  })
-    .then(() => {
+    if (!recipeResponse.ok) {
+      throw new Error(`Failed to edit recipe id=${newRecipe.id}`);
+    }
+
+    console.log(`Recipe id=${newRecipe.id} edited`);
+
+    if (image) {
+      const formData = new FormData();
+      newRecipe.image = `${newRecipe.id}.jpg`;
+      formData.append("filename", newRecipe.image);
+      formData.append("image", image);
+
+      const imageResponse = await fetch("http://localhost:3000/api/images", {
+        method: "PATCH",
+        body: formData,
+      });
+
+      if (!imageResponse.ok) {
+        throw new Error("Failed to edit image");
+      }
+
       console.log("Image edited");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-  fetch("http://localhost:3000/api/routes/recipes", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ item: newRecipe }),
-  })
-    .then(() => {
-      console.log(`Recipe id=${newRecipe.id} edited`);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function getCategories() {

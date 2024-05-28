@@ -75,49 +75,53 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-// export async function PATCH(req: NextRequest) {
-//   const form = await req.formData();
+export async function PATCH(req: NextRequest) {
+  try {
+    const form = await req.formData();
 
-//   if (!form.has("image")) {
-//     return Response.json(
-//       { status: "'image' field is null" },
-//       {
-//         status: 500,
-//       }
-//     );
-//   }
+    if (!form.has("image") || !form.has("filename")) {
+      return NextResponse.json(
+        { status: "Missing 'image' or 'filename' field" },
+        { status: 400 }
+      );
+    }
 
-//   const filename = form.get("filename") as string;
-//   const file = form.get("image") as File;
+    const filename = form.get("filename") as string;
+    const file = form.get("image") as File;
 
-//   if (!file) {
-//     return Response.json(
-//       { status: "image data is null" },
-//       {
-//         status: 500,
-//       }
-//     );
-//   }
+    const { error: deleteError } = await supabase.storage
+      .from("cookbook-image")
+      .remove([`public/${filename}`]);
 
-//   const filePath = path + filename;
-//   await fs.unlink(filePath).catch((err) => {
-//     return Response.json(
-//       { error: err },
-//       {
-//         status: 500,
-//       }
-//     );
-//   });
+    if (deleteError) {
+      console.error("Error deleting old image:", deleteError);
+      return NextResponse.json(
+        { success: false, error: deleteError.message },
+        { status: 500 }
+      );
+    }
 
-//   await fs.writeFile(
-//     `${path}${filename}`,
-//     new Uint8Array(await file.arrayBuffer())
-//   );
+    const { data, error: uploadError } = await supabase.storage
+      .from("cookbook-image")
+      .upload(`public/${filename}`, file);
 
-//   return Response.json(
-//     { status: "Success" },
-//     {
-//       status: 200,
-//     }
-//   );
-// }
+    if (uploadError) {
+      console.error("Error uploading new image:", uploadError);
+      return NextResponse.json(
+        { success: false, error: uploadError.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, data },
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error("Error processing request:", err);
+    return NextResponse.json(
+      { success: false, error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}

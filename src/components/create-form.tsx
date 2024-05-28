@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState, memo } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import {
   Box,
@@ -32,7 +32,7 @@ import {
   CookingTimeType,
   IngredientType,
 } from "@/state/recipe-types";
-import { getCategories } from "@/pages/api/handlers/apiRequests";
+import { getCategories, getImageURL } from "@/pages/api/handlers/apiRequests";
 import { CategoryType } from "@/state/category-type";
 
 interface IngredientProps {
@@ -333,22 +333,35 @@ interface ImageProps {
   editableImage: string;
 }
 
-const CreateImage = memo(function CreateImage(props: ImageProps) {
+const CreateImage = (props: ImageProps) => {
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
     if (props.editableImage === "") return;
-    //TODO: write a request to the future storage
-    fetch(`/data/${props.editableImage}`)
-      .then((response) => response.blob())
+    if (!isFirstRender.current) {
+      return;
+    } else {
+      isFirstRender.current = false;
+    }
+
+    getImageURL(props.editableImage)
+      .then((url) => {
+        return fetch(url);
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch image");
+        }
+        return response.blob();
+      })
       .then((blob) => {
-        const file = new File([blob], props.editableImage || "", {
-          type: "image/jpeg",
-        });
+        const file = new File([blob], props.editableImage, { type: blob.type });
         props.setImage(file);
       })
-      .catch((error) => {
-        console.error("Failed to load default image:", error);
+      .catch((err) => {
+        console.error("Error:", err);
       });
-  }, [props.editableImage]);
+  }, [props]);
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -395,7 +408,7 @@ const CreateImage = memo(function CreateImage(props: ImageProps) {
       </label>
     </Box>
   );
-});
+};
 
 interface CookingTimeProps {
   cookingTime: CookingTimeType;
