@@ -39,43 +39,41 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json(
-      { status: "Success" },
-      { status: 200 }
-    );
+    return NextResponse.json({ status: "Success" }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ status: `Error ${err}` }, { status: 500 });
   }
 }
 
-// export async function DELETE(req: NextRequest) {
-//   const imageName = await req.json();
-//   if (imageName === "") {
-//     return Response.json(
-//       { status: "no image name" },
-//       {
-//         status: 500,
-//       }
-//     );
-//   }
+export async function DELETE(req: NextRequest) {
+  try {
+    const imageName = await req.json();
 
-//   const filePath = path + imageName;
-//   await fs.unlink(filePath).catch((err) => {
-//     return Response.json(
-//       { error: err },
-//       {
-//         status: 500,
-//       }
-//     );
-//   });
+    if (!imageName || imageName.trim() === "") {
+      return NextResponse.json({ status: "no image name" }, { status: 400 });
+    }
 
-//   return Response.json(
-//     { status: "Success" },
-//     {
-//       status: 200,
-//     }
-//   );
-// }
+    const { data, error } = await supabase.storage
+      .from("cookbook-image")
+      .remove([`public/${imageName}`]);
+
+    if (error) {
+      console.error("Error deleting image:", error);
+      return NextResponse.json(
+        { success: false, error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true, data }, { status: 200 });
+  } catch (err) {
+    console.error("Error processing request:", err);
+    return NextResponse.json(
+      { success: false, error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
 
 // export async function PATCH(req: NextRequest) {
 //   const form = await req.formData();

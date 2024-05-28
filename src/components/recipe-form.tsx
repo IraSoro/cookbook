@@ -244,6 +244,9 @@ const Recipe = ({ recipe }: ItemProps) => {
   const [image, setImage] = useState(defaultImage);
 
   useEffect(() => {
+    if (recipe.image === "") {
+      return;
+    }
     getImageURL(recipe.image)
       .then((res) => {
         setImage(res);
