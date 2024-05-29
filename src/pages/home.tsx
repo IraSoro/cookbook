@@ -1,7 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
-import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
+  Divider,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import ItemsGrid from "../components/item";
 import Categories from "@/components/categories";
@@ -22,15 +33,42 @@ interface PageProps {
 }
 
 const Page = (props: PageProps) => {
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState(null);
   const [categories, setCategories] = useState<CategoryType[]>(
-    props.categories,
+    props.categories
   );
+
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (!username) {
+      router.push("/auth");
+    }
+  }, [router]);
 
   const updateCategories = async (newCategory: CategoryType) => {
     await postAdditionCategoryRequest(newCategory);
     categories.push(newCategory);
     setCategories([...categories]);
-  }
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAddRecipe = () => {
+    router.push("/recipes/create");
+    handleMenuClose();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    router.push("/recipes");
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
@@ -47,11 +85,28 @@ const Page = (props: PageProps) => {
             My Recipes
           </Typography>
           <IconButton
-            style={{ backgroundColor: "#fefefe" }}
-            href="/recipes/create"
+            edge="start"
+            color="default"
+            aria-label="menu"
+            onClick={handleMenuOpen}
           >
-            <AddIcon />
+            <MenuIcon />
           </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleAddRecipe}>
+              <AddIcon />
+              Added recipe
+            </MenuItem>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <LogoutIcon />
+              Logout
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
       <div style={{ margin: "20px 10px 0", maxWidth: "1000px" }}>

@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
@@ -15,6 +17,14 @@ interface Props {
 
 const RecipePage = ({ recipe }: Props) => {
   const router = useRouter();
+
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (!username) {
+      router.push("/auth");
+    }
+  }, [router]);
+
   const handleEdit = async (newRecipe: RecipeType, newImage: null | File) => {
     await patchEditRequest(newRecipe, newImage);
     router.push(`/recipes/${recipe.id}`);

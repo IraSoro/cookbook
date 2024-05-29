@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -30,6 +30,15 @@ interface Props {
 
 const RecipePage = ({ recipe }: Props) => {
   const router = useRouter();
+  const [isShowMenu, setIsShowMenu] = useState(false);
+
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (username && username === recipe.username) {
+      setIsShowMenu(true);
+    }
+  }, [recipe.username]);
+
   const handleDelete = async () => {
     router.push("/home");
     await deleteRequest(recipe.id, recipe.image);
@@ -55,21 +64,25 @@ const RecipePage = ({ recipe }: Props) => {
         }}
       >
         <Toolbar style={{ justifyContent: "space-between" }}>
-          <IconButton href="/recipes" size="large" color="default">
-            <ArrowBackIosIcon />
-          </IconButton>
-          <IconButton
-            size="large"
-            color="default"
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={(event) => {
-              setAnchorEl(event.currentTarget);
-            }}
-          >
-            <MoreIcon />
-          </IconButton>
+          {isShowMenu && (
+            <>
+              <IconButton href="/recipes" size="large" color="default">
+                <ArrowBackIosIcon />
+              </IconButton>
+              <IconButton
+                size="large"
+                color="default"
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={(event) => {
+                  setAnchorEl(event.currentTarget);
+                }}
+              >
+                <MoreIcon />
+              </IconButton>
+            </>
+          )}
           <Menu
             id="basic-menu"
             anchorEl={anchorEl}

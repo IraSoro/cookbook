@@ -39,7 +39,7 @@ const Page = ({ data }: PageProps) => {
   }
 
   const handleHomeClick = () => {
-    const localStorageData = localStorage.getItem("userData");
+    const localStorageData = localStorage.getItem("username");
     if (localStorageData) {
       router.push("/home");
     } else {

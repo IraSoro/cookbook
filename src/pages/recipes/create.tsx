@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 import CreationForm from "@/components/create-form";
@@ -14,6 +15,13 @@ interface CreationProps {
 
 const Creation = ({ data }: CreationProps) => {
   const router = useRouter();
+
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    if (!username) {
+      router.push("/auth");
+    }
+  }, [router]);
 
   const handleAdd = async (newRecipe: RecipeType, image: File | null) => {
     if (data.length > 0) {
