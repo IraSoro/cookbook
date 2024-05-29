@@ -88,7 +88,6 @@ const LoginForm = () => {
 };
 
 const RegisterForm = () => {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -101,7 +100,6 @@ const RegisterForm = () => {
   const [message, setMessage] = useState("");
 
   function clear() {
-    setUsername("");
     setEmail("");
     setPassword("");
   }
@@ -132,17 +130,6 @@ const RegisterForm = () => {
       <Typography style={{ textAlign: "center" }} variant="h5">
         Welcome
       </Typography>
-      <TextField
-        label="Username"
-        variant="outlined"
-        value={username}
-        required
-        fullWidth
-        onChange={(e) => setUsername(e.target.value)}
-        onFocus={() => {
-          setMessage("");
-        }}
-      />
       <TextField
         label="Email"
         variant="outlined"
