@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   IconButton,
@@ -6,8 +7,10 @@ import {
   InputAdornment,
   Box,
   Grid,
+  Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import HomeIcon from "@mui/icons-material/Home";
 
 import { debounce } from "../data/utils";
 
@@ -24,6 +27,8 @@ interface PageProps {
 }
 
 const Page = ({ data }: PageProps) => {
+  const router = useRouter();
+
   const [search, setSearch] = useState("");
   const [tags, setTags] = useState<string[]>([]);
 
@@ -32,6 +37,15 @@ const Page = ({ data }: PageProps) => {
       setSearch(event.target.value);
     }, 1 * 1000);
   }
+
+  const handleHomeClick = () => {
+    const localStorageData = localStorage.getItem("userData");
+    if (localStorageData) {
+      router.push("/home");
+    } else {
+      router.push("/auth");
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
@@ -43,6 +57,16 @@ const Page = ({ data }: PageProps) => {
           marginRight: "10px",
         }}
       >
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="text"
+            startIcon={<HomeIcon />}
+            sx={{ color: "black" }}
+            onClick={handleHomeClick}
+          >
+            Home
+          </Button>
+        </div>
         <Grid
           container
           spacing={1}
