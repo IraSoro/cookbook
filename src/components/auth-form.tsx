@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   TextField,
@@ -11,14 +12,38 @@ import {
 } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 
-interface LoginProps {
-  handleLogin: () => void;
-}
+const LoginForm = () => {
+  const router = useRouter();
 
-const LoginForm = ({ handleLogin }: LoginProps) => {
-  const [emailAddress, setEmailAddress] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+
+  function clear() {
+    setEmail("");
+    setPassword("");
+  }
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setMessage("Not all fields are filled in");
+      return;
+    }
+    const response = await fetch("/api/routes/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (data.hasOwnProperty("error")) {
+      setMessage(data.error);
+    } else {
+      clear();
+      router.push("/home");
+    }
+  };
 
   return (
     <Stack spacing={2} style={{ marginTop: "20px" }}>
@@ -28,10 +53,10 @@ const LoginForm = ({ handleLogin }: LoginProps) => {
       <TextField
         label="Email"
         variant="outlined"
-        value={emailAddress}
+        value={email}
         required
         fullWidth
-        onChange={(e) => setEmailAddress(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
         onFocus={() => {
           setMessage("");
         }}
@@ -55,20 +80,16 @@ const LoginForm = ({ handleLogin }: LoginProps) => {
         onClick={handleLogin}
         style={{ boxShadow: "none", backgroundColor: "#e0e0e0" }}
       >
-        Lon in
+        Log in
       </Button>
-      <Typography color="#8B0000">{message}</Typography>
+      <Typography color={"#8B0000"}>{message}</Typography>
     </Stack>
   );
 };
 
-interface RegisterProps {
-  handleRegister: () => void;
-}
-
-const RegisterForm = (props: RegisterProps) => {
+const RegisterForm = () => {
   const [username, setUsername] = useState("");
-  const [emailAddress, setEmailAddress] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   /* eslint-disable */
@@ -81,17 +102,29 @@ const RegisterForm = (props: RegisterProps) => {
 
   function clear() {
     setUsername("");
-    setEmailAddress("");
+    setEmail("");
     setPassword("");
   }
   /* eslint-enable */
 
   const handleRegister = async () => {
-    if (!username || !emailAddress || !password) {
+    if (!email || !password) {
       setMessage(Messages.NotFilled);
       return;
     }
-    props.handleRegister();
+    const response = await fetch("/api/routes/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    if (data.hasOwnProperty("error")) {
+      setMessage(data.error);
+    } else {
+      setMessage(Messages.Successfully);
+      clear();
+      // router.push("/login");
+    }
   };
 
   return (
@@ -113,10 +146,10 @@ const RegisterForm = (props: RegisterProps) => {
       <TextField
         label="Email"
         variant="outlined"
-        value={emailAddress}
+        value={email}
         required
         fullWidth
-        onChange={(e) => setEmailAddress(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
         onFocus={() => {
           setMessage("");
         }}
@@ -151,12 +184,7 @@ const RegisterForm = (props: RegisterProps) => {
   );
 };
 
-interface AuthFormProps {
-  handleLogin: () => void;
-  handleRegister: () => void;
-}
-
-const AuthForm = (props: AuthFormProps) => {
+const AuthForm = () => {
   const [value, setValue] = useState("1");
 
   return (
@@ -191,10 +219,10 @@ const AuthForm = (props: AuthFormProps) => {
             </TabList>
           </Box>
           <TabPanel value="1">
-            <LoginForm handleLogin={props.handleLogin} />
+            <LoginForm />
           </TabPanel>
           <TabPanel value="2">
-            <RegisterForm handleRegister={props.handleRegister} />
+            <RegisterForm />
           </TabPanel>
         </TabContext>
       </Container>
