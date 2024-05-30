@@ -40,6 +40,7 @@ const LoginForm = () => {
     if (data.hasOwnProperty("error")) {
       setMessage(data.error);
     } else {
+      localStorage.setItem("username", email);
       clear();
       router.push("/home");
     }

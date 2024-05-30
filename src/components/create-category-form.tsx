@@ -21,7 +21,7 @@ interface AddCategoryDialogProps {
 
 const AddCategoryDialog = (props: AddCategoryDialogProps) => {
   const [newCategoryName, setNewCategoryName] = useState(
-    props.editedCategory?.name || "",
+    props.editedCategory?.name || ""
   );
 
   return (
@@ -62,6 +62,10 @@ const AddCategoryDialog = (props: AddCategoryDialogProps) => {
             props.updateCategories({
               id: props.editedCategory?.id || 0,
               name: newCategoryName,
+              username:
+                props.editedCategory?.username ||
+                localStorage.getItem("username") ||
+                "username",
             });
             setNewCategoryName("");
             props.setOpen(false);

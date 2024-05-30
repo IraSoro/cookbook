@@ -529,7 +529,10 @@ const CreationForm = (props: CreateRecipeProps) => {
       name: recipeName,
       image: props.editableRecipe?.image || "",
       tags: tags,
-      username: props.editableRecipe?.username || "username",
+      username:
+        props.editableRecipe?.username ||
+        localStorage.getItem("username") ||
+        "username",
       cookingTime: cookingTime,
       likes: props.editableRecipe?.likes || 0,
       ingredients: ingredients,
