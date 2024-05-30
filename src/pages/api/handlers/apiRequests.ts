@@ -1,7 +1,7 @@
 import { RecipeType } from "@/state/recipe-types";
 import { CategoryType } from "@/state/category-type";
 
-const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const baseURL = process.env.API_BASE_URL;
 
 export async function getRequest() {
   const getFetch = await fetch(`${baseURL}/api/routes/recipes`);
