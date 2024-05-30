@@ -34,7 +34,7 @@ interface PageProps {
 
 const Page = (props: PageProps) => {
   const router = useRouter();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [categories, setCategories] = useState<CategoryType[]>(
     props.categories
   );
@@ -52,7 +52,7 @@ const Page = (props: PageProps) => {
     setCategories([...categories]);
   };
 
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
