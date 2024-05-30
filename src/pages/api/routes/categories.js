@@ -1,4 +1,3 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
@@ -6,10 +5,7 @@ const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(req, res) {
   try {
     switch (req.method) {
       case "GET": {
@@ -27,11 +23,13 @@ export default async function handler(
         }
 
         delete newItem.id;
-        const { data, error } = await supabase.from("Categories").insert(newItem);
+        const { data, error } = await supabase
+          .from("Categories")
+          .insert(newItem);
         if (error) {
           return res.status(500).json({ error: error.message });
         }
-        return res.status(201).json({ data });;
+        return res.status(201).json({ data });
       }
       case "DELETE": {
         const idx = req.body;
