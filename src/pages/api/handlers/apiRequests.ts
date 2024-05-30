@@ -138,7 +138,7 @@ export async function getCategories() {
   const getFetch = await fetch(`${baseURL}/api/routes/categories`);
   const response = await getFetch.json();
   const data = await response.data;
-  return data;
+  return data.reverse();
 }
 
 export async function postAdditionCategoryRequest(newCategory: CategoryType) {
