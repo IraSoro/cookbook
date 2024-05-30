@@ -1,15 +1,17 @@
 import { RecipeType } from "@/state/recipe-types";
 import { CategoryType } from "@/state/category-type";
 
+const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function getRequest() {
-  const getFetch = await fetch("http://localhost:3000/api/routes/recipes");
+  const getFetch = await fetch(`${baseURL}/api/routes/recipes`);
   const response = await getFetch.json();
   const data = await response.data;
   return data;
 }
 
 export async function getRecipeParamRequest(categoryId: number) {
-  const getFetch = await fetch("http://localhost:3000/api/routes/recipes");
+  const getFetch = await fetch(`${baseURL}/api/routes/recipes`);
   const response = await getFetch.json();
   const data = await response.data;
   return data.filter((item: RecipeType) => item.categoryId === categoryId);
@@ -27,7 +29,7 @@ export async function postAdditionRequest(
   }
 
   const recipeResponse = await fetch(
-    "http://localhost:3000/api/routes/recipes",
+    `${baseURL}/api/routes/recipes`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -41,7 +43,7 @@ export async function postAdditionRequest(
     console.log("Recipe uploaded");
   }
 
-  const imageResponse = await fetch("http://localhost:3000/api/images", {
+  const imageResponse = await fetch(`${baseURL}/api/images`, {
     method: "POST",
     body: formData,
   });
@@ -57,7 +59,7 @@ export async function postAdditionRequest(
 export async function deleteRequest(idx: number, imageName: string) {
   try {
     const recipeResponse = await fetch(
-      "http://localhost:3000/api/routes/recipes",
+      `${baseURL}/api/routes/recipes`,
       {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -75,7 +77,7 @@ export async function deleteRequest(idx: number, imageName: string) {
       return;
     }
 
-    const imageResponse = await fetch("http://localhost:3000/api/images", {
+    const imageResponse = await fetch(`${baseURL}/api/images`, {
       method: "DELETE",
       body: JSON.stringify(imageName),
     });
@@ -96,7 +98,7 @@ export async function patchEditRequest(
 ) {
   try {
     const recipeResponse = await fetch(
-      "http://localhost:3000/api/routes/recipes",
+      `${baseURL}/api/routes/recipes`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -116,7 +118,7 @@ export async function patchEditRequest(
       formData.append("filename", newRecipe.image);
       formData.append("image", image);
 
-      const imageResponse = await fetch("http://localhost:3000/api/images", {
+      const imageResponse = await fetch(`${baseURL}/api/images`, {
         method: "PATCH",
         body: formData,
       });
@@ -133,14 +135,14 @@ export async function patchEditRequest(
 }
 
 export async function getCategories() {
-  const getFetch = await fetch("http://localhost:3000/api/routes/categories");
+  const getFetch = await fetch(`${baseURL}/api/routes/categories`);
   const response = await getFetch.json();
   const data = await response.data;
   return data;
 }
 
 export async function postAdditionCategoryRequest(newCategory: CategoryType) {
-  fetch("http://localhost:3000/api/routes/categories", {
+  fetch(`${baseURL}/api/routes/categories`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newCategory),
@@ -154,7 +156,7 @@ export async function postAdditionCategoryRequest(newCategory: CategoryType) {
 }
 
 export async function deleteCategoryRequest(idx: number) {
-  fetch("http://localhost:3000/api/routes/categories", {
+  fetch(`${baseURL}/api/routes/categories`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(idx),
@@ -168,7 +170,7 @@ export async function deleteCategoryRequest(idx: number) {
 }
 
 export async function patchEditCategoryRequest(editedCategory: CategoryType) {
-  fetch("http://localhost:3000/api/routes/categories", {
+  fetch(`${baseURL}/api/routes/categories`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ editedCategory: editedCategory }),
