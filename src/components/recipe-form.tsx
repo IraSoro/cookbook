@@ -303,8 +303,8 @@ const Recipe = ({ recipe }: ItemProps) => {
                     width: "100%",
                     height: "100%",
                   }}
-                  height={0}
-                  width={0}
+                  height={450}
+                  width={350}
                   src={image}
                   alt={recipe.name}
                   loading="lazy"
