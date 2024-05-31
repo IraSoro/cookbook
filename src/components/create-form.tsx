@@ -523,6 +523,20 @@ const CreationForm = (props: CreateRecipeProps) => {
     props.editableRecipe?.categoryId || Number(query.categoryId) || 0
   );
 
+  useEffect(() => {
+    setRecipeName(props.editableRecipe?.name || "");
+    setCookingTime(
+      props.editableRecipe?.cookingTime || {
+        time: 0,
+        typeTime: "mins",
+      }
+    );
+    setTags(props.editableRecipe?.tags || []);
+    setIngredients(props.editableRecipe?.ingredients || []);
+    setSteps(props.editableRecipe?.steps || []);
+    setCategory(props.editableRecipe?.categoryId || 0);
+  }, [props.editableRecipe]);
+
   const handleSaveButton = () => {
     const newRecipe: RecipeType = {
       id: props.editableRecipe?.id || 0,
