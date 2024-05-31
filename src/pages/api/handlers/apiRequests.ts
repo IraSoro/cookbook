@@ -26,28 +26,28 @@ export async function postAdditionRequest(
     formData.append("image", image);
   }
 
-  const recipeResponse = await fetch("/api/routes/recipes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newRecipe),
-  });
-  if (!recipeResponse.ok) {
-    console.log("Error " + recipeResponse.status);
-    return;
-  } else {
-    console.log("Recipe uploaded");
-  }
+  try {
+    await fetch("/api/routes/recipes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newRecipe),
+    }).then(() => {
+      console.log("Recipe uploaded");
+    });
 
-  const imageResponse = await fetch("/api/images", {
-    method: "POST",
-    body: formData,
-  });
+    await fetch("/api/images", {
+      method: "POST",
+      body: formData,
+    })
+      .then(() => {
+        console.log("Image uploaded: ");
+      })
+      .catch((err) => {
+        console.log("Error = ", err);
+      });
 
-  if (!imageResponse.ok) {
-    console.log("Error " + imageResponse.status);
-    return;
-  } else {
-    console.log("Image uploaded");
+  } catch (err) {
+    console.log(err);
   }
 }
 
