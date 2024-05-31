@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import CreationForm from "@/components/create-form";
@@ -9,18 +9,19 @@ import { postAdditionRequest, getRequest } from "../api/handlers/apiRequests";
 import "@/app/globals.css";
 import styles from "@/styles/utils.module.css";
 
-interface CreationProps {
-  data: RecipeType[];
-}
-
-const Creation = ({ data }: CreationProps) => {
+const Creation = () => {
   const router = useRouter();
+  const [data, setData] = useState<RecipeType[]>([]);
 
   useEffect(() => {
     const username = localStorage.getItem("username");
     if (!username) {
       router.push("/auth");
     }
+
+    getRequest().then((res) => {
+      setData(res);
+    });
   }, [router]);
 
   const handleAdd = async (newRecipe: RecipeType, image: File | null) => {
@@ -39,21 +40,5 @@ const Creation = ({ data }: CreationProps) => {
     </main>
   );
 };
-
-export async function getStaticProps() {
-  const data = await getRequest();
-
-  if (!data) {
-    return {
-      notFound: true,
-    };
-  }
-
-  return {
-    props: {
-      data: data,
-    },
-  };
-}
 
 export default Creation;

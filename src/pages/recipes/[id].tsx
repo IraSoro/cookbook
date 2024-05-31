@@ -19,17 +19,18 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import Recipe from "@/components/recipe-form";
 import { getRequest, deleteRequest } from "../api/handlers/apiRequests";
-import { RecipeType } from "@/state/recipe-types";
+import { RecipeType, EmptyRecipe } from "@/state/recipe-types";
 
 import "@/app/globals.css";
 import styles from "@/styles/utils.module.css";
 
 interface Props {
-  recipe: RecipeType;
+  id: string;
 }
 
-const RecipePage = ({ recipe }: Props) => {
+const RecipePage = ({ id }: Props) => {
   const router = useRouter();
+  const [recipe, setRecipe] = useState<RecipeType>(EmptyRecipe);
   const [isShowMenu, setIsShowMenu] = useState(false);
 
   useEffect(() => {
@@ -37,6 +38,9 @@ const RecipePage = ({ recipe }: Props) => {
     if (username && username === recipe.username) {
       setIsShowMenu(true);
     }
+    getRequest().then((res) => {
+      setRecipe(res.find((recipe: RecipeType) => recipe.id.toString() === id));
+    });
   }, [recipe.username]);
 
   const handleDelete = async () => {
@@ -126,10 +130,9 @@ const RecipePage = ({ recipe }: Props) => {
 };
 
 export async function getStaticPaths() {
-  const data = await getRequest();
-
-  const paths = data.map((recipe: RecipeType) => ({
-    params: { id: recipe.id.toString() },
+  const data = Array.from({ length: 1000 }, (_, index) => index + 1);
+  const paths = data.map((el: number) => ({
+    params: { id: el.toString() },
   }));
 
   return {
@@ -146,12 +149,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 
   const id = params.id;
-  const data = await getRequest();
-  const recipe = data.find((recipe: RecipeType) => recipe.id.toString() === id);
 
   return {
     props: {
-      recipe,
+      id,
     },
   };
 };
