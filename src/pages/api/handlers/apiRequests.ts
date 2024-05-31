@@ -35,7 +35,7 @@ export async function postAdditionRequest(
       console.log("Recipe uploaded");
     });
 
-    await fetch("/api/images", {
+    await fetch("/api/routes/images", {
       method: "POST",
       body: formData,
     })
@@ -69,7 +69,7 @@ export async function deleteRequest(idx: number, imageName: string) {
       return;
     }
 
-    const imageResponse = await fetch("/api/images", {
+    const imageResponse = await fetch("/api/routes/images", {
       method: "DELETE",
       body: JSON.stringify(imageName),
     });
@@ -107,7 +107,7 @@ export async function patchEditRequest(
       formData.append("filename", newRecipe.image);
       formData.append("image", image);
 
-      const imageResponse = await fetch("/api/images", {
+      const imageResponse = await fetch("/api/routes/images", {
         method: "PATCH",
         body: formData,
       });
