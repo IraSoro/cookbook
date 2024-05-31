@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 import { createClient } from "@supabase/supabase-js";
 
@@ -7,7 +7,7 @@ const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export async function POST(req: NextRequest) {
+export async function POST(req) {
   try {
     const form = await req.formData();
 
@@ -18,8 +18,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const filename = form.get("filename") as string;
-    const file = form.get("image") as File;
+    const filename = form.get("filename");
+    const file = form.get("image");
 
     if (!file) {
       return NextResponse.json(
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from("cookbook-image")
       .upload(`public/${filename}`, file);
 
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE(req) {
   try {
     const imageName = await req.json();
 
@@ -75,7 +75,7 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(req) {
   try {
     const form = await req.formData();
 
@@ -86,8 +86,8 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const filename = form.get("filename") as string;
-    const file = form.get("image") as File;
+    const filename = form.get("filename");
+    const file = form.get("image");
 
     const { error: deleteError } = await supabase.storage
       .from("cookbook-image")

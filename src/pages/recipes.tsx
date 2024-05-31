@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import {
@@ -22,15 +22,22 @@ import { getRequest } from "./api/handlers/apiRequests";
 
 import "../app/globals.css";
 
-interface PageProps {
-  data: RecipeType[];
-}
-
-const Page = ({ data }: PageProps) => {
+const Page = () => {
   const router = useRouter();
+  const [data, setData] = useState<RecipeType[]>([]);
 
   const [search, setSearch] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    getRequest()
+      .then((res) => {
+        setData(res);
+      })
+      .catch((err) => {
+        console.log("err = ", err);
+      });
+  }, []);
 
   function onQueryChange(event: React.ChangeEvent<HTMLInputElement>) {
     debounce(() => {
@@ -100,21 +107,5 @@ const Page = ({ data }: PageProps) => {
     </main>
   );
 };
-
-export async function getStaticProps() {
-  const data = await getRequest();
-
-  if (!data) {
-    return {
-      notFound: true,
-    };
-  }
-
-  return {
-    props: {
-      data: data,
-    },
-  };
-}
 
 export default Page;

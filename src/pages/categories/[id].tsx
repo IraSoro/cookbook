@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -37,22 +37,36 @@ import "@/app/globals.css";
 import styles from "@/styles/utils.module.css";
 
 interface Props {
-  category: CategoryType;
-  recipes: RecipeType[];
+  id: string;
 }
 
 const CategoryPage = (props: Props) => {
   const router = useRouter();
 
-  const [editedCategory, setEditedCategory] = useState(props.category);
+  const [editedCategory, setEditedCategory] = useState<CategoryType>({
+    id: 0,
+    name: "",
+    username: "",
+  });
+  const [recipes, setRecipes] = useState<RecipeType[]>([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // for menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    getCategories().then((res) => {
+      setEditedCategory(
+        res.find((item: CategoryType) => item.id.toString() === props.id)
+      );
+    });
+    getRecipeParamRequest(Number(props.id)).then((res) => {
+      setRecipes(res);
+    });
+  });
 
   const handleEdit = async (editedCategory: CategoryType) => {
     setEditedCategory({ ...editedCategory });
@@ -106,7 +120,7 @@ const CategoryPage = (props: Props) => {
                 onClick={() => {
                   router.push({
                     pathname: "/recipes/create",
-                    query: { categoryId: props.category.id },
+                    query: { categoryId: props.id },
                   });
                 }}
               >
@@ -166,7 +180,7 @@ const CategoryPage = (props: Props) => {
           >
             {editedCategory.name}
           </Typography>
-          <ItemsGrid items={props.recipes} />
+          <ItemsGrid items={recipes} />
         </Stack>
       </Container>
     </main>
@@ -174,9 +188,9 @@ const CategoryPage = (props: Props) => {
 };
 
 export async function getStaticPaths() {
-  const data = await getCategories();
-  const paths = data.map((category: CategoryType) => ({
-    params: { id: category.id.toString() },
+  const data = Array.from({ length: 1000 }, (_, index) => index + 1);
+  const paths = data.map((el: number) => ({
+    params: { id: el.toString() },
   }));
 
   return {
@@ -193,15 +207,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 
   const id = params.id;
-  const data = await getCategories();
-
-  const category = data.find((item: CategoryType) => item.id.toString() === id);
-  const recipes = await getRecipeParamRequest(Number(id));
 
   return {
     props: {
-      category: category,
-      recipes: recipes,
+      id: id,
     },
   };
 };

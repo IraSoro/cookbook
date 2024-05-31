@@ -1,4 +1,3 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
@@ -6,10 +5,7 @@ const supabaseAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req, res) {
   try {
     switch (req.method) {
       case "POST": {

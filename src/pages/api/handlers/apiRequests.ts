@@ -2,14 +2,14 @@ import { RecipeType } from "@/state/recipe-types";
 import { CategoryType } from "@/state/category-type";
 
 export async function getRequest() {
-  const getFetch = await fetch("http://localhost:3000/api/routes/recipes");
+  const getFetch = await fetch("/api/routes/recipes");
   const response = await getFetch.json();
   const data = await response.data;
   return data;
 }
 
 export async function getRecipeParamRequest(categoryId: number) {
-  const getFetch = await fetch("http://localhost:3000/api/routes/recipes");
+  const getFetch = await fetch("/api/routes/recipes");
   const response = await getFetch.json();
   const data = await response.data;
   return data.filter((item: RecipeType) => item.categoryId === categoryId);
@@ -26,14 +26,11 @@ export async function postAdditionRequest(
     formData.append("image", image);
   }
 
-  const recipeResponse = await fetch(
-    "http://localhost:3000/api/routes/recipes",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newRecipe),
-    }
-  );
+  const recipeResponse = await fetch("/api/routes/recipes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newRecipe),
+  });
   if (!recipeResponse.ok) {
     console.log("Error " + recipeResponse.status);
     return;
@@ -41,7 +38,7 @@ export async function postAdditionRequest(
     console.log("Recipe uploaded");
   }
 
-  const imageResponse = await fetch("http://localhost:3000/api/images", {
+  const imageResponse = await fetch("/api/images", {
     method: "POST",
     body: formData,
   });
@@ -56,14 +53,11 @@ export async function postAdditionRequest(
 
 export async function deleteRequest(idx: number, imageName: string) {
   try {
-    const recipeResponse = await fetch(
-      "http://localhost:3000/api/routes/recipes",
-      {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(idx),
-      }
-    );
+    const recipeResponse = await fetch("/api/routes/recipes", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(idx),
+    });
 
     if (!recipeResponse.ok) {
       throw new Error(`Failed to delete recipe with id=${idx}`);
@@ -75,7 +69,7 @@ export async function deleteRequest(idx: number, imageName: string) {
       return;
     }
 
-    const imageResponse = await fetch("http://localhost:3000/api/images", {
+    const imageResponse = await fetch("/api/images", {
       method: "DELETE",
       body: JSON.stringify(imageName),
     });
@@ -95,14 +89,11 @@ export async function patchEditRequest(
   image: File | null
 ) {
   try {
-    const recipeResponse = await fetch(
-      "http://localhost:3000/api/routes/recipes",
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ item: newRecipe }),
-      }
-    );
+    const recipeResponse = await fetch("/api/routes/recipes", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ item: newRecipe }),
+    });
 
     if (!recipeResponse.ok) {
       throw new Error(`Failed to edit recipe id=${newRecipe.id}`);
@@ -116,7 +107,7 @@ export async function patchEditRequest(
       formData.append("filename", newRecipe.image);
       formData.append("image", image);
 
-      const imageResponse = await fetch("http://localhost:3000/api/images", {
+      const imageResponse = await fetch("/api/images", {
         method: "PATCH",
         body: formData,
       });
@@ -133,14 +124,14 @@ export async function patchEditRequest(
 }
 
 export async function getCategories() {
-  const getFetch = await fetch("http://localhost:3000/api/routes/categories");
+  const getFetch = await fetch("/api/routes/categories");
   const response = await getFetch.json();
   const data = await response.data;
   return data;
 }
 
 export async function postAdditionCategoryRequest(newCategory: CategoryType) {
-  fetch("http://localhost:3000/api/routes/categories", {
+  fetch("/api/routes/categories", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newCategory),
@@ -154,7 +145,7 @@ export async function postAdditionCategoryRequest(newCategory: CategoryType) {
 }
 
 export async function deleteCategoryRequest(idx: number) {
-  fetch("http://localhost:3000/api/routes/categories", {
+  fetch("/api/routes/categories", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(idx),
@@ -168,7 +159,7 @@ export async function deleteCategoryRequest(idx: number) {
 }
 
 export async function patchEditCategoryRequest(editedCategory: CategoryType) {
-  fetch("http://localhost:3000/api/routes/categories", {
+  fetch("/api/routes/categories", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ editedCategory: editedCategory }),

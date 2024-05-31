@@ -27,23 +27,24 @@ import {
 
 import "../app/globals.css";
 
-interface PageProps {
-  recipes: RecipeType[];
-  categories: CategoryType[];
-}
-
-const Page = (props: PageProps) => {
+const Page = () => {
   const router = useRouter();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [categories, setCategories] = useState<CategoryType[]>(
-    props.categories
-  );
+
+  const [recipes, setRecipes] = useState<RecipeType[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     const username = localStorage.getItem("username");
     if (!username) {
       router.push("/auth");
     }
+    getRequest().then((res) => {
+      setRecipes(res);
+    });
+    getCategories().then((res) => {
+      setCategories(res);
+    });
   }, [router]);
 
   const updateCategories = async (newCategory: CategoryType) => {
@@ -52,7 +53,7 @@ const Page = (props: PageProps) => {
     setCategories([...categories]);
   };
 
-  const handleMenuOpen = (event) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -110,7 +111,7 @@ const Page = (props: PageProps) => {
         </Toolbar>
       </AppBar>
       <div style={{ margin: "20px 10px 0", maxWidth: "1000px" }}>
-        <Categories categories={props.categories} update={updateCategories} />
+        <Categories categories={categories} update={updateCategories} />
         <Typography
           variant="h6"
           component="div"
@@ -118,28 +119,10 @@ const Page = (props: PageProps) => {
         >
           All Recipes
         </Typography>
-        <ItemsGrid items={props.recipes} />
+        <ItemsGrid items={recipes} />
       </div>
     </main>
   );
 };
-
-export async function getStaticProps() {
-  const recipes = await getRequest();
-  const categories = await getCategories();
-
-  if (!recipes) {
-    return {
-      notFound: true,
-    };
-  }
-
-  return {
-    props: {
-      recipes: recipes,
-      categories: categories.reverse(),
-    },
-  };
-}
 
 export default Page;
