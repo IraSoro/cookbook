@@ -9,6 +9,7 @@ import {
   Menu,
   MenuItem,
   Divider,
+  Box,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -110,17 +111,19 @@ const Page = () => {
           </Menu>
         </Toolbar>
       </AppBar>
-      <div style={{ margin: "20px 10px 0", maxWidth: "1000px" }}>
-        <Categories categories={categories} update={updateCategories} />
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ color: "#000", margin: "20px 0 10px" }}
-        >
-          All Recipes
-        </Typography>
-        <ItemsGrid items={recipes} />
-      </div>
+      <Box className="min-h-screen flex-col items-center space-between">
+        <Box style={{ margin: "20px 10px 0", maxWidth: "1000px" }}>
+          <Categories categories={categories} update={updateCategories} />
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ color: "#000", margin: "20px 0 10px" }}
+          >
+            All Recipes
+          </Typography>
+          <ItemsGrid items={recipes} />
+        </Box>
+      </Box>
     </main>
   );
 };

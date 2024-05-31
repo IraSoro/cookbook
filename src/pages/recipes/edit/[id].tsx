@@ -27,8 +27,8 @@ const RecipePage = ({ id }: Props) => {
     getRequest().then((res) => {
       setRecipe(res.find((recipe: RecipeType) => recipe.id.toString() === id));
     });
-  }, [router]);
-
+  }, [router, id]);
+  
   const handleEdit = async (newRecipe: RecipeType, newImage: null | File) => {
     await patchEditRequest(newRecipe, newImage);
     router.push(`/recipes/${recipe.id}`);

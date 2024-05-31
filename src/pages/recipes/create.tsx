@@ -26,7 +26,8 @@ const Creation = () => {
 
   const handleAdd = async (newRecipe: RecipeType, image: File | null) => {
     if (data.length > 0) {
-      newRecipe.id = data[data.length - 1].id + 1;
+      const max = data.reduce((acc, curr) => (acc.id > curr.id ? acc : curr));
+      newRecipe.id = max.id + 1;
     } else {
       newRecipe.id = 1;
     }

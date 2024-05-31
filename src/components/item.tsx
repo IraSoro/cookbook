@@ -57,8 +57,8 @@ const Item = (props: PropsItem) => {
                 width: "100%",
                 height: "100%",
               }}
-              height={0}
-              width={0}
+              height={450}
+              width={350}
               src={image}
               alt={props.item.name}
               loading="lazy"
