@@ -14,9 +14,11 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
+// import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 
 import ItemsGrid from "../components/item";
 import Categories from "@/components/categories";
+import HelpButton from "@/components/help-button";
 import { RecipeType } from "@/state/recipe-types";
 import { CategoryType } from "@/state/category-type";
 
@@ -30,6 +32,7 @@ import "../app/globals.css";
 
 const Page = () => {
   const router = useRouter();
+  const currentPageUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${router.asPath}`;
 
   const [recipes, setRecipes] = useState<RecipeType[]>([]);
   const [categories, setCategories] = useState<CategoryType[]>([]);
@@ -104,6 +107,10 @@ const Page = () => {
               Added recipe
             </MenuItem>
             <Divider />
+            {/* <MenuItem>
+              <ContactSupportIcon />
+              Create support ticket
+            </MenuItem> */}
             <MenuItem onClick={handleLogout}>
               <LogoutIcon />
               Logout
@@ -124,6 +131,7 @@ const Page = () => {
           <ItemsGrid items={recipes} />
         </Box>
       </Box>
+      <HelpButton currentPageUrl={currentPageUrl} />
     </main>
   );
 };
