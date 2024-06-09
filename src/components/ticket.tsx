@@ -28,7 +28,7 @@ const Tickets = ({ tickets }: TicketProps) => {
                 </Avatar>
               }
               title={`Ticket ID: ${ticket.id}`}
-              subheader={ticket.username}
+              subheader={ticket.username.split("@")[0]}
             />
             <CardContent>
               <Typography variant="h6" gutterBottom>
