@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Dialog, DialogContent, DialogActions } from "@mui/material";
+
 import HelpForm from "./help-form";
 
 interface HelpButtonProps {
@@ -16,17 +17,16 @@ const HelpButton: React.FC<HelpButtonProps> = ({ currentPageUrl }) => {
   return (
     <div>
       <Button
-        sx={{
+        style={{
           backgroundColor: "#d3d3d3",
           boxShadow: "none",
-          fontWeight: "bold",
           color: "#000000",
-          borderRadius: "8px",
+          borderRadius: "15px",
           marginBottom: "10px",
-          "&:hover": {
-            backgroundColor: "#c0c0c0",
-          },
+          marginTop: "20px",
+          width: "220px",
         }}
+        size="small"
         onClick={toggleDialog}
       >
         Create a support ticket
