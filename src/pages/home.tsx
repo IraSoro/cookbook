@@ -15,7 +15,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
-// import ContactSupportIcon from "@mui/icons-material/ContactSupport";
+import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 
 import ItemsGrid from "../components/item";
 import Categories from "@/components/categories";
@@ -76,6 +76,10 @@ const Page = () => {
     router.push("/recipes");
   };
 
+  const handleTickets = () => {
+    router.push("/help");
+  };
+
   return (
     <main>
       <Box
@@ -116,10 +120,10 @@ const Page = () => {
                 Added recipe
               </MenuItem>
               <Divider />
-              {/* <MenuItem>
-              <ContactSupportIcon />
-              Create support ticket
-            </MenuItem> */}
+              <MenuItem onClick={handleTickets}>
+                <ContactSupportIcon />
+                Support tickets
+              </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <LogoutIcon />
                 Logout
