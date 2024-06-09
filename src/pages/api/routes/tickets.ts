@@ -1,5 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+export interface Ticket {
+  id: number;
+  summary: string;
+  description: string;
+  username: string;
+  currentPageUrl: string;
+  priority: string;
+  status: string;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -38,6 +48,33 @@ export default async function handler(
 
         let data = await response.json();
         res.status(200).json({ ticketUrl: data.self });
+      }
+      case "GET": {
+        let headersList = {
+          Accept: "*/*",
+          "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+          Authorization: `Basic ${process.env.JIRA_AUTH_BASE64}`,
+        };
+
+        let response = await fetch(
+          `https://${process.env.JIRA_DOMAIN}.atlassian.net/rest/api/2/search`,
+          {
+            method: "GET",
+            headers: headersList,
+          }
+        );
+
+        let data = await response.json();
+        const tickets: Ticket[] = data.issues.map((issue: any) => ({
+          id: issue.id,
+          summary: issue.fields.summary,
+          description: issue.fields.description,
+          username: issue.fields.customfield_10033,
+          currentPageUrl: issue.fields.customfield_10034,
+          priority: issue.fields.priority.name,
+          status: issue.fields.status.name,
+        }));
+        res.status(200).json({ data: tickets });
       }
       default: {
         throw "Unknown method";
