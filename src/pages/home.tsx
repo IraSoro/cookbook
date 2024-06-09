@@ -10,6 +10,7 @@ import {
   MenuItem,
   Divider,
   Box,
+  Container,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -76,50 +77,57 @@ const Page = () => {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
-      <AppBar
-        position="static"
-        style={{
-          boxShadow: "none",
-          backgroundColor: "transparent",
+    <main>
+      <Box
+        sx={{
           maxWidth: "1000px",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          margin: "0 auto",
         }}
       >
-        <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h5" component="div" sx={{ color: "#000" }}>
-            My Recipes
-          </Typography>
-          <IconButton
-            edge="start"
-            color="default"
-            aria-label="menu"
-            onClick={handleMenuOpen}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={handleAddRecipe}>
-              <AddIcon />
-              Added recipe
-            </MenuItem>
-            <Divider />
-            {/* <MenuItem>
+        <AppBar
+          position="static"
+          style={{
+            boxShadow: "none",
+            backgroundColor: "transparent",
+          }}
+        >
+          <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="h5" component="div" sx={{ color: "#000" }}>
+              My Recipes
+            </Typography>
+            <IconButton
+              edge="start"
+              color="default"
+              aria-label="menu"
+              onClick={handleMenuOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleAddRecipe}>
+                <AddIcon />
+                Added recipe
+              </MenuItem>
+              <Divider />
+              {/* <MenuItem>
               <ContactSupportIcon />
               Create support ticket
             </MenuItem> */}
-            <MenuItem onClick={handleLogout}>
-              <LogoutIcon />
-              Logout
-            </MenuItem>
-          </Menu>
-        </Toolbar>
-      </AppBar>
-      <Box className="min-h-screen flex-col items-center space-between">
-        <Box style={{ margin: "20px 10px 0", maxWidth: "1000px" }}>
+              <MenuItem onClick={handleLogout}>
+                <LogoutIcon />
+                Logout
+              </MenuItem>
+            </Menu>
+          </Toolbar>
+        </AppBar>
+        <Container>
           <Categories categories={categories} update={updateCategories} />
           <Typography
             variant="h6"
@@ -129,9 +137,9 @@ const Page = () => {
             All Recipes
           </Typography>
           <ItemsGrid items={recipes} />
-        </Box>
+          <HelpButton currentPageUrl={currentPageUrl} />
+        </Container>
       </Box>
-      <HelpButton currentPageUrl={currentPageUrl} />
     </main>
   );
 };
