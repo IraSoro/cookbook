@@ -20,7 +20,7 @@ const Tickets = ({ tickets }: TicketProps) => {
     <Grid container spacing={3}>
       {tickets.map((ticket) => (
         <Grid item xs={12} sm={6} md={4} key={ticket.id}>
-          <Card>
+          <Card style={{ borderRadius: "20px", boxShadow: "none" }}>
             <CardHeader
               avatar={
                 <Avatar>
@@ -45,7 +45,7 @@ const Tickets = ({ tickets }: TicketProps) => {
                 }}
               >
                 <Typography variant="body2" color="textSecondary">
-                  Status:
+                  Status&nbsp;&nbsp;
                 </Typography>
                 <Chip label={ticket.status} style={{ marginRight: "10px" }} />
               </div>
@@ -57,7 +57,7 @@ const Tickets = ({ tickets }: TicketProps) => {
                 }}
               >
                 <Typography variant="body2" color="textSecondary">
-                  Priority:
+                  Priority&nbsp;&nbsp;
                 </Typography>
                 <Chip label={ticket.priority} style={{ marginRight: "10px" }} />
               </div>

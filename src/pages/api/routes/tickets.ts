@@ -51,8 +51,6 @@ export default async function handler(
       }
       case "GET": {
         let headersList = {
-          Accept: "*/*",
-          "User-Agent": "Thunder Client (https://www.thunderclient.com)",
           Authorization: `Basic ${process.env.JIRA_AUTH_BASE64}`,
         };
 

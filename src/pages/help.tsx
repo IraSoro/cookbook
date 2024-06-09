@@ -32,9 +32,11 @@ const HelpPage = () => {
   };
 
   return (
-    <main>
-      <Container style={{ height: "100vh" }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+    <main
+      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
+      <Container style={{ flex: "1" }}>
+        <Typography variant="h4" component="h1" style={{ margin: "20px 0" }}>
           My tickets
         </Typography>
         <Tickets tickets={tasks} />
