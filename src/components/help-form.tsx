@@ -102,12 +102,17 @@ const HelpForm = ({ currentPageUrl }: HelpFormProps) => {
         </Grid>
       </form>
       {ticketUrl && (
-        <p>
-          Your ticket has been create:{}
-          <a href={ticketUrl} target="_blank" rel="noopener noreferrer">
+        <>
+          <p>Your ticket has been created:</p>
+          <a
+            href={ticketUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "underline" }}
+          >
             {ticketUrl}
           </a>
-        </p>
+        </>
       )}
     </Container>
   );
