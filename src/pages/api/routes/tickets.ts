@@ -35,6 +35,9 @@ export default async function handler(
             },
             customfield_10033: username,
             customfield_10034: currentPageUrl,
+            priority: {
+              name: priority,
+            }
           },
         });
         let response = await fetch(
