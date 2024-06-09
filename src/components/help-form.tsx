@@ -40,9 +40,11 @@ const HelpForm = ({ currentPageUrl }: HelpFormProps) => {
       }),
     })
       .then((res) => {
+        console.log("res = ", res);
         return res.json();
       })
       .then((data) => {
+        console.log("data = ", data);
         setTicketUrl(data.ticketUrl);
         clear();
       })
