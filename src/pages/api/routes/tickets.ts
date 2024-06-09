@@ -50,12 +50,15 @@ export default async function handler(
         res.status(200).json({ ticketUrl: data.self });
       }
       case "GET": {
+        const { searchUsername } = req.query;
+        let jql = encodeURIComponent(`Username ~ "${searchUsername}"`);
+
         let headersList = {
           Authorization: `Basic ${process.env.JIRA_AUTH_BASE64}`,
         };
 
         let response = await fetch(
-          `https://${process.env.JIRA_DOMAIN}.atlassian.net/rest/api/2/search`,
+          `https://${process.env.JIRA_DOMAIN}.atlassian.net/rest/api/2/search?jql=${jql}`,
           {
             method: "GET",
             headers: headersList,
