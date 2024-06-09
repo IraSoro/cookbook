@@ -17,15 +17,12 @@ export default async function handler(
   try {
     switch (req.method) {
       case "POST": {
-        console.log("1111111111");
         const { summary, description, priority, currentPageUrl, username } =
           req.body;
-        console.log("222222222222");
         let headersList = {
           Authorization: `Basic ${process.env.JIRA_AUTH_BASE64}`,
           "Content-Type": "application/json",
         };
-        console.log("3333333333");
         let bodyContent = JSON.stringify({
           fields: {
             project: {
@@ -40,7 +37,6 @@ export default async function handler(
             customfield_10034: currentPageUrl,
           },
         });
-        console.log("4444444444444");
         let response = await fetch(
           `https://${process.env.JIRA_DOMAIN}.atlassian.net/rest/api/2/issue`,
           {
@@ -49,9 +45,8 @@ export default async function handler(
             headers: headersList,
           }
         );
-        console.log("555555555555");
+
         let data = await response.json();
-        console.log("data = ", data);
         res.status(200).json({ ticketUrl: data.self });
       }
       case "GET": {
@@ -87,7 +82,6 @@ export default async function handler(
       }
     }
   } catch (err) {
-    console.log("err = ", err);
     res.status(400).json({ error: err });
   }
 }
