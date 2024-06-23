@@ -45,7 +45,6 @@ export async function postAdditionRequest(
       .catch((err) => {
         console.log("Error = ", err);
       });
-
   } catch (err) {
     console.log(err);
   }
@@ -53,32 +52,29 @@ export async function postAdditionRequest(
 
 export async function deleteRequest(idx: number, imageName: string) {
   try {
-    const recipeResponse = await fetch("/api/routes/recipes", {
+    await fetch("/api/routes/recipes", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(idx),
+    }).then(() => {
+      console.log(`Deleted id=${idx} element`);
     });
-
-    if (!recipeResponse.ok) {
-      throw new Error(`Failed to delete recipe with id=${idx}`);
-    }
-
-    console.log(`Deleted id=${idx} element`);
 
     if (imageName === "") {
       return;
     }
 
-    const imageResponse = await fetch("/api/routes/images", {
+    await fetch("/api/routes/images", {
       method: "DELETE",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(imageName),
-    });
-
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to delete image: ${imageName}`);
-    }
-
-    console.log("Image deleted");
+    })
+      .then(() => {
+        console.log(`Image ${imageName} has been deleted`);
+      })
+      .catch((err) => {
+        console.log("Error delete = ", err);
+      });
   } catch (err) {
     console.log(err);
   }

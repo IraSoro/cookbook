@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+// import { NextResponse, NextRequest } from "next/server";
 
 import { createClient } from "@supabase/supabase-js";
 
@@ -61,6 +61,22 @@ export default async function handler(req, res) {
         });
       }
       case "DELETE": {
+        const imageName = await req.body;
+
+        if (!imageName || imageName.trim() === "") {
+          return res.status(400).json({ error: "No file name" });
+        }
+
+        const { data, error } = await supabase.storage
+          .from("cookbook-image")
+          .remove([`public/${imageName}`]);
+
+        if (error) {
+          console.log("Error uploading to Supabase:", error.message);
+          return res.status(500).json({ error: `Error: ${error.message}` });
+        }
+
+        return res.status(200).json({ message: "Image deleted successfully" });
       }
       case "PATCH": {
       }
@@ -73,44 +89,6 @@ export default async function handler(req, res) {
     res.status(400).json({ error: err });
   }
 }
-
-// export async function POST(req) {
-//   try {
-//     const form = await req.formData();
-
-//     if (!form.has("image")) {
-//       return NextResponse.json(
-//         { status: "'image' field is null" },
-//         { status: 501 }
-//       );
-//     }
-
-//     const filename = form.get("filename");
-//     const file = form.get("image");
-
-//     if (!file) {
-//       return NextRequest.json(
-//         { status: "image data is null" },
-//         { status: 502 }
-//       );
-//     }
-
-//     const { error } = await supabase.storage
-//       .from("cookbook-image")
-//       .upload(`public/${filename}`, file);
-
-//     if (error) {
-//       return NextRequest.json(
-//         { status: `Error ${error.message}` },
-//         { status: 503 }
-//       );
-//     }
-
-//     return NextResponse.json({ status: "Success" }, { status: 200 });
-//   } catch (err) {
-//     return NextRequest.json({ status: `Error ${err}` }, { status: 504 });
-//   }
-// }
 
 // export async function DELETE(req) {
 //   try {
