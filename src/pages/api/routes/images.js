@@ -1,5 +1,3 @@
-// import { NextResponse, NextRequest } from "next/server";
-
 import { createClient } from "@supabase/supabase-js";
 
 import formidable from "formidable";
@@ -51,6 +49,7 @@ export default async function handler(req, res) {
               return res.status(500).json({ error: `Error: ${error.message}` });
             }
 
+            console.log("Image uploaded successfully");
             return res
               .status(200)
               .json({ message: "Image uploaded successfully" });
@@ -61,26 +60,39 @@ export default async function handler(req, res) {
         });
       }
       case "DELETE": {
-        const imageName = await req.body;
+        const form = formidable({ multiples: true });
+        form.parse(req, async (err, fields) => {
+          if (err) {
+            console.log("Error parsing the filename:", err);
+            return res
+              .status(500)
+              .json({ error: "Error parsing the filename" });
+          }
+          const imageName = fields.toString();
 
-        if (!imageName || imageName.trim() === "") {
-          return res.status(400).json({ error: "No file name" });
-        }
+          if (!imageName || imageName.trim() === "") {
+            return res.status(400).json({ error: "No file name" });
+          }
 
-        const { data, error } = await supabase.storage
-          .from("cookbook-image")
-          .remove([`public/${imageName}`]);
+          const { error } = await supabase.storage
+            .from("cookbook-image")
+            .remove([`public/${imageName}`]);
 
-        if (error) {
-          console.log("Error uploading to Supabase:", error.message);
-          return res.status(500).json({ error: `Error: ${error.message}` });
-        }
-
-        return res.status(200).json({ message: "Image deleted successfully" });
+          if (error) {
+            console.log("Error uploading to Supabase:", error.message);
+            return res.status(500).json({ error: `Error: ${error.message}` });
+          }
+          
+          console.log("Image deleted successfully");
+          return res
+            .status(200)
+            .json({ message: "Image deleted successfully" });
+        });
       }
       case "PATCH": {
       }
       default: {
+        console.log("Method not allowed ");
         res.status(500).json({ error: "Method not allowed" });
       }
     }
@@ -89,36 +101,6 @@ export default async function handler(req, res) {
     res.status(400).json({ error: err });
   }
 }
-
-// export async function DELETE(req) {
-//   try {
-//     const imageName = await req.json();
-
-//     if (!imageName || imageName.trim() === "") {
-//       return NextResponse.json({ status: "no image name" }, { status: 400 });
-//     }
-
-//     const { data, error } = await supabase.storage
-//       .from("cookbook-image")
-//       .remove([`public/${imageName}`]);
-
-//     if (error) {
-//       console.error("Error deleting image:", error);
-//       return NextResponse.json(
-//         { success: false, error: error.message },
-//         { status: 500 }
-//       );
-//     }
-
-//     return NextResponse.json({ success: true, data }, { status: 200 });
-//   } catch (err) {
-//     console.error("Error processing request:", err);
-//     return NextResponse.json(
-//       { success: false, error: "Internal Server Error" },
-//       { status: 500 }
-//     );
-//   }
-// }
 
 // export async function PATCH(req) {
 //   try {
