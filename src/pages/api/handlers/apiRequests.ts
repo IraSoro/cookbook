@@ -85,6 +85,20 @@ export async function patchEditRequest(
   image: File | null
 ) {
   try {
+    if (image) {
+      const formData = new FormData();
+      formData.append("lastFilename", newRecipe.image);
+      formData.append("newFilename", `-${newRecipe.image}`);
+      formData.append("image", image);
+
+      await fetch("/api/routes/images", {
+        method: "PATCH",
+        body: formData,
+      });
+      newRecipe.image = `-${newRecipe.image}`;
+      console.log("Image edited");
+    }
+
     await fetch("/api/routes/recipes", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -92,20 +106,6 @@ export async function patchEditRequest(
     });
 
     console.log(`Recipe id=${newRecipe.id} edited`);
-
-    if (image) {
-      const formData = new FormData();
-      newRecipe.image = newRecipe.image;
-      formData.append("filename", newRecipe.image);
-      formData.append("image", image);
-
-      await fetch("/api/routes/images", {
-        method: "PATCH",
-        body: formData,
-      });
-
-      console.log("Image edited");
-    }
   } catch (err) {
     console.error(err);
   }

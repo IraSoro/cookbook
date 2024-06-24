@@ -83,7 +83,7 @@ export default async function handler(req, res) {
             .remove([`public/${imageName}`]);
 
           if (error) {
-            console.log("Error uploading to Supabase:", error.message);
+            console.log("Error deleting from Supabase:", error.message);
             return res.status(500).json({ error: `Error: ${error.message}` });
           }
 
@@ -103,7 +103,8 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: "Error parsing the files" });
           }
 
-          const filename = fields.filename;
+          const lastFilename = fields.lastFilename;
+          const newFilename = fields.newFilename;
           const file = files.image[0];
 
           if (!file) {
@@ -111,20 +112,40 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: "No file uploaded" });
           }
           const filePath = file.filepath;
-          try {
-            const fileData = await fs.readFile(filePath);
-            const uploadPath = `public/${filename}`;
 
-            const { error } = await supabase.storage
+          try {
+            const { error: deleteError } = await supabase.storage
+              .from("cookbook-image")
+              .remove([`public/${lastFilename}`]);
+
+            if (deleteError) {
+              console.log(
+                "Error deleting from Supabase (PATCH):",
+                deleteError.message
+              );
+              return res
+                .status(500)
+                .json({ error: `Error: ${deleteError.message}` });
+            }
+
+            const fileData = await fs.readFile(filePath);
+            const uploadPath = `public/${newFilename}`;
+
+            const { error: uploadError } = await supabase.storage
               .from("cookbook-image")
               .upload(uploadPath, fileData, {
                 contentType: file.mimetype,
                 upsert: true,
               });
 
-            if (error) {
-              console.log("Error uploading to Supabase:", error.message);
-              return res.status(500).json({ error: `Error: ${error.message}` });
+            if (uploadError) {
+              console.log(
+                "Error uploading to Supabase (PATCH):",
+                uploadError.message
+              );
+              return res
+                .status(500)
+                .json({ error: `Error: ${uploadError.message}` });
             }
 
             console.log("Image edited successfully");
