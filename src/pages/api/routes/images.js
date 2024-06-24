@@ -12,6 +12,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export const config = {
   api: {
     bodyParser: false,
+    externalResolver: true,
   },
 };
 
@@ -31,6 +32,7 @@ export default async function handler(req, res) {
           const file = files.image[0];
 
           if (!file) {
+            console.log("No file uploaded");
             return res.status(400).json({ error: "No file uploaded" });
           }
           const filePath = file.filepath;
@@ -58,6 +60,7 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: "Internal server error" });
           }
         });
+        break;
       }
       case "DELETE": {
         const form = formidable({ multiples: true });
@@ -68,9 +71,10 @@ export default async function handler(req, res) {
               .status(500)
               .json({ error: "Error parsing the filename" });
           }
-          const imageName = fields.toString();
+          const imageName = fields;
 
-          if (!imageName || imageName.trim() === "") {
+          if (!imageName || imageName.toString().trim() === "") {
+            console.log("No file name");
             return res.status(400).json({ error: "No file name" });
           }
 
@@ -82,18 +86,18 @@ export default async function handler(req, res) {
             console.log("Error uploading to Supabase:", error.message);
             return res.status(500).json({ error: `Error: ${error.message}` });
           }
-          
+
           console.log("Image deleted successfully");
           return res
             .status(200)
             .json({ message: "Image deleted successfully" });
         });
+        break;
       }
       case "PATCH": {
       }
       default: {
-        console.log("Method not allowed ");
-        res.status(500).json({ error: "Method not allowed" });
+        throw "Method not allowed";
       }
     }
   } catch (err) {
