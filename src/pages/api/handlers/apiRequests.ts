@@ -85,32 +85,24 @@ export async function patchEditRequest(
   image: File | null
 ) {
   try {
-    const recipeResponse = await fetch("/api/routes/recipes", {
+    await fetch("/api/routes/recipes", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ item: newRecipe }),
     });
 
-    if (!recipeResponse.ok) {
-      throw new Error(`Failed to edit recipe id=${newRecipe.id}`);
-    }
-
     console.log(`Recipe id=${newRecipe.id} edited`);
 
     if (image) {
       const formData = new FormData();
-      newRecipe.image = `${newRecipe.id}.jpg`;
+      newRecipe.image = newRecipe.image;
       formData.append("filename", newRecipe.image);
       formData.append("image", image);
 
-      const imageResponse = await fetch("/api/routes/images", {
+      await fetch("/api/routes/images", {
         method: "PATCH",
         body: formData,
       });
-
-      if (!imageResponse.ok) {
-        throw new Error("Failed to edit image");
-      }
 
       console.log("Image edited");
     }

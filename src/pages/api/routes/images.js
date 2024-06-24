@@ -95,6 +95,48 @@ export default async function handler(req, res) {
         break;
       }
       case "PATCH": {
+        const form = formidable({ multiples: true });
+
+        form.parse(req, async (err, fields, files) => {
+          if (err) {
+            console.log("Error parsing the files:", err);
+            return res.status(500).json({ error: "Error parsing the files" });
+          }
+
+          const filename = fields.filename;
+          const file = files.image[0];
+
+          if (!file) {
+            console.log("No file uploaded");
+            return res.status(400).json({ error: "No file uploaded" });
+          }
+          const filePath = file.filepath;
+          try {
+            const fileData = await fs.readFile(filePath);
+            const uploadPath = `public/${filename}`;
+
+            const { error } = await supabase.storage
+              .from("cookbook-image")
+              .upload(uploadPath, fileData, {
+                contentType: file.mimetype,
+                upsert: true,
+              });
+
+            if (error) {
+              console.log("Error uploading to Supabase:", error.message);
+              return res.status(500).json({ error: `Error: ${error.message}` });
+            }
+
+            console.log("Image edited successfully");
+            return res
+              .status(200)
+              .json({ message: "Image edited successfully" });
+          } catch (error) {
+            console.log("Error reading file:", error.message);
+            return res.status(500).json({ error: "Internal server error" });
+          }
+        });
+        break;
       }
       default: {
         throw "Method not allowed";
@@ -105,51 +147,3 @@ export default async function handler(req, res) {
     res.status(400).json({ error: err });
   }
 }
-
-// export async function PATCH(req) {
-//   try {
-//     const form = await req.formData();
-
-//     if (!form.has("image") || !form.has("filename")) {
-//       return NextResponse.json(
-//         { status: "Missing 'image' or 'filename' field" },
-//         { status: 400 }
-//       );
-//     }
-
-//     const filename = form.get("filename");
-//     const file = form.get("image");
-
-//     const { error: deleteError } = await supabase.storage
-//       .from("cookbook-image")
-//       .remove([`public/${filename}`]);
-
-//     if (deleteError) {
-//       console.error("Error deleting old image:", deleteError);
-//       return NextResponse.json(
-//         { success: false, error: deleteError.message },
-//         { status: 500 }
-//       );
-//     }
-
-//     const { data, error: uploadError } = await supabase.storage
-//       .from("cookbook-image")
-//       .upload(`public/${filename}`, file);
-
-//     if (uploadError) {
-//       console.error("Error uploading new image:", uploadError);
-//       return NextResponse.json(
-//         { success: false, error: uploadError.message },
-//         { status: 500 }
-//       );
-//     }
-
-//     return NextResponse.json({ success: true, data }, { status: 200 });
-//   } catch (err) {
-//     console.error("Error processing request:", err);
-//     return NextResponse.json(
-//       { success: false, error: "Internal Server Error" },
-//       { status: 500 }
-//     );
-//   }
-// }
