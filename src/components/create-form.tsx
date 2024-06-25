@@ -399,6 +399,9 @@ const CreateImage = (props: ImageProps) => {
             backgroundImage: props.image
               ? `url(${URL.createObjectURL(props.image)})`
               : "none",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         >
           <IconButton component="span">
