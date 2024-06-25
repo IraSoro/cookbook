@@ -44,23 +44,19 @@ const Item = (props: PropsItem) => {
         <Link href={`/recipes/${props.item.id}`}>
           <Box
             sx={{
+              position: "relative",
+              width: "100%",
               height: 450,
-              maxWidth: 350,
               "@media (max-width: 600px)": {
                 height: 250,
-                maxWidth: 180,
               },
             }}
           >
             <Image
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-              height={450}
-              width={350}
               src={image}
               alt={props.item.name}
+              layout="fill"
+              objectFit="cover"
               loading="lazy"
             />
           </Box>

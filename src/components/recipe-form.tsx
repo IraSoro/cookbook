@@ -291,22 +291,19 @@ const Recipe = ({ recipe }: ItemProps) => {
             {recipe.image && (
               <Box
                 sx={{
+                  position: "relative",
+                  width: "100%",
                   height: 450,
-                  maxWidth: 350,
                   "@media (max-width: 600px)": {
-                    maxWidth: 290,
+                    height: 350,
                   },
                 }}
               >
                 <Image
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                  }}
-                  height={450}
-                  width={350}
                   src={image}
                   alt={recipe.name}
+                  layout="fill"
+                  objectFit="cover"
                   loading="lazy"
                 />
               </Box>

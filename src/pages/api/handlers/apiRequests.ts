@@ -45,7 +45,6 @@ export async function postAdditionRequest(
       .catch((err) => {
         console.log("Error = ", err);
       });
-
   } catch (err) {
     console.log(err);
   }
@@ -53,32 +52,29 @@ export async function postAdditionRequest(
 
 export async function deleteRequest(idx: number, imageName: string) {
   try {
-    const recipeResponse = await fetch("/api/routes/recipes", {
+    await fetch("/api/routes/recipes", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(idx),
+    }).then(() => {
+      console.log(`Deleted id=${idx} element`);
     });
-
-    if (!recipeResponse.ok) {
-      throw new Error(`Failed to delete recipe with id=${idx}`);
-    }
-
-    console.log(`Deleted id=${idx} element`);
 
     if (imageName === "") {
       return;
     }
 
-    const imageResponse = await fetch("/api/routes/images", {
+    await fetch("/api/routes/images", {
       method: "DELETE",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(imageName),
-    });
-
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to delete image: ${imageName}`);
-    }
-
-    console.log("Image deleted");
+    })
+      .then(() => {
+        console.log(`Image ${imageName} has been deleted`);
+      })
+      .catch((err) => {
+        console.log("Error delete = ", err);
+      });
   } catch (err) {
     console.log(err);
   }
@@ -89,35 +85,27 @@ export async function patchEditRequest(
   image: File | null
 ) {
   try {
-    const recipeResponse = await fetch("/api/routes/recipes", {
+    if (image) {
+      const formData = new FormData();
+      formData.append("lastFilename", newRecipe.image);
+      formData.append("newFilename", `-${newRecipe.image}`);
+      formData.append("image", image);
+
+      await fetch("/api/routes/images", {
+        method: "PATCH",
+        body: formData,
+      });
+      newRecipe.image = `-${newRecipe.image}`;
+      console.log("Image edited");
+    }
+
+    await fetch("/api/routes/recipes", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ item: newRecipe }),
     });
 
-    if (!recipeResponse.ok) {
-      throw new Error(`Failed to edit recipe id=${newRecipe.id}`);
-    }
-
     console.log(`Recipe id=${newRecipe.id} edited`);
-
-    if (image) {
-      const formData = new FormData();
-      newRecipe.image = `${newRecipe.id}.jpg`;
-      formData.append("filename", newRecipe.image);
-      formData.append("image", image);
-
-      const imageResponse = await fetch("/api/routes/images", {
-        method: "PATCH",
-        body: formData,
-      });
-
-      if (!imageResponse.ok) {
-        throw new Error("Failed to edit image");
-      }
-
-      console.log("Image edited");
-    }
   } catch (err) {
     console.error(err);
   }
