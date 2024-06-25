@@ -298,17 +298,21 @@ const Recipe = ({ recipe }: ItemProps) => {
                   },
                 }}
               >
-                <Image
+                <div
                   style={{
+                    position: "relative",
                     width: "100%",
-                    height: "100%",
+                    height: "450px",
                   }}
-                  height={450}
-                  width={350}
-                  src={image}
-                  alt={recipe.name}
-                  loading="lazy"
-                />
+                >
+                  <Image
+                    src={image}
+                    alt={recipe.name}
+                    layout="fill"
+                    objectFit="cover"
+                    loading="lazy"
+                  />
+                </div>
               </Box>
             )}
           </Grid>
