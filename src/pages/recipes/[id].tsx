@@ -50,6 +50,9 @@ const RecipePage = ({ id }: Props) => {
   const handleEdit = async () => {
     router.push(`/recipes/edit/${recipe.id}`);
   };
+  const handleBack = () => {
+    router.back();
+  };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -70,7 +73,7 @@ const RecipePage = ({ id }: Props) => {
         <Toolbar style={{ justifyContent: "space-between" }}>
           {isShowMenu && (
             <>
-              <IconButton href="/recipes" size="large" color="default">
+              <IconButton onClick={handleBack} size="large" color="default">
                 <ArrowBackIosIcon />
               </IconButton>
               <IconButton
